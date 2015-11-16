@@ -6,6 +6,11 @@
 
 grammar gramC;
 
+options{
+	language = Java;
+}
+
+
 
 // definicao de tipos
 		
@@ -22,7 +27,7 @@ prog :
 	;
 	
 programa :	
-	( declaracao ';' | funcao ) 
+	( declaracao ';' | funcao ) {	System.out.println("Funções: " + $funcao.funcaoOut);}
 	;
 
 declaracao :
@@ -33,8 +38,9 @@ dec_nodo :
 	( ID  | ID '=' (expressao|condicao) )
 	;
 	
-funcao :	
-	idTipo ID '(' argumentos? ')' blocoCodigo
+funcao
+	returns [int funcaoOut]
+	: idTipo ID '(' argumentos? ')' blocoCodigo {$funcaoOut=1;}
 	;
 	
 argumentos :
@@ -118,7 +124,7 @@ condicao_e :
 	;
 	
 condicao_comparacao :
-	(condicao_igualdade) ( '>' condicao_igualdade | '<' condicao_igualdade | '>=' condicao_igualdade | '<=' condicao_igualdade )*
+	(condicao_igualdade) ( '>' condicao_igualdade | '<' condicao_igualdade | '>=' condicao_igualdade | '<=' condicao_igualdade)*
 	;
 
 condicao_igualdade :
