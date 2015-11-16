@@ -27,7 +27,7 @@ prog :
 	;
 	
 programa :	
-	( declaracao ';' | funcao ) {	System.out.println("Funções: " + $funcao.funcaoOut);}
+	( declaracao ';' | funcao ) {	System.out.println("Funçõess: " + $funcao.funcaoOut);}
 	;
 
 declaracao :
