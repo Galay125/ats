@@ -17,9 +17,9 @@ public class Main {
 		  
 		  Main text = new Main();
 		  
-		  String file = "../exemplos/fi.i";
+		  String files = "../exemplos/fi.i";
 		  
-		  List<String> lines = text.readSmallTextFile(file);
+		  List<String> lines = text.readSmallTextFile(files);
 		  
 		  for(String line : lines){
 			  System.out.println(line);
