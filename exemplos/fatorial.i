@@ -1,4 +1,3 @@
-
 void main() {
 	int num;
 	num = input(int);

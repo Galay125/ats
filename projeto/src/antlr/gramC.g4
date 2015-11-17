@@ -4,12 +4,20 @@
  * and open the template in the editor.
  */
 
+
 grammar gramC;
 
-options{
-	language = Java;
+@header{
+        import java.util.*;
 }
 
+@members{
+    HashMap<String,Integer> linesFunc = new HashMap<String,Integer>();
+    int linesAux;
+    
+    HashMap<String,Integer> argsFunc = new HashMap<String,Integer>();
+    int argsAux;
+}
 
 
 // definicao de tipos
@@ -23,11 +31,22 @@ tipo	:	(INT | FLOAT | CHAR | boolean_)
 // programa
 
 prog : 
-	programa* EOF 
+	programa* EOF  
+                        {   System.out.println("Funções: " + linesFunc.size());
+                            int aux = 0;
+                            for(String s : linesFunc.keySet()){
+                                aux+=linesFunc.get(s);
+                                System.out.println("Função: "+ s +" = "+ linesFunc.get(s) +" Linhas");
+                                System.out.println("Args:  "+ argsFunc.get(s));
+                            }
+                            int total = aux + (linesFunc.size()*2);
+                            System.out.println("Numero Total de Linhas: " + total);
+                        }
 	;
 	
-programa :	
-	( declaracao ';' | funcao ) {	System.out.println("Funçõess: " + $funcao.funcaoOut);}
+programa 
+@init{ linesAux=0; argsAux=0;}:
+	( declaracao ';' | funcao  ) 
 	;
 
 declaracao :
@@ -38,9 +57,9 @@ dec_nodo :
 	( ID  | ID '=' (expressao|condicao) )
 	;
 	
-funcao
-	returns [int funcaoOut]
-	: idTipo ID '(' argumentos? ')' blocoCodigo {$funcaoOut=1;}
+funcao :	
+	idTipo ID   '(' argumentos? { argsFunc.put($ID.text, argsAux); }
+        ')' blocoCodigo { linesFunc.put($ID.text, linesAux-1); }
 	;
 	
 argumentos :
@@ -48,7 +67,7 @@ argumentos :
 	;
 
 argumento : 
-	idTipo ID
+	idTipo ID {argsAux++;}
 	;
 
 // instrucoes
@@ -101,11 +120,11 @@ parametro :
 	;
 	
 blocoCodigo :
-	'{' codigo* '}'
+	'{'   codigo*   { linesAux++; } '}' 
 	;
 
 codigo :
-	( atribuicao ';'  | declaracao ';' |  instrucao )
+	( atribuicao ';'  | declaracao ';' |  instrucao ) { linesAux++; }
 	;
 
 
@@ -124,7 +143,7 @@ condicao_e :
 	;
 	
 condicao_comparacao :
-	(condicao_igualdade) ( '>' condicao_igualdade | '<' condicao_igualdade | '>=' condicao_igualdade | '<=' condicao_igualdade)*
+	(condicao_igualdade) ( '>' condicao_igualdade | '<' condicao_igualdade | '>=' condicao_igualdade | '<=' condicao_igualdade )*
 	;
 
 condicao_igualdade :

@@ -15,15 +15,13 @@ public class Main {
 	
 	  public static void main(String args[]) throws IOException {
 		  
-		  CharStream str = new ANTLRFileStream("../exemplos/fi.i");
+		  CharStream str = new ANTLRFileStream("../exemplos/fatorial.i");
 		  gramCLexer lexer = new gramCLexer(str);
 		  gramCParser parser = new gramCParser (new CommonTokenStream(lexer));
 		  
 	      parser.prog();
 	      
-	      System.out.println("Sysm");
-		  
-		  /*Main text = new Main();
+	      /*Main text = new Main();
 		  
 		  String file = "../exemplos/fi.i";
 		  
@@ -35,11 +33,6 @@ public class Main {
 
 		  
 	  }
-	  
-	  List<String> readSmallTextFile(String file) throws IOException {
-		    Path path = Paths.get(file);
-		    return Files.readAllLines(path, ENCODING);
-		  }
 	  
 	  private static void log(Object aMsg){
 		    System.out.println(String.valueOf(aMsg));
