@@ -8,6 +8,7 @@ public class Metrics {
 	private int maxArgs;
 	private int maxArgsFunc;
 	private int maxFunc;
+	private int maxNastedBlocks;
 	
 	public Metrics(){
 		this.maxLines = 100;
@@ -15,6 +16,7 @@ public class Metrics {
 		this.maxArgs = 20;
 		this.maxArgsFunc = 5;
 		this.maxFunc = 10;
+		this.maxNastedBlocks = 5;
 	}
 	
 	public void maxFunc(int func){
@@ -38,6 +40,12 @@ public class Metrics {
 	public void maxArgsFunc(HashMap<String,Integer> args){
 		for(String s : args.keySet()){
 			System.out.println("Função "+ s + ": " + args.get(s) + " argumentos (max: " + this.maxArgsFunc + ")");
+        }
+	}
+	
+	public void maxNastedBlocks(HashMap<String,Integer> blocks){
+		for(String s : blocks.keySet()){
+			System.out.println("Função "+ s + ": " + blocks.get(s) + " blocos (max: " + this.maxNastedBlocks + ")");
         }
 	}
 	

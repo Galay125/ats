@@ -3,6 +3,7 @@ package antlr;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -34,7 +35,7 @@ public class Main {
 	      System.out.println("\n");
 	      metricas.linesOfCodeFunc(parser.getLinesFunc());
 	      metricas.maxArgsFunc(parser.getArgsFunc());
-	      
+	      metricas.maxNastedBlocks(parser.getNastedBlocks());
 	  }
 	  
 	  /* Lê o ficheiro que irá ser verificado */

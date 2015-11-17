@@ -51,6 +51,9 @@ public class gramCLexer extends Lexer {
 	};
 
 
+		/* Nome da função */
+		private String func;
+		
 		/* Argumentos Globais */
 		private int argsGlobal = 0;
 		
@@ -62,12 +65,16 @@ public class gramCLexer extends Lexer {
 	    private HashMap<String,Integer> argsFunc = new HashMap<String,Integer>();
 	    private int argsAux;
 	    
+	    /* Nasted Blocks */
+	    private HashMap<String,Integer> blocksFunc = new HashMap<String,Integer>();
+	    private int blocksAux;
+	    
 	    public int getFuncs(){
 	    	return this.linesFunc.size();
 	    }
 	    
 	    public HashMap<String,Integer> getLinesFunc(){
-	    	return linesFunc;
+	    	return this.linesFunc;
 	    }
 	    
 	    public int getLines(){
@@ -80,7 +87,7 @@ public class gramCLexer extends Lexer {
 	    }
 	    
 	    public HashMap<String,Integer> getArgsFunc(){
-	    	return argsFunc;
+	    	return this.argsFunc;
 	    }
 	    
 	    public int getArgs(){
@@ -89,6 +96,10 @@ public class gramCLexer extends Lexer {
 	               aux+=this.argsFunc.get(s);
 	        }
 	    	return aux+this.argsGlobal;
+	    }
+	    
+	    public HashMap<String,Integer> getNastedBlocks(){
+	    	return this.blocksFunc;
 	    }
 	    
 

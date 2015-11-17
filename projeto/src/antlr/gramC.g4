@@ -12,6 +12,9 @@ grammar gramC;
 }
 
 @members{
+	/* Nome da função */
+	private String func;
+	
 	/* Argumentos Globais */
 	private int argsGlobal = 0;
 	
@@ -23,12 +26,16 @@ grammar gramC;
     private HashMap<String,Integer> argsFunc = new HashMap<String,Integer>();
     private int argsAux;
     
+    /* Nasted Blocks */
+    private HashMap<String,Integer> blocksFunc = new HashMap<String,Integer>();
+    private int blocksAux;
+    
     public int getFuncs(){
     	return this.linesFunc.size();
     }
     
     public HashMap<String,Integer> getLinesFunc(){
-    	return linesFunc;
+    	return this.linesFunc;
     }
     
     public int getLines(){
@@ -41,7 +48,7 @@ grammar gramC;
     }
     
     public HashMap<String,Integer> getArgsFunc(){
-    	return argsFunc;
+    	return this.argsFunc;
     }
     
     public int getArgs(){
@@ -50,6 +57,10 @@ grammar gramC;
                aux+=this.argsFunc.get(s);
         }
     	return aux+this.argsGlobal;
+    }
+    
+    public HashMap<String,Integer> getNastedBlocks(){
+    	return this.blocksFunc;
     }
     
 }
@@ -70,7 +81,7 @@ prog :
 	;
 	
 programa 
-@init{ linesAux=0; argsAux=0;}:
+@init{ linesAux=0; argsAux=0; blocksAux=0;}:
 	( declaracao ';' {argsGlobal+=argsAux;} | funcao  ) 
 	;
 
@@ -83,9 +94,11 @@ dec_nodo :
 	;
 	
 funcao :	
-	idTipo ID   '(' argumentos?  ')' blocoCodigo 
-	{ linesFunc.put($ID.text, linesAux-1); }
-	{ argsFunc.put($ID.text, argsAux); }
+	idTipo ID {func = $ID.text; 	blocksFunc.put(func, 0);}   '(' argumentos?  ')' blocoCodigo 
+	{ 
+		linesFunc.put(func, linesAux-1); 
+		argsFunc.put(func, argsAux); 
+	}
 	;
 	
 argumentos :
@@ -103,22 +116,28 @@ instrucao :
 	;
 
 if_ 	:
-	'if'  '('  condicao  ')'  blocoCodigo else_?
+	'if'  '('  condicao  ')' {blocksAux++;}  blocoCodigo 
+							 {	if(blocksFunc.get(func) < blocksAux) blocksFunc.put(func, blocksAux); 		blocksAux--;} 
+	else_?
 	;
 
 else_	:
-	'else' ( blocoCodigo | if_ )
+	'else' ( {blocksAux++;}  blocoCodigo 
+							 {	if(blocksFunc.get(func) < blocksAux) blocksFunc.put(func, blocksAux); 		blocksAux--;}  | if_ )
 	;
 	
 for_	:
-	'for' '(' for_declaracao ';' condicao ';'  expressao ')' blocoCodigo 
+	'for' '(' for_declaracao ';' condicao ';'  expressao ')' {blocksAux++;}  blocoCodigo 
+							 {  if(blocksFunc.get(func) < blocksAux) blocksFunc.put(func, blocksAux); 		blocksAux--;} 
 	;
 
-for_declaracao : ( declaracao | atribuicao   )
+for_declaracao : 
+  ( declaracao | atribuicao   )
 	;
 	
 while_ :	
-	'while' '('  condicao  ')' blocoCodigo
+	'while' '('  condicao  ')' {blocksAux++;}  blocoCodigo 
+							 {  if(blocksFunc.get(func) < blocksAux) blocksFunc.put(func, blocksAux); 		blocksAux--;} 
 	;
 	
 return_ :	
@@ -215,7 +234,8 @@ opUnario :
 	( '+' | '-' | '!' )
 	;
 	
-boolean_	:	('true' | 'false')
+boolean_	:	
+('true' | 'false')
 		;
 
 
