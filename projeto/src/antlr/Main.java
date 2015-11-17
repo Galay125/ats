@@ -1,6 +1,8 @@
 package antlr;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +18,9 @@ public class Main {
 	
 	  public static void main(String args[]) throws IOException {
 		  
-		  CharStream str = new ANTLRFileStream("../exemplos/fatorial.i");
+		  String file = readFile();
+		  
+		  CharStream str = new ANTLRFileStream("../exemplos/"+file);
 		  gramCLexer lexer = new gramCLexer(str);
 		  gramCParser parser = new gramCParser (new CommonTokenStream(lexer));
 		  
@@ -33,8 +37,19 @@ public class Main {
 	      
 	  }
 	  
+	  /* Lê o ficheiro que irá ser verificado */
+	  private static String readFile() throws IOException{
+		  
+		  System.out.println("Digite o nome do ficheiro: fi.i | fatorial.i | maiorDeDoisNumeros.i");
+		  
+		  BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		  String s = br.readLine();
+		  
+		  return s;
+	  }
+	  
 	  
 	  private static void log(Object aMsg){
 		    System.out.println(String.valueOf(aMsg));
-		  }
+	  }
 }
