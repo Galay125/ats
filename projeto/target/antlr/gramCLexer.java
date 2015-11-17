@@ -51,11 +51,46 @@ public class gramCLexer extends Lexer {
 	};
 
 
-	    HashMap<String,Integer> linesFunc = new HashMap<String,Integer>();
-	    int linesAux;
+		/* Argumentos Globais */
+		private int argsGlobal = 0;
+		
+		/* Linhas por Função */
+	    private HashMap<String,Integer> linesFunc = new HashMap<String,Integer>();
+	    private int linesAux;
 	    
-	    HashMap<String,Integer> argsFunc = new HashMap<String,Integer>();
-	    int argsAux;
+	    /* Argumentos por Função */
+	    private HashMap<String,Integer> argsFunc = new HashMap<String,Integer>();
+	    private int argsAux;
+	    
+	    public int getFuncs(){
+	    	return this.linesFunc.size();
+	    }
+	    
+	    public HashMap<String,Integer> getLinesFunc(){
+	    	return linesFunc;
+	    }
+	    
+	    public int getLines(){
+	    	int aux=0;
+	    	for(String s : this.linesFunc.keySet()){
+	               aux+=this.linesFunc.get(s);
+	        }
+	        aux += (this.linesFunc.size()*2);
+	        return aux;
+	    }
+	    
+	    public HashMap<String,Integer> getArgsFunc(){
+	    	return argsFunc;
+	    }
+	    
+	    public int getArgs(){
+	    	int aux=0;
+	    	for(String s : this.argsFunc.keySet()){
+	               aux+=this.argsFunc.get(s);
+	        }
+	    	return aux+this.argsGlobal;
+	    }
+	    
 
 
 	public gramCLexer(CharStream input) {

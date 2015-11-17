@@ -12,11 +12,46 @@ grammar gramC;
 }
 
 @members{
-    HashMap<String,Integer> linesFunc = new HashMap<String,Integer>();
-    int linesAux;
+	/* Argumentos Globais */
+	private int argsGlobal = 0;
+	
+	/* Linhas por Função */
+    private HashMap<String,Integer> linesFunc = new HashMap<String,Integer>();
+    private int linesAux;
     
-    HashMap<String,Integer> argsFunc = new HashMap<String,Integer>();
-    int argsAux;
+    /* Argumentos por Função */
+    private HashMap<String,Integer> argsFunc = new HashMap<String,Integer>();
+    private int argsAux;
+    
+    public int getFuncs(){
+    	return this.linesFunc.size();
+    }
+    
+    public HashMap<String,Integer> getLinesFunc(){
+    	return linesFunc;
+    }
+    
+    public int getLines(){
+    	int aux=0;
+    	for(String s : this.linesFunc.keySet()){
+               aux+=this.linesFunc.get(s);
+        }
+        aux += (this.linesFunc.size()*2);
+        return aux;
+    }
+    
+    public HashMap<String,Integer> getArgsFunc(){
+    	return argsFunc;
+    }
+    
+    public int getArgs(){
+    	int aux=0;
+    	for(String s : this.argsFunc.keySet()){
+               aux+=this.argsFunc.get(s);
+        }
+    	return aux+this.argsGlobal;
+    }
+    
 }
 
 
@@ -32,34 +67,25 @@ tipo	:	(INT | FLOAT | CHAR | boolean_)
 
 prog : 
 	programa* EOF  
-                        {   System.out.println("Funções: " + linesFunc.size());
-                            int aux = 0;
-                            for(String s : linesFunc.keySet()){
-                                aux+=linesFunc.get(s);
-                                System.out.println("Função: "+ s +" = "+ linesFunc.get(s) +" Linhas");
-                                System.out.println("Args:  "+ argsFunc.get(s));
-                            }
-                            int total = aux + (linesFunc.size()*2);
-                            System.out.println("Numero Total de Linhas: " + total);
-                        }
 	;
 	
 programa 
 @init{ linesAux=0; argsAux=0;}:
-	( declaracao ';' | funcao  ) 
+	( declaracao ';' {argsGlobal+=argsAux;} | funcao  ) 
 	;
 
 declaracao :
-	idTipo dec_nodo (',' dec_nodo )*
+	idTipo dec_nodo (',' dec_nodo | ';' idTipo dec_nodo)*
 	;
 
 dec_nodo :
-	( ID  | ID '=' (expressao|condicao) )
+	( ID  | ID '=' (expressao|condicao) )  {argsAux++;}
 	;
 	
 funcao :	
-	idTipo ID   '(' argumentos? { argsFunc.put($ID.text, argsAux); }
-        ')' blocoCodigo { linesFunc.put($ID.text, linesAux-1); }
+	idTipo ID   '(' argumentos?  ')' blocoCodigo 
+	{ linesFunc.put($ID.text, linesAux-1); }
+	{ argsFunc.put($ID.text, argsAux); }
 	;
 	
 argumentos :
@@ -67,7 +93,7 @@ argumentos :
 	;
 
 argumento : 
-	idTipo ID {argsAux++;}
+	idTipo ID
 	;
 
 // instrucoes
@@ -124,7 +150,7 @@ blocoCodigo :
 	;
 
 codigo :
-	( atribuicao ';'  | declaracao ';' |  instrucao ) { linesAux++; }
+	( atribuicao ';'  | declaracao ';' |  instrucao ) { linesAux++;}
 	;
 
 
