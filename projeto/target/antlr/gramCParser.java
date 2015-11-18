@@ -28,12 +28,12 @@ public class gramCParser extends Parser {
 		T__4=39, T__3=40, T__2=41, T__1=42, T__0=43, CHAR=44, FLOAT=45, SufixoFloat=46, 
 		INT=47, ID=48, WS=49;
 	public static final String[] tokenNames = {
-		"<INVALID>", "'-='", "'input'", "','", "'while'", "'-'", "'*'", "':'", 
-		"'('", "'if'", "'int'", "'<'", "'--'", "'false'", "'!='", "'<='", "'?'", 
-		"'void'", "'{'", "'+='", "'else'", "'}'", "'boolean'", "'float'", "'true'", 
-		"'++'", "'char'", "'%'", "'*='", "')'", "'+'", "'print'", "'for'", "'return'", 
-		"'='", "';'", "'&&'", "'||'", "'>'", "'/='", "'=='", "'/'", "'>='", "'!'", 
-		"CHAR", "FLOAT", "SufixoFloat", "INT", "ID", "WS"
+		"<INVALID>", "'/'", "'*='", "'+='", "'char'", "'true'", "'return'", "'!='", 
+		"'float'", "'||'", "'{'", "'while'", "';'", "'void'", "'&&'", "'}'", "'='", 
+		"'for'", "'if'", "'?'", "'<='", "'int'", "'print'", "'('", "'*'", "'-='", 
+		"','", "'false'", "'/='", "'boolean'", "':'", "'>='", "'--'", "'++'", 
+		"'=='", "'<'", "'>'", "'!'", "'%'", "'else'", "'input'", "')'", "'+'", 
+		"'-'", "CHAR", "FLOAT", "SufixoFloat", "INT", "ID", "WS"
 	};
 	public static final int
 		RULE_idTipo = 0, RULE_tipo = 1, RULE_prog = 2, RULE_programa = 3, RULE_declaracao = 4, 
@@ -139,6 +139,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitIdTipo(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitIdTipo(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final IdTipoContext idTipo() throws RecognitionException {
@@ -150,7 +155,7 @@ public class gramCParser extends Parser {
 			{
 			setState(72);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__33) | (1L << T__26) | (1L << T__21) | (1L << T__20) | (1L << T__17))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__39) | (1L << T__35) | (1L << T__30) | (1L << T__22) | (1L << T__14))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			consume();
@@ -168,12 +173,12 @@ public class gramCParser extends Parser {
 	}
 
 	public static class TipoContext extends ParserRuleContext {
-		public TerminalNode FLOAT() { return getToken(gramCParser.FLOAT, 0); }
-		public TerminalNode INT() { return getToken(gramCParser.INT, 0); }
 		public Boolean_Context boolean_() {
 			return getRuleContext(Boolean_Context.class,0);
 		}
 		public TerminalNode CHAR() { return getToken(gramCParser.CHAR, 0); }
+		public TerminalNode INT() { return getToken(gramCParser.INT, 0); }
+		public TerminalNode FLOAT() { return getToken(gramCParser.FLOAT, 0); }
 		public TipoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -185,6 +190,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitTipo(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitTipo(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -211,8 +221,8 @@ public class gramCParser extends Parser {
 				setState(76); match(CHAR);
 				}
 				break;
-			case T__30:
-			case T__19:
+			case T__38:
+			case T__16:
 				{
 				setState(77); boolean_();
 				}
@@ -234,12 +244,12 @@ public class gramCParser extends Parser {
 	}
 
 	public static class ProgContext extends ParserRuleContext {
+		public ProgramaContext programa(int i) {
+			return getRuleContext(ProgramaContext.class,i);
+		}
 		public TerminalNode EOF() { return getToken(gramCParser.EOF, 0); }
 		public List<ProgramaContext> programa() {
 			return getRuleContexts(ProgramaContext.class);
-		}
-		public ProgramaContext programa(int i) {
-			return getRuleContext(ProgramaContext.class,i);
 		}
 		public ProgContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -253,6 +263,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitProg(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitProg(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ProgContext prog() throws RecognitionException {
@@ -265,7 +280,7 @@ public class gramCParser extends Parser {
 			setState(83);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__33) | (1L << T__26) | (1L << T__21) | (1L << T__20) | (1L << T__17))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__39) | (1L << T__35) | (1L << T__30) | (1L << T__22) | (1L << T__14))) != 0)) {
 				{
 				{
 				setState(80); programa();
@@ -290,11 +305,11 @@ public class gramCParser extends Parser {
 	}
 
 	public static class ProgramaContext extends ParserRuleContext {
-		public DeclaracaoContext declaracao() {
-			return getRuleContext(DeclaracaoContext.class,0);
-		}
 		public FuncaoContext funcao() {
 			return getRuleContext(FuncaoContext.class,0);
+		}
+		public DeclaracaoContext declaracao() {
+			return getRuleContext(DeclaracaoContext.class,0);
 		}
 		public ProgramaContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -307,6 +322,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitPrograma(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitPrograma(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -322,7 +342,7 @@ public class gramCParser extends Parser {
 			case 1:
 				{
 				setState(88); declaracao();
-				setState(89); match(T__8);
+				setState(89); match(T__31);
 				argsGlobal+=argsAux;
 				}
 				break;
@@ -346,14 +366,14 @@ public class gramCParser extends Parser {
 	}
 
 	public static class DeclaracaoContext extends ParserRuleContext {
+		public List<IdTipoContext> idTipo() {
+			return getRuleContexts(IdTipoContext.class);
+		}
 		public Dec_nodoContext dec_nodo(int i) {
 			return getRuleContext(Dec_nodoContext.class,i);
 		}
 		public List<Dec_nodoContext> dec_nodo() {
 			return getRuleContexts(Dec_nodoContext.class);
-		}
-		public List<IdTipoContext> idTipo() {
-			return getRuleContexts(IdTipoContext.class);
 		}
 		public IdTipoContext idTipo(int i) {
 			return getRuleContext(IdTipoContext.class,i);
@@ -369,6 +389,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitDeclaracao(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitDeclaracao(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -389,15 +414,15 @@ public class gramCParser extends Parser {
 					{
 					setState(103);
 					switch (_input.LA(1)) {
-					case T__40:
+					case T__17:
 						{
-						setState(97); match(T__40);
+						setState(97); match(T__17);
 						setState(98); dec_nodo();
 						}
 						break;
-					case T__8:
+					case T__31:
 						{
-						setState(99); match(T__8);
+						setState(99); match(T__31);
 						setState(100); idTipo();
 						setState(101); dec_nodo();
 						}
@@ -425,13 +450,13 @@ public class gramCParser extends Parser {
 	}
 
 	public static class Dec_nodoContext extends ParserRuleContext {
-		public ExpressaoContext expressao() {
-			return getRuleContext(ExpressaoContext.class,0);
-		}
+		public TerminalNode ID() { return getToken(gramCParser.ID, 0); }
 		public CondicaoContext condicao() {
 			return getRuleContext(CondicaoContext.class,0);
 		}
-		public TerminalNode ID() { return getToken(gramCParser.ID, 0); }
+		public ExpressaoContext expressao() {
+			return getRuleContext(ExpressaoContext.class,0);
+		}
 		public Dec_nodoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -443,6 +468,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitDec_nodo(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitDec_nodo(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -462,7 +492,7 @@ public class gramCParser extends Parser {
 			case 2:
 				{
 				setState(109); match(ID);
-				setState(110); match(T__9);
+				setState(110); match(T__27);
 				setState(113);
 				switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 				case 1:
@@ -495,13 +525,13 @@ public class gramCParser extends Parser {
 
 	public static class FuncaoContext extends ParserRuleContext {
 		public Token ID;
-		public BlocoCodigoContext blocoCodigo() {
-			return getRuleContext(BlocoCodigoContext.class,0);
-		}
 		public IdTipoContext idTipo() {
 			return getRuleContext(IdTipoContext.class,0);
 		}
 		public TerminalNode ID() { return getToken(gramCParser.ID, 0); }
+		public BlocoCodigoContext blocoCodigo() {
+			return getRuleContext(BlocoCodigoContext.class,0);
+		}
 		public ArgumentosContext argumentos() {
 			return getRuleContext(ArgumentosContext.class,0);
 		}
@@ -517,6 +547,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitFuncao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitFuncao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final FuncaoContext funcao() throws RecognitionException {
@@ -529,16 +564,16 @@ public class gramCParser extends Parser {
 			setState(119); idTipo();
 			setState(120); ((FuncaoContext)_localctx).ID = match(ID);
 			func = (((FuncaoContext)_localctx).ID!=null?((FuncaoContext)_localctx).ID.getText():null); 	blocksFunc.put(func, 0);
-			setState(122); match(T__35);
+			setState(122); match(T__20);
 			setState(124);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__33) | (1L << T__26) | (1L << T__21) | (1L << T__20) | (1L << T__17))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__39) | (1L << T__35) | (1L << T__30) | (1L << T__22) | (1L << T__14))) != 0)) {
 				{
 				setState(123); argumentos();
 				}
 			}
 
-			setState(126); match(T__14);
+			setState(126); match(T__2);
 			setState(127); blocoCodigo();
 			 
 					linesFunc.put(func, linesAux-1); 
@@ -576,6 +611,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitArgumentos(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitArgumentos(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ArgumentosContext argumentos() throws RecognitionException {
@@ -589,10 +629,10 @@ public class gramCParser extends Parser {
 			setState(135);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__40) {
+			while (_la==T__17) {
 				{
 				{
-				setState(131); match(T__40);
+				setState(131); match(T__17);
 				setState(132); argumento();
 				}
 				}
@@ -630,6 +670,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitArgumento(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitArgumento(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ArgumentoContext argumento() throws RecognitionException {
@@ -654,23 +699,23 @@ public class gramCParser extends Parser {
 	}
 
 	public static class InstrucaoContext extends ParserRuleContext {
-		public Return_Context return_() {
-			return getRuleContext(Return_Context.class,0);
-		}
 		public Print_Context print_() {
 			return getRuleContext(Print_Context.class,0);
 		}
 		public For_Context for_() {
 			return getRuleContext(For_Context.class,0);
 		}
-		public If_Context if_() {
-			return getRuleContext(If_Context.class,0);
+		public While_Context while_() {
+			return getRuleContext(While_Context.class,0);
+		}
+		public Return_Context return_() {
+			return getRuleContext(Return_Context.class,0);
 		}
 		public CallContext call() {
 			return getRuleContext(CallContext.class,0);
 		}
-		public While_Context while_() {
-			return getRuleContext(While_Context.class,0);
+		public If_Context if_() {
+			return getRuleContext(If_Context.class,0);
 		}
 		public InstrucaoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -684,6 +729,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitInstrucao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitInstrucao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final InstrucaoContext instrucao() throws RecognitionException {
@@ -694,37 +744,37 @@ public class gramCParser extends Parser {
 			{
 			setState(153);
 			switch (_input.LA(1)) {
-			case T__34:
+			case T__25:
 				{
 				setState(141); if_();
 				}
 				break;
-			case T__11:
+			case T__26:
 				{
 				setState(142); for_();
 				}
 				break;
-			case T__39:
+			case T__32:
 				{
 				setState(143); while_();
 				}
 				break;
-			case T__10:
+			case T__37:
 				{
 				setState(144); return_();
-				setState(145); match(T__8);
+				setState(145); match(T__31);
 				}
 				break;
 			case ID:
 				{
 				setState(147); call();
-				setState(148); match(T__8);
+				setState(148); match(T__31);
 				}
 				break;
-			case T__12:
+			case T__21:
 				{
 				setState(150); print_();
-				setState(151); match(T__8);
+				setState(151); match(T__31);
 				}
 				break;
 			default:
@@ -765,6 +815,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitIf_(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitIf_(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final If_Context if_() throws RecognitionException {
@@ -774,16 +829,16 @@ public class gramCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(155); match(T__34);
-			setState(156); match(T__35);
+			setState(155); match(T__25);
+			setState(156); match(T__20);
 			setState(157); condicao();
-			setState(158); match(T__14);
+			setState(158); match(T__2);
 			blocksAux++;
 			setState(160); blocoCodigo();
 				if(blocksFunc.get(func) < blocksAux) blocksFunc.put(func, blocksAux); 		blocksAux--;
 			setState(163);
 			_la = _input.LA(1);
-			if (_la==T__23) {
+			if (_la==T__4) {
 				{
 				setState(162); else_();
 				}
@@ -821,6 +876,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitElse_(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitElse_(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Else_Context else_() throws RecognitionException {
@@ -829,17 +889,17 @@ public class gramCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(165); match(T__23);
+			setState(165); match(T__4);
 			setState(171);
 			switch (_input.LA(1)) {
-			case T__25:
+			case T__33:
 				{
 				blocksAux++;
 				setState(167); blocoCodigo();
 					if(blocksFunc.get(func) < blocksAux) blocksFunc.put(func, blocksAux); 		blocksAux--;
 				}
 				break;
-			case T__34:
+			case T__25:
 				{
 				setState(170); if_();
 				}
@@ -864,11 +924,11 @@ public class gramCParser extends Parser {
 		public BlocoCodigoContext blocoCodigo() {
 			return getRuleContext(BlocoCodigoContext.class,0);
 		}
-		public ExpressaoContext expressao() {
-			return getRuleContext(ExpressaoContext.class,0);
-		}
 		public CondicaoContext condicao() {
 			return getRuleContext(CondicaoContext.class,0);
+		}
+		public ExpressaoContext expressao() {
+			return getRuleContext(ExpressaoContext.class,0);
 		}
 		public For_declaracaoContext for_declaracao() {
 			return getRuleContext(For_declaracaoContext.class,0);
@@ -885,6 +945,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitFor_(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitFor_(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final For_Context for_() throws RecognitionException {
@@ -893,14 +958,14 @@ public class gramCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(173); match(T__11);
-			setState(174); match(T__35);
+			setState(173); match(T__26);
+			setState(174); match(T__20);
 			setState(175); for_declaracao();
-			setState(176); match(T__8);
+			setState(176); match(T__31);
 			setState(177); condicao();
-			setState(178); match(T__8);
+			setState(178); match(T__31);
 			setState(179); expressao();
-			setState(180); match(T__14);
+			setState(180); match(T__2);
 			blocksAux++;
 			setState(182); blocoCodigo();
 			  if(blocksFunc.get(func) < blocksAux) blocksFunc.put(func, blocksAux); 		blocksAux--;
@@ -936,6 +1001,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitFor_declaracao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitFor_declaracao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final For_declaracaoContext for_declaracao() throws RecognitionException {
@@ -946,11 +1016,11 @@ public class gramCParser extends Parser {
 			{
 			setState(187);
 			switch (_input.LA(1)) {
-			case T__33:
-			case T__26:
-			case T__21:
-			case T__20:
-			case T__17:
+			case T__39:
+			case T__35:
+			case T__30:
+			case T__22:
+			case T__14:
 				{
 				setState(185); declaracao();
 				}
@@ -995,6 +1065,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitWhile_(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitWhile_(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final While_Context while_() throws RecognitionException {
@@ -1003,10 +1078,10 @@ public class gramCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(189); match(T__39);
-			setState(190); match(T__35);
+			setState(189); match(T__32);
+			setState(190); match(T__20);
 			setState(191); condicao();
-			setState(192); match(T__14);
+			setState(192); match(T__2);
 			blocksAux++;
 			setState(194); blocoCodigo();
 			  if(blocksFunc.get(func) < blocksAux) blocksFunc.put(func, blocksAux); 		blocksAux--;
@@ -1039,6 +1114,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitReturn_(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitReturn_(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Return_Context return_() throws RecognitionException {
@@ -1047,7 +1127,7 @@ public class gramCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(197); match(T__10);
+			setState(197); match(T__37);
 			setState(198); expressao();
 			}
 		}
@@ -1063,10 +1143,10 @@ public class gramCParser extends Parser {
 	}
 
 	public static class CallContext extends ParserRuleContext {
+		public TerminalNode ID() { return getToken(gramCParser.ID, 0); }
 		public ParametrosContext parametros() {
 			return getRuleContext(ParametrosContext.class,0);
 		}
-		public TerminalNode ID() { return getToken(gramCParser.ID, 0); }
 		public CallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1079,6 +1159,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitCall(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitCall(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final CallContext call() throws RecognitionException {
@@ -1089,16 +1174,16 @@ public class gramCParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(200); match(ID);
-			setState(201); match(T__35);
+			setState(201); match(T__20);
 			setState(203);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__41) | (1L << T__38) | (1L << T__31) | (1L << T__30) | (1L << T__19) | (1L << T__18) | (1L << T__13) | (1L << T__0) | (1L << CHAR) | (1L << FLOAT) | (1L << INT) | (1L << ID))) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__38) | (1L << T__16) | (1L << T__11) | (1L << T__10) | (1L << T__6) | (1L << T__3) | (1L << T__1) | (1L << T__0) | (1L << CHAR) | (1L << FLOAT) | (1L << INT) | (1L << ID))) != 0)) {
 				{
 				setState(202); parametros();
 				}
 			}
 
-			setState(205); match(T__14);
+			setState(205); match(T__2);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1128,6 +1213,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitPrint_(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitPrint_(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Print_Context print_() throws RecognitionException {
@@ -1136,10 +1226,10 @@ public class gramCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(207); match(T__12);
-			setState(208); match(T__35);
+			setState(207); match(T__21);
+			setState(208); match(T__20);
 			setState(209); expressao();
-			setState(210); match(T__14);
+			setState(210); match(T__2);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1169,6 +1259,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitInput_(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitInput_(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Input_Context input_() throws RecognitionException {
@@ -1177,10 +1272,10 @@ public class gramCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(212); match(T__41);
-			setState(213); match(T__35);
+			setState(212); match(T__3);
+			setState(213); match(T__20);
 			setState(214); idTipo();
-			setState(215); match(T__14);
+			setState(215); match(T__2);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1213,6 +1308,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitParametros(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitParametros(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ParametrosContext parametros() throws RecognitionException {
@@ -1226,10 +1326,10 @@ public class gramCParser extends Parser {
 			setState(222);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__40) {
+			while (_la==T__17) {
 				{
 				{
-				setState(218); match(T__40);
+				setState(218); match(T__17);
 				setState(219); parametro();
 				}
 				}
@@ -1265,6 +1365,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitParametro(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitParametro(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1307,6 +1412,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitBlocoCodigo(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitBlocoCodigo(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final BlocoCodigoContext blocoCodigo() throws RecognitionException {
@@ -1316,11 +1426,11 @@ public class gramCParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(227); match(T__25);
+			setState(227); match(T__33);
 			setState(231);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__39) | (1L << T__34) | (1L << T__33) | (1L << T__26) | (1L << T__21) | (1L << T__20) | (1L << T__17) | (1L << T__12) | (1L << T__11) | (1L << T__10) | (1L << ID))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__39) | (1L << T__37) | (1L << T__35) | (1L << T__32) | (1L << T__30) | (1L << T__26) | (1L << T__25) | (1L << T__22) | (1L << T__21) | (1L << T__14) | (1L << ID))) != 0)) {
 				{
 				{
 				setState(228); codigo();
@@ -1331,7 +1441,7 @@ public class gramCParser extends Parser {
 				_la = _input.LA(1);
 			}
 			 linesAux++; 
-			setState(235); match(T__22);
+			setState(235); match(T__28);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1346,14 +1456,14 @@ public class gramCParser extends Parser {
 	}
 
 	public static class CodigoContext extends ParserRuleContext {
+		public InstrucaoContext instrucao() {
+			return getRuleContext(InstrucaoContext.class,0);
+		}
 		public AtribuicaoContext atribuicao() {
 			return getRuleContext(AtribuicaoContext.class,0);
 		}
 		public DeclaracaoContext declaracao() {
 			return getRuleContext(DeclaracaoContext.class,0);
-		}
-		public InstrucaoContext instrucao() {
-			return getRuleContext(InstrucaoContext.class,0);
 		}
 		public CodigoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1366,6 +1476,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitCodigo(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitCodigo(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1380,13 +1495,13 @@ public class gramCParser extends Parser {
 			case 1:
 				{
 				setState(237); atribuicao();
-				setState(238); match(T__8);
+				setState(238); match(T__31);
 				}
 				break;
 			case 2:
 				{
 				setState(240); declaracao();
-				setState(241); match(T__8);
+				setState(241); match(T__31);
 				}
 				break;
 			case 3:
@@ -1410,23 +1525,23 @@ public class gramCParser extends Parser {
 	}
 
 	public static class CondicaoContext extends ParserRuleContext {
-		public ExpressaoContext expressao(int i) {
-			return getRuleContext(ExpressaoContext.class,i);
+		public List<CondicaoContext> condicao() {
+			return getRuleContexts(CondicaoContext.class);
+		}
+		public Condicao_ouContext condicao_ou(int i) {
+			return getRuleContext(Condicao_ouContext.class,i);
 		}
 		public List<ExpressaoContext> expressao() {
 			return getRuleContexts(ExpressaoContext.class);
 		}
-		public CondicaoContext condicao(int i) {
-			return getRuleContext(CondicaoContext.class,i);
-		}
-		public List<CondicaoContext> condicao() {
-			return getRuleContexts(CondicaoContext.class);
-		}
 		public List<Condicao_ouContext> condicao_ou() {
 			return getRuleContexts(Condicao_ouContext.class);
 		}
-		public Condicao_ouContext condicao_ou(int i) {
-			return getRuleContext(Condicao_ouContext.class,i);
+		public ExpressaoContext expressao(int i) {
+			return getRuleContext(ExpressaoContext.class,i);
+		}
+		public CondicaoContext condicao(int i) {
+			return getRuleContext(CondicaoContext.class,i);
 		}
 		public CondicaoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1439,6 +1554,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitCondicao(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitCondicao(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1458,21 +1578,21 @@ public class gramCParser extends Parser {
 					{
 					setState(255);
 					switch (_input.LA(1)) {
-					case T__27:
+					case T__24:
 						{
-						setState(249); match(T__27);
+						setState(249); match(T__24);
 						setState(250); expressao();
-						setState(251); match(T__36);
+						setState(251); match(T__13);
 						setState(252); condicao();
 						}
 						break;
-					case T__41:
 					case T__38:
-					case T__31:
-					case T__30:
-					case T__19:
-					case T__18:
-					case T__13:
+					case T__16:
+					case T__11:
+					case T__10:
+					case T__6:
+					case T__3:
+					case T__1:
 					case T__0:
 					case CHAR:
 					case FLOAT:
@@ -1523,6 +1643,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitCondicao_ou(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitCondicao_ou(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Condicao_ouContext condicao_ou() throws RecognitionException {
@@ -1538,10 +1663,10 @@ public class gramCParser extends Parser {
 			setState(265);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__6) {
+			while (_la==T__34) {
 				{
 				{
-				setState(261); match(T__6);
+				setState(261); match(T__34);
 				setState(262); condicao_e();
 				}
 				}
@@ -1581,6 +1706,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitCondicao_e(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitCondicao_e(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Condicao_eContext condicao_e() throws RecognitionException {
@@ -1596,10 +1726,10 @@ public class gramCParser extends Parser {
 			setState(273);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__7) {
+			while (_la==T__29) {
 				{
 				{
-				setState(269); match(T__7);
+				setState(269); match(T__29);
 				setState(270); condicao_comparacao();
 				}
 				}
@@ -1639,6 +1769,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitCondicao_comparacao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitCondicao_comparacao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Condicao_comparacaoContext condicao_comparacao() throws RecognitionException {
@@ -1654,31 +1789,31 @@ public class gramCParser extends Parser {
 			setState(287);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__32) | (1L << T__28) | (1L << T__5) | (1L << T__1))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__23) | (1L << T__12) | (1L << T__8) | (1L << T__7))) != 0)) {
 				{
 				setState(285);
 				switch (_input.LA(1)) {
-				case T__5:
+				case T__7:
 					{
-					setState(277); match(T__5);
+					setState(277); match(T__7);
 					setState(278); condicao_igualdade();
 					}
 					break;
-				case T__32:
+				case T__8:
 					{
-					setState(279); match(T__32);
+					setState(279); match(T__8);
 					setState(280); condicao_igualdade();
 					}
 					break;
-				case T__1:
+				case T__12:
 					{
-					setState(281); match(T__1);
+					setState(281); match(T__12);
 					setState(282); condicao_igualdade();
 					}
 					break;
-				case T__28:
+				case T__23:
 					{
-					setState(283); match(T__28);
+					setState(283); match(T__23);
 					setState(284); condicao_igualdade();
 					}
 					break;
@@ -1704,11 +1839,11 @@ public class gramCParser extends Parser {
 	}
 
 	public static class Condicao_igualdadeContext extends ParserRuleContext {
-		public ExpressaoContext expressao(int i) {
-			return getRuleContext(ExpressaoContext.class,i);
-		}
 		public List<ExpressaoContext> expressao() {
 			return getRuleContexts(ExpressaoContext.class);
+		}
+		public ExpressaoContext expressao(int i) {
+			return getRuleContext(ExpressaoContext.class,i);
 		}
 		public Condicao_igualdadeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1721,6 +1856,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitCondicao_igualdade(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitCondicao_igualdade(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1737,20 +1877,20 @@ public class gramCParser extends Parser {
 			setState(299);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==T__29 || _la==T__3) {
+			while (_la==T__36 || _la==T__9) {
 				{
 				{
 				setState(295);
 				switch (_input.LA(1)) {
-				case T__29:
+				case T__36:
 					{
-					setState(291); match(T__29);
+					setState(291); match(T__36);
 					setState(292); expressao();
 					}
 					break;
-				case T__3:
+				case T__9:
 					{
-					setState(293); match(T__3);
+					setState(293); match(T__9);
 					setState(294); expressao();
 					}
 					break;
@@ -1777,16 +1917,16 @@ public class gramCParser extends Parser {
 	}
 
 	public static class AtribuicaoContext extends ParserRuleContext {
+		public TerminalNode ID() { return getToken(gramCParser.ID, 0); }
+		public CondicaoContext condicao() {
+			return getRuleContext(CondicaoContext.class,0);
+		}
 		public OpAtribuicaoContext opAtribuicao() {
 			return getRuleContext(OpAtribuicaoContext.class,0);
 		}
 		public ExpressaoContext expressao() {
 			return getRuleContext(ExpressaoContext.class,0);
 		}
-		public CondicaoContext condicao() {
-			return getRuleContext(CondicaoContext.class,0);
-		}
-		public TerminalNode ID() { return getToken(gramCParser.ID, 0); }
 		public AtribuicaoContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1798,6 +1938,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitAtribuicao(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitAtribuicao(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1848,6 +1993,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitOpAtribuicao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitOpAtribuicao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final OpAtribuicaoContext opAtribuicao() throws RecognitionException {
@@ -1859,7 +2009,7 @@ public class gramCParser extends Parser {
 			{
 			setState(308);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__42) | (1L << T__24) | (1L << T__15) | (1L << T__9) | (1L << T__4))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__41) | (1L << T__40) | (1L << T__27) | (1L << T__18) | (1L << T__15))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			consume();
@@ -1895,6 +2045,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitExpressao(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitExpressao(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ExpressaoContext expressao() throws RecognitionException {
@@ -1916,15 +2071,15 @@ public class gramCParser extends Parser {
 					{
 					setState(315);
 					switch (_input.LA(1)) {
-					case T__13:
+					case T__1:
 						{
-						setState(311); match(T__13);
+						setState(311); match(T__1);
 						setState(312); expressaoNum();
 						}
 						break;
-					case T__38:
+					case T__0:
 						{
-						setState(313); match(T__38);
+						setState(313); match(T__0);
 						setState(314); expressaoNum();
 						}
 						break;
@@ -1970,6 +2125,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitExpressaoNum(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitExpressaoNum(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ExpressaoNumContext expressaoNum() throws RecognitionException {
@@ -1985,26 +2145,26 @@ public class gramCParser extends Parser {
 			setState(333);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__37) | (1L << T__16) | (1L << T__2))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__42) | (1L << T__19) | (1L << T__5))) != 0)) {
 				{
 				{
 				setState(329);
 				switch (_input.LA(1)) {
-				case T__37:
+				case T__19:
 					{
-					setState(323); match(T__37);
+					setState(323); match(T__19);
 					setState(324); oper();
 					}
 					break;
-				case T__2:
+				case T__42:
 					{
-					setState(325); match(T__2);
+					setState(325); match(T__42);
 					setState(326); oper();
 					}
 					break;
-				case T__16:
+				case T__5:
 					{
-					setState(327); match(T__16);
+					setState(327); match(T__5);
 					setState(328); oper();
 					}
 					break;
@@ -2031,21 +2191,21 @@ public class gramCParser extends Parser {
 	}
 
 	public static class OperContext extends ParserRuleContext {
+		public Input_Context input_() {
+			return getRuleContext(Input_Context.class,0);
+		}
+		public TerminalNode ID() { return getToken(gramCParser.ID, 0); }
+		public TipoContext tipo() {
+			return getRuleContext(TipoContext.class,0);
+		}
 		public OpUnarioContext opUnario() {
 			return getRuleContext(OpUnarioContext.class,0);
 		}
 		public IncOpContext incOp() {
 			return getRuleContext(IncOpContext.class,0);
 		}
-		public TerminalNode ID() { return getToken(gramCParser.ID, 0); }
-		public TipoContext tipo() {
-			return getRuleContext(TipoContext.class,0);
-		}
 		public CallContext call() {
 			return getRuleContext(CallContext.class,0);
-		}
-		public Input_Context input_() {
-			return getRuleContext(Input_Context.class,0);
 		}
 		public OperContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -2058,6 +2218,11 @@ public class gramCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitOper(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitOper(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2147,6 +2312,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitIncOp(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitIncOp(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final IncOpContext incOp() throws RecognitionException {
@@ -2158,7 +2328,7 @@ public class gramCParser extends Parser {
 			{
 			setState(353);
 			_la = _input.LA(1);
-			if ( !(_la==T__31 || _la==T__18) ) {
+			if ( !(_la==T__11 || _la==T__10) ) {
 			_errHandler.recoverInline(this);
 			}
 			consume();
@@ -2188,6 +2358,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitOpUnario(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitOpUnario(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final OpUnarioContext opUnario() throws RecognitionException {
@@ -2199,7 +2374,7 @@ public class gramCParser extends Parser {
 			{
 			setState(355);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__38) | (1L << T__13) | (1L << T__0))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__1) | (1L << T__0))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			consume();
@@ -2229,6 +2404,11 @@ public class gramCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof gramCListener ) ((gramCListener)listener).exitBoolean_(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof gramCVisitor ) return ((gramCVisitor<? extends T>)visitor).visitBoolean_(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Boolean_Context boolean_() throws RecognitionException {
@@ -2240,7 +2420,7 @@ public class gramCParser extends Parser {
 			{
 			setState(357);
 			_la = _input.LA(1);
-			if ( !(_la==T__30 || _la==T__19) ) {
+			if ( !(_la==T__38 || _la==T__16) ) {
 			_errHandler.recoverInline(this);
 			}
 			consume();
@@ -2285,89 +2465,89 @@ public class gramCParser extends Parser {
 		" \7 \u0140\n \f \16 \u0143\13 \3!\3!\3!\3!\3!\3!\3!\5!\u014c\n!\7!\u014e"+
 		"\n!\f!\16!\u0151\13!\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3"+
 		"\"\3\"\3\"\5\"\u0162\n\"\3#\3#\3$\3$\3%\3%\3%\2\2&\2\4\6\b\n\f\16\20\22"+
-		"\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDFH\2\7\6\2\f\f\23\23\30"+
-		"\31\34\34\7\2\3\3\25\25\36\36$$))\4\2\16\16\33\33\5\2\7\7  --\4\2\17\17"+
-		"\32\32\u0174\2J\3\2\2\2\4P\3\2\2\2\6U\3\2\2\2\b_\3\2\2\2\na\3\2\2\2\f"+
-		"u\3\2\2\2\16y\3\2\2\2\20\u0084\3\2\2\2\22\u008c\3\2\2\2\24\u009b\3\2\2"+
-		"\2\26\u009d\3\2\2\2\30\u00a7\3\2\2\2\32\u00af\3\2\2\2\34\u00bd\3\2\2\2"+
-		"\36\u00bf\3\2\2\2 \u00c7\3\2\2\2\"\u00ca\3\2\2\2$\u00d1\3\2\2\2&\u00d6"+
-		"\3\2\2\2(\u00db\3\2\2\2*\u00e3\3\2\2\2,\u00e5\3\2\2\2.\u00f6\3\2\2\2\60"+
-		"\u00fa\3\2\2\2\62\u0106\3\2\2\2\64\u010e\3\2\2\2\66\u0116\3\2\2\28\u0124"+
-		"\3\2\2\2:\u0130\3\2\2\2<\u0136\3\2\2\2>\u0138\3\2\2\2@\u0144\3\2\2\2B"+
-		"\u0161\3\2\2\2D\u0163\3\2\2\2F\u0165\3\2\2\2H\u0167\3\2\2\2JK\t\2\2\2"+
-		"K\3\3\2\2\2LQ\7\61\2\2MQ\7/\2\2NQ\7.\2\2OQ\5H%\2PL\3\2\2\2PM\3\2\2\2P"+
-		"N\3\2\2\2PO\3\2\2\2Q\5\3\2\2\2RT\5\b\5\2SR\3\2\2\2TW\3\2\2\2US\3\2\2\2"+
-		"UV\3\2\2\2VX\3\2\2\2WU\3\2\2\2XY\7\2\2\3Y\7\3\2\2\2Z[\5\n\6\2[\\\7%\2"+
-		"\2\\]\b\5\1\2]`\3\2\2\2^`\5\16\b\2_Z\3\2\2\2_^\3\2\2\2`\t\3\2\2\2ab\5"+
-		"\2\2\2bk\5\f\7\2cd\7\5\2\2dj\5\f\7\2ef\7%\2\2fg\5\2\2\2gh\5\f\7\2hj\3"+
-		"\2\2\2ic\3\2\2\2ie\3\2\2\2jm\3\2\2\2ki\3\2\2\2kl\3\2\2\2l\13\3\2\2\2m"+
-		"k\3\2\2\2nv\7\62\2\2op\7\62\2\2ps\7$\2\2qt\5> \2rt\5\60\31\2sq\3\2\2\2"+
-		"sr\3\2\2\2tv\3\2\2\2un\3\2\2\2uo\3\2\2\2vw\3\2\2\2wx\b\7\1\2x\r\3\2\2"+
-		"\2yz\5\2\2\2z{\7\62\2\2{|\b\b\1\2|~\7\n\2\2}\177\5\20\t\2~}\3\2\2\2~\177"+
-		"\3\2\2\2\177\u0080\3\2\2\2\u0080\u0081\7\37\2\2\u0081\u0082\5,\27\2\u0082"+
-		"\u0083\b\b\1\2\u0083\17\3\2\2\2\u0084\u0089\5\22\n\2\u0085\u0086\7\5\2"+
-		"\2\u0086\u0088\5\22\n\2\u0087\u0085\3\2\2\2\u0088\u008b\3\2\2\2\u0089"+
-		"\u0087\3\2\2\2\u0089\u008a\3\2\2\2\u008a\21\3\2\2\2\u008b\u0089\3\2\2"+
-		"\2\u008c\u008d\5\2\2\2\u008d\u008e\7\62\2\2\u008e\23\3\2\2\2\u008f\u009c"+
-		"\5\26\f\2\u0090\u009c\5\32\16\2\u0091\u009c\5\36\20\2\u0092\u0093\5 \21"+
-		"\2\u0093\u0094\7%\2\2\u0094\u009c\3\2\2\2\u0095\u0096\5\"\22\2\u0096\u0097"+
-		"\7%\2\2\u0097\u009c\3\2\2\2\u0098\u0099\5$\23\2\u0099\u009a\7%\2\2\u009a"+
+		"\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDFH\2\7\7\2\6\6\n\n\17\17"+
+		"\27\27\37\37\6\2\4\5\22\22\33\33\36\36\3\2\"#\4\2\'\',-\4\2\7\7\35\35"+
+		"\u0174\2J\3\2\2\2\4P\3\2\2\2\6U\3\2\2\2\b_\3\2\2\2\na\3\2\2\2\fu\3\2\2"+
+		"\2\16y\3\2\2\2\20\u0084\3\2\2\2\22\u008c\3\2\2\2\24\u009b\3\2\2\2\26\u009d"+
+		"\3\2\2\2\30\u00a7\3\2\2\2\32\u00af\3\2\2\2\34\u00bd\3\2\2\2\36\u00bf\3"+
+		"\2\2\2 \u00c7\3\2\2\2\"\u00ca\3\2\2\2$\u00d1\3\2\2\2&\u00d6\3\2\2\2(\u00db"+
+		"\3\2\2\2*\u00e3\3\2\2\2,\u00e5\3\2\2\2.\u00f6\3\2\2\2\60\u00fa\3\2\2\2"+
+		"\62\u0106\3\2\2\2\64\u010e\3\2\2\2\66\u0116\3\2\2\28\u0124\3\2\2\2:\u0130"+
+		"\3\2\2\2<\u0136\3\2\2\2>\u0138\3\2\2\2@\u0144\3\2\2\2B\u0161\3\2\2\2D"+
+		"\u0163\3\2\2\2F\u0165\3\2\2\2H\u0167\3\2\2\2JK\t\2\2\2K\3\3\2\2\2LQ\7"+
+		"\61\2\2MQ\7/\2\2NQ\7.\2\2OQ\5H%\2PL\3\2\2\2PM\3\2\2\2PN\3\2\2\2PO\3\2"+
+		"\2\2Q\5\3\2\2\2RT\5\b\5\2SR\3\2\2\2TW\3\2\2\2US\3\2\2\2UV\3\2\2\2VX\3"+
+		"\2\2\2WU\3\2\2\2XY\7\2\2\3Y\7\3\2\2\2Z[\5\n\6\2[\\\7\16\2\2\\]\b\5\1\2"+
+		"]`\3\2\2\2^`\5\16\b\2_Z\3\2\2\2_^\3\2\2\2`\t\3\2\2\2ab\5\2\2\2bk\5\f\7"+
+		"\2cd\7\34\2\2dj\5\f\7\2ef\7\16\2\2fg\5\2\2\2gh\5\f\7\2hj\3\2\2\2ic\3\2"+
+		"\2\2ie\3\2\2\2jm\3\2\2\2ki\3\2\2\2kl\3\2\2\2l\13\3\2\2\2mk\3\2\2\2nv\7"+
+		"\62\2\2op\7\62\2\2ps\7\22\2\2qt\5> \2rt\5\60\31\2sq\3\2\2\2sr\3\2\2\2"+
+		"tv\3\2\2\2un\3\2\2\2uo\3\2\2\2vw\3\2\2\2wx\b\7\1\2x\r\3\2\2\2yz\5\2\2"+
+		"\2z{\7\62\2\2{|\b\b\1\2|~\7\31\2\2}\177\5\20\t\2~}\3\2\2\2~\177\3\2\2"+
+		"\2\177\u0080\3\2\2\2\u0080\u0081\7+\2\2\u0081\u0082\5,\27\2\u0082\u0083"+
+		"\b\b\1\2\u0083\17\3\2\2\2\u0084\u0089\5\22\n\2\u0085\u0086\7\34\2\2\u0086"+
+		"\u0088\5\22\n\2\u0087\u0085\3\2\2\2\u0088\u008b\3\2\2\2\u0089\u0087\3"+
+		"\2\2\2\u0089\u008a\3\2\2\2\u008a\21\3\2\2\2\u008b\u0089\3\2\2\2\u008c"+
+		"\u008d\5\2\2\2\u008d\u008e\7\62\2\2\u008e\23\3\2\2\2\u008f\u009c\5\26"+
+		"\f\2\u0090\u009c\5\32\16\2\u0091\u009c\5\36\20\2\u0092\u0093\5 \21\2\u0093"+
+		"\u0094\7\16\2\2\u0094\u009c\3\2\2\2\u0095\u0096\5\"\22\2\u0096\u0097\7"+
+		"\16\2\2\u0097\u009c\3\2\2\2\u0098\u0099\5$\23\2\u0099\u009a\7\16\2\2\u009a"+
 		"\u009c\3\2\2\2\u009b\u008f\3\2\2\2\u009b\u0090\3\2\2\2\u009b\u0091\3\2"+
 		"\2\2\u009b\u0092\3\2\2\2\u009b\u0095\3\2\2\2\u009b\u0098\3\2\2\2\u009c"+
-		"\25\3\2\2\2\u009d\u009e\7\13\2\2\u009e\u009f\7\n\2\2\u009f\u00a0\5\60"+
-		"\31\2\u00a0\u00a1\7\37\2\2\u00a1\u00a2\b\f\1\2\u00a2\u00a3\5,\27\2\u00a3"+
+		"\25\3\2\2\2\u009d\u009e\7\24\2\2\u009e\u009f\7\31\2\2\u009f\u00a0\5\60"+
+		"\31\2\u00a0\u00a1\7+\2\2\u00a1\u00a2\b\f\1\2\u00a2\u00a3\5,\27\2\u00a3"+
 		"\u00a5\b\f\1\2\u00a4\u00a6\5\30\r\2\u00a5\u00a4\3\2\2\2\u00a5\u00a6\3"+
-		"\2\2\2\u00a6\27\3\2\2\2\u00a7\u00ad\7\26\2\2\u00a8\u00a9\b\r\1\2\u00a9"+
-		"\u00aa\5,\27\2\u00aa\u00ab\b\r\1\2\u00ab\u00ae\3\2\2\2\u00ac\u00ae\5\26"+
-		"\f\2\u00ad\u00a8\3\2\2\2\u00ad\u00ac\3\2\2\2\u00ae\31\3\2\2\2\u00af\u00b0"+
-		"\7\"\2\2\u00b0\u00b1\7\n\2\2\u00b1\u00b2\5\34\17\2\u00b2\u00b3\7%\2\2"+
-		"\u00b3\u00b4\5\60\31\2\u00b4\u00b5\7%\2\2\u00b5\u00b6\5> \2\u00b6\u00b7"+
-		"\7\37\2\2\u00b7\u00b8\b\16\1\2\u00b8\u00b9\5,\27\2\u00b9\u00ba\b\16\1"+
-		"\2\u00ba\33\3\2\2\2\u00bb\u00be\5\n\6\2\u00bc\u00be\5:\36\2\u00bd\u00bb"+
-		"\3\2\2\2\u00bd\u00bc\3\2\2\2\u00be\35\3\2\2\2\u00bf\u00c0\7\6\2\2\u00c0"+
-		"\u00c1\7\n\2\2\u00c1\u00c2\5\60\31\2\u00c2\u00c3\7\37\2\2\u00c3\u00c4"+
-		"\b\20\1\2\u00c4\u00c5\5,\27\2\u00c5\u00c6\b\20\1\2\u00c6\37\3\2\2\2\u00c7"+
-		"\u00c8\7#\2\2\u00c8\u00c9\5> \2\u00c9!\3\2\2\2\u00ca\u00cb\7\62\2\2\u00cb"+
-		"\u00cd\7\n\2\2\u00cc\u00ce\5(\25\2\u00cd\u00cc\3\2\2\2\u00cd\u00ce\3\2"+
-		"\2\2\u00ce\u00cf\3\2\2\2\u00cf\u00d0\7\37\2\2\u00d0#\3\2\2\2\u00d1\u00d2"+
-		"\7!\2\2\u00d2\u00d3\7\n\2\2\u00d3\u00d4\5> \2\u00d4\u00d5\7\37\2\2\u00d5"+
-		"%\3\2\2\2\u00d6\u00d7\7\4\2\2\u00d7\u00d8\7\n\2\2\u00d8\u00d9\5\2\2\2"+
-		"\u00d9\u00da\7\37\2\2\u00da\'\3\2\2\2\u00db\u00e0\5*\26\2\u00dc\u00dd"+
-		"\7\5\2\2\u00dd\u00df\5*\26\2\u00de\u00dc\3\2\2\2\u00df\u00e2\3\2\2\2\u00e0"+
+		"\2\2\2\u00a6\27\3\2\2\2\u00a7\u00ad\7)\2\2\u00a8\u00a9\b\r\1\2\u00a9\u00aa"+
+		"\5,\27\2\u00aa\u00ab\b\r\1\2\u00ab\u00ae\3\2\2\2\u00ac\u00ae\5\26\f\2"+
+		"\u00ad\u00a8\3\2\2\2\u00ad\u00ac\3\2\2\2\u00ae\31\3\2\2\2\u00af\u00b0"+
+		"\7\23\2\2\u00b0\u00b1\7\31\2\2\u00b1\u00b2\5\34\17\2\u00b2\u00b3\7\16"+
+		"\2\2\u00b3\u00b4\5\60\31\2\u00b4\u00b5\7\16\2\2\u00b5\u00b6\5> \2\u00b6"+
+		"\u00b7\7+\2\2\u00b7\u00b8\b\16\1\2\u00b8\u00b9\5,\27\2\u00b9\u00ba\b\16"+
+		"\1\2\u00ba\33\3\2\2\2\u00bb\u00be\5\n\6\2\u00bc\u00be\5:\36\2\u00bd\u00bb"+
+		"\3\2\2\2\u00bd\u00bc\3\2\2\2\u00be\35\3\2\2\2\u00bf\u00c0\7\r\2\2\u00c0"+
+		"\u00c1\7\31\2\2\u00c1\u00c2\5\60\31\2\u00c2\u00c3\7+\2\2\u00c3\u00c4\b"+
+		"\20\1\2\u00c4\u00c5\5,\27\2\u00c5\u00c6\b\20\1\2\u00c6\37\3\2\2\2\u00c7"+
+		"\u00c8\7\b\2\2\u00c8\u00c9\5> \2\u00c9!\3\2\2\2\u00ca\u00cb\7\62\2\2\u00cb"+
+		"\u00cd\7\31\2\2\u00cc\u00ce\5(\25\2\u00cd\u00cc\3\2\2\2\u00cd\u00ce\3"+
+		"\2\2\2\u00ce\u00cf\3\2\2\2\u00cf\u00d0\7+\2\2\u00d0#\3\2\2\2\u00d1\u00d2"+
+		"\7\30\2\2\u00d2\u00d3\7\31\2\2\u00d3\u00d4\5> \2\u00d4\u00d5\7+\2\2\u00d5"+
+		"%\3\2\2\2\u00d6\u00d7\7*\2\2\u00d7\u00d8\7\31\2\2\u00d8\u00d9\5\2\2\2"+
+		"\u00d9\u00da\7+\2\2\u00da\'\3\2\2\2\u00db\u00e0\5*\26\2\u00dc\u00dd\7"+
+		"\34\2\2\u00dd\u00df\5*\26\2\u00de\u00dc\3\2\2\2\u00df\u00e2\3\2\2\2\u00e0"+
 		"\u00de\3\2\2\2\u00e0\u00e1\3\2\2\2\u00e1)\3\2\2\2\u00e2\u00e0\3\2\2\2"+
-		"\u00e3\u00e4\5> \2\u00e4+\3\2\2\2\u00e5\u00e9\7\24\2\2\u00e6\u00e8\5."+
-		"\30\2\u00e7\u00e6\3\2\2\2\u00e8\u00eb\3\2\2\2\u00e9\u00e7\3\2\2\2\u00e9"+
-		"\u00ea\3\2\2\2\u00ea\u00ec\3\2\2\2\u00eb\u00e9\3\2\2\2\u00ec\u00ed\b\27"+
-		"\1\2\u00ed\u00ee\7\27\2\2\u00ee-\3\2\2\2\u00ef\u00f0\5:\36\2\u00f0\u00f1"+
-		"\7%\2\2\u00f1\u00f7\3\2\2\2\u00f2\u00f3\5\n\6\2\u00f3\u00f4\7%\2\2\u00f4"+
+		"\u00e3\u00e4\5> \2\u00e4+\3\2\2\2\u00e5\u00e9\7\f\2\2\u00e6\u00e8\5.\30"+
+		"\2\u00e7\u00e6\3\2\2\2\u00e8\u00eb\3\2\2\2\u00e9\u00e7\3\2\2\2\u00e9\u00ea"+
+		"\3\2\2\2\u00ea\u00ec\3\2\2\2\u00eb\u00e9\3\2\2\2\u00ec\u00ed\b\27\1\2"+
+		"\u00ed\u00ee\7\21\2\2\u00ee-\3\2\2\2\u00ef\u00f0\5:\36\2\u00f0\u00f1\7"+
+		"\16\2\2\u00f1\u00f7\3\2\2\2\u00f2\u00f3\5\n\6\2\u00f3\u00f4\7\16\2\2\u00f4"+
 		"\u00f7\3\2\2\2\u00f5\u00f7\5\24\13\2\u00f6\u00ef\3\2\2\2\u00f6\u00f2\3"+
 		"\2\2\2\u00f6\u00f5\3\2\2\2\u00f7\u00f8\3\2\2\2\u00f8\u00f9\b\30\1\2\u00f9"+
-		"/\3\2\2\2\u00fa\u0103\5\62\32\2\u00fb\u00fc\7\22\2\2\u00fc\u00fd\5> \2"+
-		"\u00fd\u00fe\7\t\2\2\u00fe\u00ff\5\60\31\2\u00ff\u0102\3\2\2\2\u0100\u0102"+
+		"/\3\2\2\2\u00fa\u0103\5\62\32\2\u00fb\u00fc\7\25\2\2\u00fc\u00fd\5> \2"+
+		"\u00fd\u00fe\7 \2\2\u00fe\u00ff\5\60\31\2\u00ff\u0102\3\2\2\2\u0100\u0102"+
 		"\5\62\32\2\u0101\u00fb\3\2\2\2\u0101\u0100\3\2\2\2\u0102\u0105\3\2\2\2"+
 		"\u0103\u0101\3\2\2\2\u0103\u0104\3\2\2\2\u0104\61\3\2\2\2\u0105\u0103"+
-		"\3\2\2\2\u0106\u010b\5\64\33\2\u0107\u0108\7\'\2\2\u0108\u010a\5\64\33"+
+		"\3\2\2\2\u0106\u010b\5\64\33\2\u0107\u0108\7\13\2\2\u0108\u010a\5\64\33"+
 		"\2\u0109\u0107\3\2\2\2\u010a\u010d\3\2\2\2\u010b\u0109\3\2\2\2\u010b\u010c"+
 		"\3\2\2\2\u010c\63\3\2\2\2\u010d\u010b\3\2\2\2\u010e\u0113\5\66\34\2\u010f"+
-		"\u0110\7&\2\2\u0110\u0112\5\66\34\2\u0111\u010f\3\2\2\2\u0112\u0115\3"+
-		"\2\2\2\u0113\u0111\3\2\2\2\u0113\u0114\3\2\2\2\u0114\65\3\2\2\2\u0115"+
-		"\u0113\3\2\2\2\u0116\u0121\58\35\2\u0117\u0118\7(\2\2\u0118\u0120\58\35"+
-		"\2\u0119\u011a\7\r\2\2\u011a\u0120\58\35\2\u011b\u011c\7,\2\2\u011c\u0120"+
-		"\58\35\2\u011d\u011e\7\21\2\2\u011e\u0120\58\35\2\u011f\u0117\3\2\2\2"+
+		"\u0110\7\20\2\2\u0110\u0112\5\66\34\2\u0111\u010f\3\2\2\2\u0112\u0115"+
+		"\3\2\2\2\u0113\u0111\3\2\2\2\u0113\u0114\3\2\2\2\u0114\65\3\2\2\2\u0115"+
+		"\u0113\3\2\2\2\u0116\u0121\58\35\2\u0117\u0118\7&\2\2\u0118\u0120\58\35"+
+		"\2\u0119\u011a\7%\2\2\u011a\u0120\58\35\2\u011b\u011c\7!\2\2\u011c\u0120"+
+		"\58\35\2\u011d\u011e\7\26\2\2\u011e\u0120\58\35\2\u011f\u0117\3\2\2\2"+
 		"\u011f\u0119\3\2\2\2\u011f\u011b\3\2\2\2\u011f\u011d\3\2\2\2\u0120\u0123"+
 		"\3\2\2\2\u0121\u011f\3\2\2\2\u0121\u0122\3\2\2\2\u0122\67\3\2\2\2\u0123"+
-		"\u0121\3\2\2\2\u0124\u012d\5> \2\u0125\u0126\7\20\2\2\u0126\u012a\5> "+
-		"\2\u0127\u0128\7*\2\2\u0128\u012a\5> \2\u0129\u0125\3\2\2\2\u0129\u0127"+
+		"\u0121\3\2\2\2\u0124\u012d\5> \2\u0125\u0126\7\t\2\2\u0126\u012a\5> \2"+
+		"\u0127\u0128\7$\2\2\u0128\u012a\5> \2\u0129\u0125\3\2\2\2\u0129\u0127"+
 		"\3\2\2\2\u012a\u012c\3\2\2\2\u012b\u0129\3\2\2\2\u012c\u012f\3\2\2\2\u012d"+
 		"\u012b\3\2\2\2\u012d\u012e\3\2\2\2\u012e9\3\2\2\2\u012f\u012d\3\2\2\2"+
 		"\u0130\u0131\7\62\2\2\u0131\u0134\5<\37\2\u0132\u0135\5> \2\u0133\u0135"+
 		"\5\60\31\2\u0134\u0132\3\2\2\2\u0134\u0133\3\2\2\2\u0135;\3\2\2\2\u0136"+
-		"\u0137\t\3\2\2\u0137=\3\2\2\2\u0138\u0141\5@!\2\u0139\u013a\7 \2\2\u013a"+
-		"\u013e\5@!\2\u013b\u013c\7\7\2\2\u013c\u013e\5@!\2\u013d\u0139\3\2\2\2"+
+		"\u0137\t\3\2\2\u0137=\3\2\2\2\u0138\u0141\5@!\2\u0139\u013a\7,\2\2\u013a"+
+		"\u013e\5@!\2\u013b\u013c\7-\2\2\u013c\u013e\5@!\2\u013d\u0139\3\2\2\2"+
 		"\u013d\u013b\3\2\2\2\u013e\u0140\3\2\2\2\u013f\u013d\3\2\2\2\u0140\u0143"+
 		"\3\2\2\2\u0141\u013f\3\2\2\2\u0141\u0142\3\2\2\2\u0142?\3\2\2\2\u0143"+
-		"\u0141\3\2\2\2\u0144\u014f\5B\"\2\u0145\u0146\7\b\2\2\u0146\u014c\5B\""+
-		"\2\u0147\u0148\7+\2\2\u0148\u014c\5B\"\2\u0149\u014a\7\35\2\2\u014a\u014c"+
+		"\u0141\3\2\2\2\u0144\u014f\5B\"\2\u0145\u0146\7\32\2\2\u0146\u014c\5B"+
+		"\"\2\u0147\u0148\7\3\2\2\u0148\u014c\5B\"\2\u0149\u014a\7(\2\2\u014a\u014c"+
 		"\5B\"\2\u014b\u0145\3\2\2\2\u014b\u0147\3\2\2\2\u014b\u0149\3\2\2\2\u014c"+
 		"\u014e\3\2\2\2\u014d\u014b\3\2\2\2\u014e\u0151\3\2\2\2\u014f\u014d\3\2"+
 		"\2\2\u014f\u0150\3\2\2\2\u0150A\3\2\2\2\u0151\u014f\3\2\2\2\u0152\u0153"+

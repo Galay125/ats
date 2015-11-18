@@ -32,7 +32,7 @@ public class Main {
 	      metricas.maxFunc(parser.getFuncs());
 	      metricas.linesOfCode(parser.getLines());
 	      metricas.maxArgs(parser.getArgs());
-	      System.out.println("\n");
+	      System.out.println();
 	      metricas.linesOfCodeFunc(parser.getLinesFunc());
 	      metricas.maxArgsFunc(parser.getArgsFunc());
 	      metricas.maxNastedBlocks(parser.getNastedBlocks());
