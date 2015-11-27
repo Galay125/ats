@@ -29,6 +29,7 @@ public class Main {
 	private boolean callReturnNeeded;
 	private int memAdress;
 	StringBuilder functionsDeclarations;
+	static Metrica met = new Metrica();
 
 	public static void menu(String file){
 
@@ -105,7 +106,7 @@ public class Main {
 							String instrucoes = "";
 
 							System.out.println("\n1--- Injectar falhas");
-							System.out.println("2--- Tratar bad smalls");
+							System.out.println("2--- Tratar bad smells");
 							System.out.println("0--- Sair\n");
 							aux = readFile();
 							
@@ -150,7 +151,9 @@ public class Main {
 
 			 	case "t":
 						try{
-							`TopDown(printFixe()).visit(p);
+							met = new Metrica();
+							`TopDown(nastedBlocks()).visit(p);
+							System.out.println("Linhas de codigo: "+met.getLinhas());
 						}
 						catch(VisitFailure e) {
 								System.out.println("the strategy failed");
@@ -393,17 +396,35 @@ public class Main {
       }
     }
 
-    %strategy printFixe() extends Identity() {
+    %strategy linesOfCode() extends Identity() {
       visit Instrucao {
-		If(condicao,inst1,inst2) -> {
-			System.out.println("Passei num if, brutal mano !");
-		}
-		While(condicao,inst) -> {
-			System.out.println("Passei num while, brutal mano !");
-		}
-		For(decl,condicao,exp,inst) -> {
-			System.out.println("Passei num for, brutal mano !");
-		}
+      	  If(condicao,inst1,inst2) -> {
+			met.linhas++;
+		  }
+		  While(condicao,inst) -> {
+			met.linhas++;
+		  }
+		  For(decl,condicao,exp,inst) -> {
+			met.linhas++;
+		  }
+      }
+    }
+
+    %strategy nastedBlocks() extends Identity() {
+      visit Instrucao {
+      	  If(condicao,inst1,inst2) -> {
+			met.linhas++;
+			System.out.println(`inst1);
+			System.out.println(`inst2);
+		  }
+		  While(condicao,inst) -> {
+			met.linhas++;
+			System.out.println(`inst);
+		  }
+		  For(decl,condicao,exp,inst) -> {
+			met.linhas++;	
+			System.out.println(`inst);
+		  }
       }
     }
 
@@ -795,9 +816,13 @@ class NumToInt{
 }
 
 class Metrica{
-	public int funcoes;
+	public int linhas;
 
 	public Metrica() {
-		this.funcoes = 0;
+		this.linhas = 0;
+	}
+
+	public int getLinhas(){
+		return this.linhas;
 	}
 }
