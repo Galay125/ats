@@ -1,0 +1,1000 @@
+  344  export JAVA_HOME =/usr/lib/jvm/java-7-openjdk
+  345  export JAVA_HOME=/usr/lib/jvm/java-7-openjdk
+  346  export PATH=/usr/lib/jvm/java-7-openjdk
+  347  javac -version
+  348  export PATH=/usr/lib/jvm/java-7-openjdk/bin
+  349  javac -version
+  350  export PATH=$PATH:/usr/lib/jvm/java-7-openjdk/bin
+  351  javac -version
+  352  export PATH=$PATH:/usr/lib/jvm/java-7-openjdk/bin
+  353  javac -version
+  354  java -version
+  355  javac -version
+  356  export PATH=$PATH:/usr/lib/jvm/java-7-openjdk/bin
+  357  javac -version
+  358  export PATH=$PATH:$JAVA_HOME/bin
+  359  javac -version
+  360  export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+  361  export PATH=$PATH:$JAVA_HOME/bin
+  362  javac -version
+  363  sudo update-alternatives --config java
+  364  sudo update-alternatives config java
+  365  ls
+  366  cd Área\ de\ Trabalho/
+  367  ls
+  368  cd ATS/
+  369  ls
+  370  java -jar antlr-4.5.1-complete.jar
+  371  javac -jar antlr-4.5.1-complete.jar
+  372  java -jar antlr-4.5.1-complete.jar
+  373  quit
+  374  sudo cp antlr-4.5.1-complete.jar /usr/local/lib/
+  375  cd ..
+  376  java -jar antlr-4.5.1-complete.jar
+  377  ls
+  378  cd Área\ de\ Trabalho/
+  379  ls
+  380  cd A
+  381  cd ATS/
+  382  ls
+  383  cd RegExp-ANTLR-TOM/
+  384  ls
+  385  ./compile.sh < input
+  386  cd /usr/local/lib
+  387  export CLASSPATH=".:/usr/local/lib/antlr-4.5.1-complete:$CLASSPATH"
+  388  alias antlr4='java -jar /usr/local/lib/antlr-4.5.1-complete-jar'
+  389  alias grun='java org.antlr.v4.gui.TestRig'
+  390  antlr4
+  391  alias antlr4='java -jar /usr/local/lib/antlr-4.5.1-complete.jar'
+  392  alias grun='java org.antlr.v4.gui.TestRig'
+  393  antlr4
+  394  cd ..
+  395  ls
+  396  cd mario/
+  397  ls
+  398  cd Área\ de\ Trabalho/
+  399  ls
+  400  cd ATS/
+  401  LS
+  402  ls
+  403  ls -l
+  404  ./script
+  405  cd /usr/local/lib
+  406  antlr4
+  407  antlr3
+  408  javac- version
+  409  javac -version
+  410  export CLASSPATH=".:/usr/local/lib/antlr-4.5.1-complete.jar:$CLASSPATH"
+  411  alias antlr4='java -jar /usr/local/lib/antlr-4.5.1-complete.jar'
+  412  alias grun='java org.antlr.v4.gui.TestRig'
+  413  antlr4
+  414  ls
+  415  cd Área\ de\ Trabalho/
+  416  ls
+  417  cd ATS/
+  418  LS
+  419  ls
+  420  ./script
+  421  antlr4
+  422  ./script
+  423  antlr4
+  424  ./script.sh
+  425  antlr4
+  426  chmod +x script.sh
+  427  ./script.sh
+  428  antlr4
+  429  chmod +x script.sh
+  430  ./script.sh
+  431  chmod +x script.sh
+  432  ./script.sh
+  433  antlr4
+  434  script.sh
+  435  cd /usr/local/lib
+  436  export CLASSPATH=".:/usr/local/lib/antlr-4.5.1-complete.jar:$CLASSPATH"
+  437  alias antlr4='java -jar /usr/local/lib/antlr-4.5.1-complete.jar'
+  438  alias grun='java org.antlr.v4.gui.TestRig'
+  439  antlr4
+  440  apt-get install git
+  441  sudo apt-get install git
+  442  git clone https://MGalay@bitbucket.org/marco10/greenmsp.git
+  443  ls
+  444  cd ..
+  445  cd home
+  446  cd /home
+  447  ls
+  448  cd mario/
+  449  ls
+  450  cd Área\ de\ Trabalho/
+  451  ls
+  452  cd ATS/
+  453  ls
+  454  git clone https://MGalay@bitbucket.org/marco10/greenmsp.git
+  455  ls
+  456  cd greenmsp/
+  457  ls
+  458  cd examples_msp/
+  459  ls
+  460  cd ..
+  461  ls
+  462  cd Tools/
+  463  ls
+  464  cd i2msp/
+  465  ls
+  466  cd Aplicação\ de\ testes_v3.0/
+  467  ls
+  468  java -jar itextpdf-5.4.0.jar 
+  469  javac -jar itextpdf-5.4.0.jar 
+  470  java -jar itextpdf-5.4.0.jar 
+  471  export TOM_HOME="/home/mario/Modelos/TOM_HOME/"
+  472  export PATH=${PATH}:${TOM_HOME}/bin
+  473  export CLASSPATH=${TOM_HOME}/lib/tom-runtime-full.jar:${CLASSPATH}
+  474  tom
+  475  tom -version
+  476  git
+  477  clear
+  478  ls
+  479  cd ..
+  480  ls 
+  481  cd i2msp/
+  482  ls
+  483  cd Tom/
+  484  ls
+  485  make
+  486  make clean
+  487  ls
+  488  make
+  489  ls
+  490  clear
+  491  ls
+  492  make clean
+  493  make all
+  494  ls
+  495  cp maiorDeDoisNumeros.i genI
+  496  ls
+  497  cd g
+  498  cd geni
+  499  cd genI
+  500  ls
+  501  java gram/Main < maiorDeDoisNumeros.i
+  502  javac gram/Main.java
+  503  java gram/Main < maiorDeDoisNumeros.i
+  504  cd ..
+  505  ls 
+  506  cd genI
+  507  java gram/Main < maiorDeDoisNumeros.i > maior.msp
+  508  cd ..
+  509  ls
+  510  cd genMaqV/
+  511  ls
+  512  javac maqv/Main.java
+  513  cp ../genI/
+  514  java maqv/Main maior.msp
+  515  ls
+  516  cd ..
+  517  java maqv/Main maior.msp
+  518  cd genMaqV/
+  519  java maqv/Main maior.msp
+  520  ls
+  521  cd á
+  522  cd Área\ de\ Trabalho/
+  523  LS
+  524  ls
+  525  cd PCP/
+  526  ls
+  527  cd Trabalho/
+  528  ls
+  529  gcc exe.c -o ex1
+  530  ./ex1
+  531  gcc hist.c -o hist
+  532  ./hist
+  533  gcc h.c -o h
+  534  gcc hist.c -o hist
+  535  gcc hist.c -std=c99 -o hist
+  536  gcc -std=gnu99 hist.c -o hist
+  537  gcc hist.c -o hist
+  538  gcc hist.c -std=c99 -o hist
+  539  ./hist
+  540  gcc hist.c -std=c99 -o hist
+  541  ./hist ex.jpg
+  542  gcc hist.c -std=c99 -o hist
+  543  ./hist ex.jpg
+  544  gcc hist.c -std=c99 -o hist
+  545  ./hist
+  546  gcc hist.c -std=c99 -o hist
+  547  ./hist
+  548  gcc hist.c -std=c99 -o hist
+  549  ./hist
+  550  gcc hist.c -std=c99 -o hist
+  551  ls
+  552  gcc hist.c -std=c99 -o hist
+  553  ./hist
+  554  ls
+  555  cd Área\ de\ Trabalho/
+  556  ls
+  557  cd PCP/
+  558  ls
+  559  cd Trabalho/
+  560  ls
+  561  gcc hist.c -c hist
+  562  gcc hist.c -std=gnu99 -c hist
+  563  gcc -std=gnu99 hist.c -c hist
+  564  gcc hist.c -std=gnu99 -o hist
+  565  ./hist
+  566  gcc hist.c -std=gnu99 -o hist
+  567  ./hist
+  568  gcc hist.c -std=gnu99 -o hist
+  569  ./hist
+  570  gcc hist.c -std=gnu99 -o hist
+  571  ./hist
+  572  gcc hist.c -std=gnu99 -o hist
+  573  ./hist
+  574  gcc hist.c -std=gnu99 -o hist
+  575  ./hist
+  576  gcc hist.c -std=gnu99 -o hist
+  577  ./hist
+  578  gcc cenas.c -std=gnu99 -o c
+  579  gcc cenas.c -o c
+  580  gcc cenas.c -std=gnu99 -o c
+  581  gcc cenas.c -std=gnu99 -Wdeprecated-declarations -o c
+  582  gcc cenas.c -std=gnu99 -o c
+  583  ls
+  584  gcc cenas.c -std=gnu99 -o c
+  585  gcc cenas.c -std=gnu99 -o c -lm
+  586  ./c ex.jpg res.jpg
+  587  gcc cenas.c -std=gnu99 -o c -lm
+  588  ./c ex.jpg res.jpg
+  589  cc -g cenas.c
+  590  cc -g -std=gnu99 cenas.c
+  591  cc -g -std=gnu99 cenas.c -lm
+  592  gdb a.out
+  593  cc -g -std=gnu99 cenas.c -lm
+  594  gdb a.out
+  595  cc -g -std=gnu99 cenas.c -lm
+  596  gdb a.out
+  597  cc -g -std=gnu99 cenas.c -lm
+  598  gdb a.out
+  599  cc -g -std=gnu99 cenas.c -lm
+  600  gdb a.out
+  601  cc -g -std=gnu99 cenas.c -lm
+  602  gdb a.out
+  603  cc -g -std=gnu99 cenas.c -lm
+  604  gdb a.out
+  605  cc -g -std=gnu99 cenas.c -lm
+  606  gdb a.out
+  607  cc -g -std=gnu99 cenas.c -lm
+  608  gdb a.out
+  609  cc -g -std=gnu99 cenas.c -lm
+  610  gdb a.out
+  611  cc -g -std=gnu99 cenas.c -lm
+  612  gdb a.out
+  613  cc -g -std=gnu99 cenas.c -lm
+  614  gdb a.out
+  615  ./a.out ex.jpg res.jpg
+  616  cc -g -std=gnu99 cenas.c -lm
+  617  ./a.out ex.jpg res.jpg
+  618  ./a.out ex.jpg res.jpeg
+  619  ./a.out ex.jpg res
+  620  cc -g -std=gnu99 cenas.c -lm
+  621  ./a.out ex.jpg res.jpeg
+  622  ls
+  623  cd Área\ de\ Trabalho/
+  624  LS
+  625  ls
+  626  cd PCP/
+  627  ls
+  628  cd Trabalho/
+  629  ls
+  630  cd Colanço/
+  631  cc -g -std=gnu99 cenas.c -lm
+  632  ./a.out ex.jpg res.jpg
+  633  cc -g -std=gnu99 cenas.c -lm
+  634  ./a.out ex.jpg res.jpg
+  635  gdb 
+  636  gdb ./a.out
+  637  cc -g -std=gnu99 cenas.c -lm
+  638  ./a.out ex.jpg res.jpg
+  639  cc -g -std=gnu99 cenas.c -lm
+  640  ./a.out ex.jpg res.jpg
+  641  gdb ./a.out
+  642  ls
+  643  cd ..
+  644  cc -g -std=gnu99 hist.c -lm
+  645  ./a.out
+  646  cc -g -std=gnu99 hist.c -lm
+  647  ./a.out
+  648  cc -g -std=gnu99 hist.c -lm
+  649  ./a.out
+  650  sudo apt-get install dropbox
+  651  ls
+  652  cd Área\ de\ Trabalho/
+  653  LS
+  654  ls
+  655  cd PCP/
+  656  ls
+  657  cd Trabalho/
+  658  ls
+  659  sudo apt-get install libopencv-dev
+  660  ls
+  661  cd Área\ de\ Trabalho/
+  662  ls
+  663  cd PCP/
+  664  ls
+  665  cd Tra
+  666  cd Trabalho/
+  667  ls
+  668  sudo apt-get install cmake
+  669  cmake .
+  670  make
+  671  make clena
+  672  make clean
+  673  make
+  674  sudo apt-get install libopencv-dev
+  675  make
+  676  make clean
+  677  make
+  678  make clean
+  679  make
+  680  ./DisplayImage
+  681  ./DisplayImage moon.bmp
+  682  make clean
+  683  cmake .
+  684  make
+  685  ./DisplayImage moon.bmp
+  686  make
+  687  ./DisplayImage moon.bmp
+  688  ls
+  689  cd Área\ de\ Trabalho/
+  690  ls
+  691  cd PCP
+  692  ls
+  693  cd Trabalho/
+  694  ls
+  695  make clean
+  696  make
+  697  ./DisplayImage moon.bmp
+  698  ./DisplayImage ex.jpg
+  699  make clean
+  700  make
+  701  ./DisplayImage ex.jpg
+  702  make clean
+  703  make
+  704  ./DisplayImage ex.jpg
+  705  make clean
+  706  make
+  707  ./DisplayImage ex.jpg
+  708  gdb ./DisplayImage ex.jpg
+  709  gdb ./DisplayImage
+  710  ./DisplayImage ex.jpg
+  711  make
+  712  ./DisplayImage ex.jpg
+  713  make
+  714  ./DisplayImage ex.jpg
+  715  make
+  716  ./DisplayImage ex.jpg
+  717  make
+  718  ./DisplayImage ex.jpg
+  719  make
+  720  ./DisplayImage ex.jpg
+  721  make
+  722  ./DisplayImage ex.jpg
+  723  make
+  724  ./DisplayImage ex.jpg
+  725  make
+  726  ./DisplayImage ex.jpg
+  727  make
+  728  ./DisplayImage ex.jpg
+  729  make
+  730  ./DisplayImage ex.jpg
+  731  make
+  732  ./DisplayImage ex.jpg
+  733  make
+  734  ./DisplayImage ex.jpg
+  735  make
+  736  make clean
+  737  make
+  738  ./DisplayImage ex.jpg
+  739  ./DisplayImage moon.bmp
+  740  make
+  741  ./DisplayImage ex.jpg
+  742  make
+  743  ./DisplayImage ex.jpg
+  744  make
+  745  ./DisplayImage ex.jpg
+  746  make
+  747  ./DisplayImage ex.jpg
+  748  ./DisplayImage ex.jpg res.jpg
+  749  make
+  750  ./DisplayImage ex.jpg res.jpg
+  751  make
+  752  ./DisplayImage ex.jpg res.jpg
+  753  ./DisplayImage ex.jpg res.png
+  754  make
+  755  ./DisplayImage ex.jpg res.png
+  756  ./DisplayImage ex1.jpg res.png
+  757  make
+  758  ./DisplayImage ex1.jpg res.png
+  759  ./DisplayImage ex1.png res.png
+  760  make
+  761  ./DisplayImage ex1.png res.png
+  762  make
+  763  ./DisplayImage ex1.png res.png
+  764  ./DisplayImage ex.png res.png
+  765  ./DisplayImage res.png res.png
+  766  ./DisplayImage ex.jpg res.png
+  767  ls
+  768  cd Área\ de\ Trabalho/
+  769  ls
+  770  cd PCP/
+  771  ls
+  772  cd Trabalho/
+  773  ls
+  774  ./DisplayImage ex.jpg
+  775  ./DisplayImage ex.jpg res.jpg
+  776  ./DisplayImage moon.bmp res.jpg
+  777  ./DisplayImage ex2.jpg res.jpg
+  778  ./DisplayImage je.jpg res.jpg
+  779  ./DisplayImage an.jpg res.jpg
+  780  make
+  781  ./DisplayImage ex.jpg res.jpg
+  782  make
+  783  ./DisplayImage ex.jpg res.jpg
+  784  make
+  785  ./DisplayImage ex.jpg res.jpg
+  786  make
+  787  ./DisplayImage ex.jpg res.jpg
+  788  sudo apt-get install libcr-dev mpich2 mpich2-doc
+  789  ls
+  790  cd ..
+  791  ls
+  792  cd Exercicios/
+  793  ls
+  794  cd Ficha 5/
+  795  cd Ficha 5
+  796  cd Ficha5
+  797  ls
+  798  mpicc mp1.c -o ex1
+  799  sudo apt-get install libcr-dev mpich2 mpich2-doc
+  800  mpicc mp1.c -o ex1
+  801  sudo apt-get install libmpich-dev
+  802  mpicc mp1.c -o ex1
+  803  mpicc ex1.c -o ex1
+  804  mpirun -np 2 ex1
+  805  mpirun -np 2 ./ex1
+  806  255
+  807  ls
+  808  cd ..
+  809  ls
+  810  cd ..
+  811  ls
+  812  cd Trabalho
+  813  ls
+  814  ./DisplayImage ex1.png res1.png
+  815  make
+  816  ./DisplayImage ex.jpg res.png
+  817  make
+  818  ./DisplayImage ex.jpg res.png
+  819  make
+  820  ./DisplayImage ex.jpg res.png
+  821  make
+  822  ./DisplayImage ex.jpg res.png
+  823  ls
+  824  cd Área\ de\ Trabalho/
+  825  LS
+  826  ls
+  827  cd PCP
+  828  ls
+  829  cd Trabalho/
+  830  ls
+  831  ./DisplayImage img.jpg res.jpg
+  832  ls
+  833  cd Área\ de\ Trabalho/
+  834  ls
+  835  cd PCP/
+  836  ls
+  837  cd Trabalho/
+  838  ls
+  839  ./Dis
+  840  ./DisplayImage m.jpg res.jpg
+  841  ls
+  842  cd Área\ de\ Trabalho/
+  843  ls
+  844  cd PCP/
+  845  ls
+  846  cd Trabalho/
+  847  ls
+  848  ./DisplayImage ex.jpg
+  849  ./DisplayImage ex.jpg res.jpg
+  850  ./DisplayImage n.jpg res.jpg
+  851  ls
+  852  cd Área\ de\ Trabalho/
+  853  ls
+  854  cd ATS/
+  855  ls
+  856  cd greenmsp/
+  857  ls
+  858  cd Tools/
+  859  ls
+  860  cd i2msp
+  861  ls
+  862  cd Tom/
+  863  ls
+  864  cd genMaqV
+  865  ls
+  866  lsc
+  867  ls
+  868  cd Área\ de\ Trabalho/
+  869  ls
+  870  cd ATS/
+  871  ls
+  872  cd ..
+  873  cd PCP/
+  874  ls
+  875  cd Trabalho/
+  876  ls
+  877  ./DisplayImage n.jpg res.jpg
+  878  ls
+  879  tar -zxvf eclipse-inst-linux64.tar.gz
+  880  ./configure
+  881  make
+  882  sudo make install
+  883  ls
+  884  cd eclipse-installer/
+  885  ls
+  886  ./configure
+  887  make
+  888  sudo make install
+  889  ls
+  890  cd Área\ de\ Trabalho/
+  891  ls
+  892  cd PC
+  893  cd PCP/
+  894  ls
+  895  cd Trabalho/
+  896  ls
+  897  make
+  898  ./DisplayImage ex.jpg res.jpg
+  899  make
+  900  ./DisplayImage ex.jpg res.jpg
+  901  make
+  902  ./DisplayImage ex.jpg res.jpg
+  903  make
+  904  ./DisplayImage ex.jpg res.jpg
+  905  make
+  906  ./DisplayImage ex.jpg res.jpg
+  907  make
+  908  ./DisplayImage ex.jpg res.jpg
+  909  make
+  910  ./DisplayImage ex.jpg res.jpg
+  911  ls
+  912  cd Área\ de\ Trabalho/
+  913  ls
+  914  cd PCP/
+  915  ls
+  916  cd Trabalho/
+  917  ls
+  918  make
+  919  ./DisplayImage ex.jpg res.jpg
+  920  make
+  921  ./DisplayImage ex.jpg res.jpg
+  922  make
+  923  ./DisplayImage ex.jpg res.jpg
+  924  make
+  925  ./DisplayImage ex.jpg res.jpg
+  926  make
+  927  ./DisplayImage ex.jpg res.jpg
+  928  make
+  929  ./DisplayImage ex.jpg res.jpg
+  930  make
+  931  ./DisplayImage ex.jpg res.jpg
+  932  make
+  933  ./DisplayImage ex.jpg res.jpg
+  934  make
+  935  ./DisplayImage ex.jpg res.jpg
+  936  ./DisplayImage n.jpg g.jpg
+  937  make
+  938  ./DisplayImage n.jpg g.jpg
+  939  ./DisplayImage ex.jpg res.jpg
+  940  make
+  941  ./DisplayImage ex.jpg res.jpg
+  942  ./DisplayImage 4.jpg res.jpg
+  943  ./DisplayImage 4k.jpg res.jpg
+  944  ls
+  945  cd Área\ de\ Trabalho/
+  946  ls
+  947  cd PCP/
+  948  ls
+  949  cd Trabalho/
+  950  ls
+  951  ./DisplayImage 
+  952  ./DisplayImage ex.jpg res.jpg
+  953  ls
+  954  cd Área\ de\ Trabalho/
+  955  ls
+  956  cd PCP/
+  957  ls
+  958  cd Trabalho/
+  959  ls
+  960  ./DisplayImage x.png res.png
+  961  version
+  962  -vrs
+  963  uname
+  964  uname -r
+  965  lsb_release a
+  966  lsb_release
+  967  lsb_release -a
+  968  ls
+  969  cd Área\ de\ Trabalho/
+  970  ls
+  971  cd PCP/
+  972  Ls
+  973  ls
+  974  cd Trabalho/
+  975  ls
+  976  ./exe ex.jpg res.jpg
+  977  ls
+  978  cd Paralelizado/
+  979  LS
+  980  ls
+  981  ./exe r.jpg res.jpg
+  982  ./exe 4k.jpg res.jpg
+  983  $ less /proc/cpuinfo
+  984  less /proc/cpuinfo
+  985  lscpu
+  986  less /proc/cpuinfo
+  987  ls 
+  988  cd Área\ de\ Trabalho/
+  989  ls
+  990  cd PCP/
+  991  ls
+  992  cd Trabalho/
+  993  ./eq rose.jpg res.jpg
+  994  ls
+  995  cd Área\ de\ Trabalho/PCP
+  996  ls
+  997  cd TR
+  998  cd Trabalho/
+  999  ls
+ 1000  cd Paralelizado/
+ 1001  ls
+ 1002  ./eq ../rose.jpg res.jpg
+ 1003  ssh a64299@search6.di.uminho.pt
+ 1004  ls
+ 1005  cd Área\ de\ Trabalho/
+ 1006  ls
+ 1007  cd PCP/
+ 1008  ls
+ 1009  cd Trabalho/
+ 1010  scp a64299@search6.di.uminho.pt:cluster cluster
+ 1011  scp a64299@search6.di.uminho.pt:cluster/par cluster/para*/*
+ 1012  scp a64299@search6.di.uminho.pt:cluster/par cluster/para*/*rose*
+ 1013  scp a64299@search6.di.uminho.pt:cluster/par/ cluster/para*/*rose*
+ 1014  scp a64299@search6.di.uminho.pt cluster
+ 1015  scp a64299@search6.di.uminho.pt:~/cluster cluster
+ 1016  scp a64299@search6.di.uminho.pt:~cluster/par cluster/para*/*rose*
+ 1017  scp a64299@search6.di.uminho.pt:~/cluster/
+ 1018  scp cluster a64299@search6.di.uminho.pt:~/
+ 1019  scp cluster/ a64299@search6.di.uminho.pt:~/
+ 1020  scp cluster a64299@search6.di.uminho.pt:~/
+ 1021  scp cluster/para*/*rose* a64299@search6.di.uminho.pt:~/cluster/par
+ 1022  scp cluster/para*/*leaf* a64299@search6.di.uminho.pt:~/cluster/par
+ 1023  scp cluster/seq*/*leaf* a64299@search6.di.uminho.pt:~/cluster/seq
+ 1024  scp cluster/seq*/*rose* a64299@search6.di.uminho.pt:~/cluster/seq
+ 1025  lpsinfo
+ 1026  cpuz
+ 1027  less /proc/cpuinfo
+ 1028  ls
+ 1029  cd Área\ de\ Trabalho/PCP/Trabalho/
+ 1030  ls
+ 1031  cd Paralelizado/
+ 1032  ls
+ 1033  g++  equalization.cpp -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3
+ 1034  ./eq ../rose.jpg res.jpg
+ 1035  ./eq ../leaf.jpg res.jpg
+ 1036  ./eq ../moon.jpg res.jpg
+ 1037  g++  equalization.cpp -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3
+ 1038  ./eq ../rose.jpg res.jpg
+ 1039  ./eq ../leaf.jpg res.jpg
+ 1040  ./eq ../moon.jpg res.jpg
+ 1041  g++  equalization.cpp -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3
+ 1042  ./eq ../rose.jpg res.jpg
+ 1043  ./eq ../leaf.jpg res.jpg
+ 1044  g++  equalization.cpp -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3
+ 1045  ./eq ../rose.jpg res.jpg
+ 1046  Duração do algoritmo total: 0.7395
+ 1047  Duração do algoritmo paralelizado: 0.360061
+ 1048  ./eq ../leaf.jpg res.jpg
+ 1049  ./eq ../moon.jpg res.jpg
+ 1050  /proc/cpuinfo
+ 1051  cat /proc/cpuinfo
+ 1052  less /proc/cpuinfo
+ 1053  CPU-Z
+ 1054  ls
+ 1055  cd Área\ de\ Trabalho/
+ 1056  ls
+ 1057  cd AT
+ 1058  cd ATS
+ 1059  ls
+ 1060  cd Green/
+ 1061  ls
+ 1062  make
+ 1063  ls
+ 1064  ./green
+ 1065  sudo ./green
+ 1066  more makefile
+ 1067  more REAME.txt 
+ 1068  sudo modprobe msr
+ 1069  sudo ./green
+ 1070  sudo modprobe msr
+ 1071  sudo ./green
+ 1072  lscpu
+ 1073  cpuinfo
+ 1074  /proc/cpuinfo
+ 1075  cat /proc/cpuinfo
+ 1076  ./green
+ 1077  sudo ./gree
+ 1078  sudo ./green
+ 1079  ls
+ 1080  more REAME.txt 
+ 1081  ls
+ 1082  cd ..
+ 1083  ls
+ 1084  cd ..
+ 1085  ls
+ 1086  cd jRaplAts/
+ 1087  ls
+ 1088  sudo java EnergyExample 
+ 1089  perf list
+ 1090  sudo perf list
+ 1091  ls -1 /sys/devices/power/events/energy-*
+ 1092  sudo ls -1 /sys/devices/power/events/energy-*
+ 1093  cd linux_root/drivers/powercap/
+ 1094  cd //linux_root/drivers/powercap/
+ 1095  make
+ 1096  sudo modeprobe msr
+ 1097  sudo modprobe msr
+ 1098  sudo java EnergyExample 
+ 1099  ls
+ 1100  cd Área\ de\ Trabalho/
+ 1101  ls
+ 1102  cd jRaplAts/
+ 1103  javac *.java
+ 1104  ls
+ 1105  make
+ 1106  sudo modprobe msr
+ 1107  sudo java EnergyExample
+ 1108  ls
+ 1109  cd ..
+ 1110  ls
+ 1111  cd ATS/
+ 1112  ls
+ 1113  cd Green/
+ 1114  LS
+ 1115  ls
+ 1116  sudo ./green
+ 1117  modprobe msr
+ 1118  sudo ./green
+ 1119  more /proc/cpuinfo 
+ 1120  sudo ./green
+ 1121  ls
+ 1122  make
+ 1123  ./green
+ 1124  sudo ./green
+ 1125  make
+ 1126  sudo ./green
+ 1127  make
+ 1128  sudo ./green
+ 1129  ls
+ 1130  cd ..
+ 1131  ls
+ 1132  cd Trabalhos
+ 1133  ls
+ 1134  cd Trabalhos
+ 1135  ls
+ 1136  cd Green/
+ 1137  ls
+ 1138  cd Trabalho/
+ 1139  ls
+ 1140  g++  equalization.cpp -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3
+ 1141  ls
+ 1142  g++  equalization.cpp -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3
+ 1143  ls
+ 1144  cd ..
+ 1145  ls
+ 1146  g++  equalization.cpp -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3
+ 1147  g++  equalization.cpp -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3 | make
+ 1148  ls
+ 1149  cd Área\ de\ Trabalho/
+ 1150  ls
+ 1151  cd ATS/
+ 1152  LS
+ 1153  ls
+ 1154  cd Green/
+ 1155  ls
+ 1156  make
+ 1157  ./green
+ 1158  sudo ./green
+ 1159  make
+ 1160  sudo ./green
+ 1161  make clean
+ 1162  make
+ 1163  sudo ./green
+ 1164  ./green
+ 1165  sudo modprobe msr
+ 1166  sudo ./green
+ 1167  make
+ 1168  sudo ./green
+ 1169  make
+ 1170  sudo ./green
+ 1171  ls
+ 1172  make
+ 1173  sudo ./green
+ 1174  ls
+ 1175  cd Área\ de\ Trabalho/
+ 1176  LS
+ 1177  ls
+ 1178  cd ATS/
+ 1179  Ls
+ 1180  ls
+ 1181  cd Green/
+ 1182  ls
+ 1183  make
+ 1184  sudo ./green
+ 1185  sudo modprobe msr
+ 1186  sudo ./green
+ 1187  make
+ 1188  sudo ./green
+ 1189  make makecenas
+ 1190  ls
+ 1191  make makecenas
+ 1192  MAKE makecenas
+ 1193  MAKEFILE makecenas
+ 1194  makefile makecenas
+ 1195  makecenas
+ 1196  ./makecenas
+ 1197  make clean
+ 1198  make
+ 1199  make clean
+ 1200  make
+ 1201  make clean
+ 1202  make
+ 1203  g++  equalization.cpp rapl.c -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3
+ 1204  ls
+ 1205  cd ..
+ 1206  ls
+ 1207  cd Green/
+ 1208  ls
+ 1209  cd Trabalho/
+ 1210  ls
+ 1211  g++  equalization.cpp ../rapl.c -o eq `pkg-config opencv --cflags --libs` -fopenmp -O3
+ 1212  ls
+ 1213  ./eq ex1.jpg res.jpg
+ 1214  sudo ./eq ex1.jpg res.jpg
+ 1215  sudo ./eq neb.jpg res.jpg
+ 1216  ls
+ 1217  cd Área\ de\ Trabalho/
+ 1218  ls
+ 1219  cd ATS
+ 1220  ls
+ 1221  cd jRaplAts/
+ 1222  ls
+ 1223  sudo java EnergyExample 
+ 1224  make
+ 1225  sudo java EnergyExample 
+ 1226  make
+ 1227  sudo java EnergyExample 
+ 1228  LS
+ 1229  ls
+ 1230  cd Área\ de\ Trabalho/
+ 1231  ls
+ 1232  cd ATS/
+ 1233  ls
+ 1234  cd Green/
+ 1235  ls
+ 1236  sudo ./green
+ 1237  ls
+ 1238  cd 
+ 1239  cd Área\ de\ Trabalho/ATS
+ 1240  ls
+ 1241  cd greenmsp/
+ 1242  ls
+ 1243  cd Tools/
+ 1244  LS
+ 1245  ls7
+ 1246  ls
+ 1247  cd i2msp/
+ 1248  ls
+ 1249  alias grafo="dot -T png -O"
+ 1250  alias antlr4="java -jar /usr/local/lib/antlr-4.5-complete.jar"
+ 1251  alias grun="java org.antlr.v4.gui.TestRig"
+ 1252  #MFES
+ 1253  export TOM_HOME=${HOME}/tom-2.9
+ 1254  export PATH=${TOM_HOME}/bin:${PATH}
+ 1255  export CLASSPATH=${TOM_HOME}/lib/tom-runtime-full.jar:${CLASSPATH}
+ 1256  export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home
+ 1257  ls
+ 1258  EXMAPLE_DIR=exemplos/
+ 1259  EXAMPLE_FILE=maiorDeDoisNumeros.i
+ 1260  RES_FILE=res.msp
+ 1261  ls
+ 1262  cd Tom/
+ 1263  ls
+ 1264  ./run.sh
+ 1265  EXMAPLE_DIR=exemplos/
+ 1266  EXAMPLE_FILE=maiorDeDoisNumeros.i
+ 1267  RES_FILE=res.msp
+ 1268  ./run.sh
+ 1269  make
+ 1270  cp $EXAMPLE_FILE genI
+ 1271  cd genI
+ 1272  java gram/Main < $EXAMPLE_FILE > $RES_FILE
+ 1273  ls
+ 1274  EXAMPLE_FILE=exemplos/maiorDeDoisNumeros.i
+ 1275  make
+ 1276  cp $EXAMPLE_FILE genI
+ 1277  java gram/Main < $EXAMPLE_FILE > $RES_FILE
+ 1278* java grm/Main.t < $EXAMPLE_FILE > $RES_FILE
+ 1279  cp $EXAMPLE_DIR$EXAMPLE_FILE genI
+ 1280  cd genI
+ 1281  javac gram/Main.java
+ 1282  java gram/Main < $EXAMPLE_FILE > $RES_FILE
+ 1283  cp $RES_FILE ../genMaqV
+ 1284  cd ../genMaqV
+ 1285  javac maqv/Main.java
+ 1286  java maqv/Main $RES_FILEcp $EXAMPLE_DIR$EXAMPLE_FILE genI
+ 1287  cd genI
+ 1288  javac gram/Main.java
+ 1289  java gram/Main < $EXAMPLE_FILE > $RES_FILE
+ 1290  cp $RES_FILE genMaqV
+ 1291  cd genMaqV
+ 1292  javac maqv/Main.java
+ 1293  cp $EXAMPLE_DIR$EXAMPLE_FILE genI
+ 1294  cd genI
+ 1295  javac gram/Main.java
+ 1296  java gram/Main < $EXAMPLE_FILE > $RES_FILE
+ 1297  cp $RES_FILE genMaqV
+ 1298  cd genMaqV
+ 1299  javac maqv/Main.java
+ 1300  java maqv/Main $RES_FILE
+ 1301  make clean
+ 1302  make
+ 1303  ls
+ 1304  cd gram/
+ 1305  ls
+ 1306  ./Main.t < genI
+ 1307  Main.t < genI
+ 1308  cd /usr/local/lib
+ 1309  export CLASSPATH=".:/usr/local/lib/antlr-4.5.1-complete.jar:$CLASSPATH"
+ 1310  alias antlr4='java -jar /usr/local/lib/antlr-4.5.1-complete.jar'
+ 1311  alias grun='java org.antlr.v4.gui.TestRig'
+ 1312  cd ..
+ 1313  ls
+ 1314  cd home
+ 1315  ls
+ 1316  cd mario
+ 1317  ls
+ 1318  cd Área\ de\ Trabalho/
+ 1319  ls
+ 1320  cd ATS
+ 1321  ls
+ 1322  cd greenmsp/
+ 1323  ls
+ 1324  cd Tools/
+ 1325  LS
+ 1326  ls
+ 1327  cd i2msp/
+ 1328  ls
+ 1329  cd Tom/
+ 1330  ls
+ 1331  EXAMPLE_FILE=exemplos/maiorDeDoisNumeros.i
+ 1332  RES_FILE = res.msp
+ 1333  RES_FILE=res.msp
+ 1334  cp $EXAMPLE_FILE genI
+ 1335  cd genI
+ 1336  java gram/Main < $EXAMPLE_FILE > $RES_FILE
+ 1337  cp $RES_FILE ../genMaqV
+ 1338  cd ../genMaqV
+ 1339  java maqv/Main $RES_FILE
+ 1340  ls
+ 1341  make clean
+ 1342  make
+ 1343  history > file.txt

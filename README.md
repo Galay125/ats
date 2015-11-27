@@ -1,2 +1,0 @@
-# ats
-Grupo de trabalho
