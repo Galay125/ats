@@ -28,13 +28,57 @@ public class Main {
 	private int pc;
 	private int numProg;
 	private StringBuilder output;
+	private Map<String,Integer> metricas;
+
+	public void initMetricas(){
+		metricas.put("ALabel",0);
+		metricas.put("Call",0);
+		metricas.put("Ret",0);
+		metricas.put("Add",0);
+		metricas.put("Sub",0);
+		metricas.put("Div",0);
+		metricas.put("Mul",0);
+		metricas.put("Mod",0);
+		metricas.put("GoEq",0);
+		metricas.put("Inc",0);
+		metricas.put("Dec",0);
+		metricas.put("Eq",0);
+		metricas.put("Neq",0);
+		metricas.put("Gt",0);
+		metricas.put("GoEq",0);
+		metricas.put("Lt",0);
+		metricas.put("LoEq",0);
+		metricas.put("Nott",0);
+		metricas.put("Or",0);
+		metricas.put("And",0);
+		metricas.put("Halt",0);
+		metricas.put("IIn",0);
+		metricas.put("IOut",0);
+		metricas.put("Jump",0);
+		metricas.put("Jumpf",0);
+		metricas.put("Push",0);
+		metricas.put("PushA",0);
+		metricas.put("Load",0);
+		metricas.put("Store",0);
+		metricas.put("Decl",0);
+	}
+
+
+	public String toString(){
+		StringBuilder str = new StringBuilder("Métricas\n");
+		str.append("Instrução\t| Número de vezes ocorridas\n");
+		for(String s : metricas.keySet()){
+			str.append(s +"\t\t| "+ metricas.get(s)+"\n");
+		}
+		return str.toString();
+	}
 
 	public static void main(String[] args) {
 		try {
 			mspLexer lexer = new mspLexer(new ANTLRInputStream(new FileInputStream(args[0])));
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			mspParser parser = new mspParser(tokens);
-			// Parse the input expression
+			// Parse the inputexpression
 			Tree b = (Tree) parser.programa().getTree();
 			//System.out.println("Result = " + mspAdaptor.getTerm(b)); // name of the Gom module + Adaptor
 			Instrucoes p = (Instrucoes) mspAdaptor.getTerm(b);
@@ -42,7 +86,9 @@ public class Main {
 
 			Main main = new Main(p, original);
 
+			main.initMetricas();
 			main.run(p);
+			System.out.println(main.toString());
 
 			/* Export this representation to .dot file*/
 			/*
@@ -83,7 +129,8 @@ public class Main {
 		symbols = new HashMap<String, Integer>();
 		pc = 0;
 		numProg = 0;
-		output = new StringBuilder();
+		output= new StringBuilder();
+		metricas = new HashMap<String, Integer>();
 	}
 	
 	public String getOutput(){
@@ -218,18 +265,24 @@ public class Main {
 			Instrucoes(inst,instrs*) -> {
 				%match(inst) {
 					ALabel(id) -> {
+						int n = metricas.get("ALabel");
+						metricas.put("ALabel",++n);
 						if(`id.startsWith("f:")){
 							actualFuncName=`id;
 						}
 						return `run(instrs*);
 					}
 					Call(id) -> {
+						int n = metricas.get("Call");
+						metricas.put("Call",++n);
 						`pushFuncs(S(actualFuncName));
 						`pushFuncs(S(id));
 						prog = `jmp(orig,id);
 						return `run(prog);
 					}
 					Ret() -> {
+						int n = metricas.get("Ret");
+						metricas.put("Ret",++n);
 						Termo calledLabel = `topFuncs(); 
 						`popFuncs();
 						Termo callerFLabel = `topFuncs();
@@ -253,6 +306,8 @@ public class Main {
 						return `run(prog);
 					}
 					Add() -> {
+						int n = metricas.get("Add");
+						metricas.put("Add",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -263,6 +318,8 @@ public class Main {
 						}
 					}
 					Sub() -> {
+						int n = metricas.get("Sub");
+						metricas.put("Sub",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -273,6 +330,8 @@ public class Main {
 						}
 					}
 					Div() -> {
+						int n = metricas.get("Div");
+						metricas.put("Div",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -283,6 +342,8 @@ public class Main {
 						}
 					}
 					Mul() -> {
+						int n = metricas.get("Mul");
+						metricas.put("Mul",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -293,6 +354,8 @@ public class Main {
 						}
 					}
 					Mod() -> {
+						int n = metricas.get("Mod");
+						metricas.put("Mod",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -303,6 +366,8 @@ public class Main {
 						}
 					}
 					Inc() -> {
+						int n = metricas.get("Inc");
+						metricas.put("Inc",++n);
 						Termo t = `topStack();
 						`popStack();
 						%match(t) {
@@ -320,6 +385,8 @@ public class Main {
 						return `run(instrs*);
 					}
 					Dec() -> {
+						int n = metricas.get("Dec");
+						metricas.put("Dec",++n);
 						Termo t = `topStack();
 						`popStack();
 						%match(t) {
@@ -337,6 +404,8 @@ public class Main {
 						return `run(instrs*);
 					}
 					Eq() -> {
+						int n = metricas.get("Eq");
+						metricas.put("Eq",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -347,6 +416,8 @@ public class Main {
 						}
 					}
 					Neq() -> { 
+						int n = metricas.get("Neq");
+						metricas.put("Neq",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -357,6 +428,8 @@ public class Main {
 						}
 					}
 					Gt() -> {
+						int n = metricas.get("Gt");
+						metricas.put("Gt",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -367,6 +440,8 @@ public class Main {
 						}
 					}
 					GoEq() -> {
+						int n = metricas.get("GoEq");
+						metricas.put("GoEq",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -377,6 +452,8 @@ public class Main {
 						}
 					}
 					Lt() -> {
+						int n = metricas.get("Lt");
+						metricas.put("Lt",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -387,6 +464,8 @@ public class Main {
 						}
 					}
 					LoEq() -> {
+						int n = metricas.get("LoEq");
+						metricas.put("LoEq",++n);
 						%match (stack){
 							Stackk(I(v2),I(v1),resto*) -> { 
 								stack = `resto*;
@@ -397,6 +476,8 @@ public class Main {
 						}
 					}
 					Nott() -> {
+						int n = metricas.get("Nott");
+						metricas.put("Nott",++n);
 						Termo t = `topStack();
 						`popStack();
 						%match(t) {
@@ -409,6 +490,8 @@ public class Main {
 						return `run(instrs*);
 					}
 					Or() -> {
+						int n = metricas.get("Or");
+						metricas.put("Or",++n);
 						%match (stack){
 							Stackk(B(v2),B(v1),resto*) -> { 
 								stack = `resto*;
@@ -428,6 +511,8 @@ public class Main {
 						}
 					}
 					And() -> {
+						int n = metricas.get("And");
+						metricas.put("And",++n);
 						%match (stack){
 							Stackk(B(v2),B(v1),resto*) -> { 
 								stack = `resto*;
@@ -446,8 +531,14 @@ public class Main {
 							}
 						}
 					}
-					Halt() -> { return ""; }
+					Halt() -> { 
+						int n = metricas.get("Halt");
+						metricas.put("Halt",++n);
+						return "";
+						 }
 					IIn(tipo) -> {
+						int n = metricas.get("IIn");
+						metricas.put("IIn",++n);
 						BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 						try{
 							String iin = br.readLine();
@@ -485,6 +576,8 @@ public class Main {
 				       return `run(instrs*);
 					}
 					IOut() -> {
+						int n = metricas.get("IOut");
+						metricas.put("IOut",++n);
 						Termo t = `topStack();
 						`popStack();
 						%match(t) {
@@ -497,10 +590,14 @@ public class Main {
 						return `run(instrs*);
 					}
 					Jump(id) -> {
+						int n = metricas.get("Jump");
+						metricas.put("Jump",++n);
 						prog = `jmp(orig,id);
 						return `run(prog);
 					}
 					Jumpf(id) -> {
+						int n = metricas.get("Jumpf");
+						metricas.put("Jumpf",++n);
 						Termo t = `topStack();
 						`popStack();
 						%match(t) {
@@ -513,10 +610,14 @@ public class Main {
 						return `run(instrs*);
 					}
 					Push(t) -> {
+						int n = metricas.get("Push");
+						metricas.put("Push",++n);
 						`pushStack(t);
 						return `run(instrs*);
 					}
 					Pusha(t) -> {
+						int n = metricas.get("PushA");
+						metricas.put("PushA",++n);
 						%match(t) {
 							S(id) -> { 
 								int memAddress = getMemAddress(`id);
@@ -528,19 +629,22 @@ public class Main {
 						return `run(instrs*);
 					}
 					Load() -> {
+						int n = metricas.get("Load");
+						metricas.put("Load",++n);
 						Termo t = `topStack();
 						`popStack();
 						%match(t) {
 							I(memAddress) -> { 
 								Termo t2 = getMem(`memAddress);
-								`pushStack(t2);
-								
+								`pushStack(t2);	
 								return `run(instrs*);
 							}
 						}
 						return `run(instrs*);
 					}
 					Store() -> {
+						int n = metricas.get("Store");
+						metricas.put("Store",++n);
 						Termo t = `topStack();
 						`popStack();
 						Termo t2 = `topStack();
@@ -555,6 +659,8 @@ public class Main {
 						return `run(instrs*);
 					}
 					Decl(id,initMemAddress,size) -> {
+						int n = metricas.get("Decl");
+						metricas.put("Decl",++n);
 						memAlloc(`id,`initMemAddress,`size);
 						return `run(instrs*);
 					}
