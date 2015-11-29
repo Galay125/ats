@@ -3,7 +3,7 @@ package maqv;
 import maqv.msp.mspAdaptor;
 import maqv.msp.types.*;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.tree.Tree;
 import tom.library.utils.Viewer;
 import tom.library.sl.*;
@@ -28,7 +28,7 @@ public class Main {
 	private int pc;
 	private int numProg;
 	private StringBuilder output;
-	private Map<String,Integer> metricas;
+	private HashMap<String,Integer> metricas;
 
 	public void initMetricas(){
 		metricas.put("ALabel",0);
@@ -73,51 +73,241 @@ public class Main {
 		return str.toString();
 	}
 
+	public static void menu(){
+
+		System.out.println("\n************** Menu ************");
+		System.out.println("1 ----------------- Árvore GOM ");
+		System.out.println("2 ----------------- Menu métricas");
+		System.out.println("3 ----------------- Correr Programa");
+		System.out.println("4 ----------------- Gerar ficheiro .dot");
+		System.out.println("0 ----------------- Sair do Sistema ");
+
+		System.out.println("\nDigite um número:");
+	}
+
+	public static void menuMetricas(){
+
+		System.out.println("\n********** Menu Métricas *********");
+
+		System.out.println("1 ----------------- Ler métricas todas");
+		System.out.println("2 ----------------- Métricas Declarações");
+		System.out.println("3 ----------------- Métricas Aritméticas");
+		System.out.println("4 ----------------- Métricas Condicionais");
+		System.out.println("5 ----------------- Métricas I/O");
+		System.out.println("0 ----------------- Voltar atrás");
+		System.out.println("\nDigite um número:");
+	}
+
+	public static void menuRun(){
+
+		System.out.println("\n********** Menu Run *********");
+
+		System.out.println("1 ----------------- Output no Terminal");
+		System.out.println("2 ----------------- Output em ficheiro .txt ");
+		System.out.println("\nDigite um número:");
+	}
+
 	public static void main(String[] args) {
-		try {
-			mspLexer lexer = new mspLexer(new ANTLRInputStream(new FileInputStream(args[0])));
+
+		Boolean sair = false;
+		Boolean metric = false;
+		Boolean run = false;
+		String file=null;
+		String opcao =null;
+		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
+		Main main;
+		Instrucoes p,original;
+
+		try{
+			mspLexer lexer = new mspLexer(new ANTLRFileStream("res.msp"));
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			mspParser parser = new mspParser(tokens);
 			// Parse the inputexpression
 			Tree b = (Tree) parser.programa().getTree();
 			//System.out.println("Result = " + mspAdaptor.getTerm(b)); // name of the Gom module + Adaptor
-			Instrucoes p = (Instrucoes) mspAdaptor.getTerm(b);
-			Instrucoes original = (Instrucoes) mspAdaptor.getTerm(b);
-
-			Main main = new Main(p, original);
-
+			p = (Instrucoes) mspAdaptor.getTerm(b);
+			original = (Instrucoes) mspAdaptor.getTerm(b);
+			main = new Main(p, original);
 			main.initMetricas();
-			main.run(p);
-			System.out.println(main.toString());
 
-			/* Export this representation to .dot file*/
-			/*
-			try{
-				FileWriter out=new FileWriter("gram.dot");
-				Viewer.toDot(p,out);
-			}
-			catch (IOException e){
-				System.out.println("ERROR in dot file"); 
-			}
-			*/
-			if (args.length > 1) {
-				try {
-					PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(args[1], true)));
-        			pw.print(main.getOutput());
-        			pw.flush(); pw.close();
+			while(!sair){
+				menu();
+				opcao = teclado.readLine();
+
+				switch(opcao){
+
+					case "1"://GOM
+						System.out.println("Arvore gerada = " + p);
+						break;
+
+					case "2"://Metricas
+						metric = true;
+						while(metric){
+							menuMetricas();
+							opcao = teclado.readLine();
+							switch(opcao){
+								case "1":
+									System.out.println(main.toString());
+									break;
+								case "2":
+									main.metricas.put("Decl",0);
+									`TopDown(visitDecl(main.metricas,main.metricas.get("Decl"))).visit(p);
+									System.out.println("#Declarações = "+ main.metricas.get("Decl"));
+									break;
+								case "3":
+									main.metricas.put("Add",0);
+									main.metricas.put("Sub",0);
+									main.metricas.put("Div",0);
+									main.metricas.put("Mul",0);
+									main.metricas.put("Mod",0);
+									`TopDown(visitAritm(main.metricas,main.metricas.get("Add"),main.metricas.get("Sub"),main.metricas.get("Mul"),main.metricas.get("Div"),main.metricas.get("Mod"))).visit(p);
+									System.out.println("#Adições = "+ main.metricas.get("Add"));
+									System.out.println("#Subtrações = "+ main.metricas.get("Sub"));
+									System.out.println("#Multiplicações = "+ main.metricas.get("Mul"));
+									System.out.println("#Divisões = "+ main.metricas.get("Div"));
+									System.out.println("#Resto = "+ main.metricas.get("Mod"));
+									break;
+								case "4":
+									main.metricas.put("And",0);
+									main.metricas.put("Or",0);
+									`TopDown(visitConditionals(main.metricas,main.metricas.get("And"),main.metricas.get("Or")))).visit(p);
+									System.out.println("#And = "+ main.metricas.get("And"));
+									System.out.println("#Or = "+ main.metricas.get("Or"));
+									break;
+								case "5":
+									main.metricas.put("IIn",0);
+									main.metricas.put("IOut",0);
+									`TopDown(visitIO(main.metricas,main.metricas.get("IIn"),main.metricas.get("IOut")))).visit(p);
+									System.out.println("#Inputs = "+ main.metricas.get("IIn"));
+									System.out.println("#Outputs = "+ main.metricas.get("IOut"));
+									break;									
+								case "0":
+									metric = false;
+								default:
+				 					System.out.println("Opção Inválida");
+				 					break;
+							}
+						}
+						break;
+
+					case "3":
+						main.initMetricas();
+						main.run(p);
+						run = true;
+							while(run){
+								menuRun();
+								opcao = teclado.readLine();
+								switch(opcao){
+									case "1":
+										System.out.println(main.getOutput());
+										run = false;
+										break;
+									case "2":
+										try {
+											PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("output.txt", true)));
+		        							pw.print(main.getOutput());
+		        							pw.flush(); pw.close();
+											run = false;
+										}catch (IOException e){
+											System.err.println("exception: " + e);
+											return;
+			    						} 
+										break;
+									default:
+										System.out.println("Opção inválida!");				
+										break;
+								}
+							}
+							break;
+
+					case "4":
+						try{
+							FileWriter out = new FileWriter("gram.dot");
+							Viewer.toDot(p,out);
+						}catch (IOException e){
+							System.out.println("ERROR in dot file"); 
+						}
+						break;
+					case "0":
+				 		sair = true;
+				 		break;
+
+				 	default:
+				 		System.out.println("Opção Inválida");
+				 		break;
 				}
-				catch (IOException e){
-					System.err.println("exception: " + e);
-					return;
-		    	} 
-			}
-			else {
-				System.out.println(main.getOutput());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+
+			/* Export this representation to .dot file*/
+			/*
+
+			*/
+			
+	%strategy visitDecl(metricas:HashMap,n:int) extends Identity() {
+      	visit Instrucao {
+      	 	Decl(id,initMemAddress,size) -> {
+      	  		n++;
+      	  		metricas.put("Decl",n);
+      	 	}
+        }
+	}
+
+	%strategy visitAritm(metricas:HashMap,add:int,sub:int,mul:int,div:int,mod:int) extends Identity() {
+      	visit Instrucao {
+			Add() -> {
+				add++;
+      	  		metricas.put("Add",add);	
+			}
+			Sub() -> {
+				sub++;
+      	  		metricas.put("Sub",sub);	
+			}
+			Div() -> {
+				div++;
+      	  		metricas.put("Div",div);	
+			}
+			Mul() -> {
+				mul++;
+      	  		metricas.put("Mul",mul);	
+			}
+			Mod() -> {
+				mod++;
+      	  		metricas.put("Mod",mod);	
+			}
+        }
+	}
+
+	%strategy visitConditionals(metricas:HashMap,and:int,or:int) extends Identity() {
+      	visit Instrucao {
+			And() -> {
+				and++;
+      	  		metricas.put("And",and);	
+			}
+			Or() -> {
+				or++;
+      	  		metricas.put("Or",or);	
+			}
+        }
+	}
+
+	%strategy visitIO(metricas:HashMap,in:int,out:int) extends Identity() {
+      	visit Instrucao {
+			And() -> {
+				in++;
+      	  		metricas.put("IIn",in);	
+			}
+			Or() -> {
+				out++;
+      	  		metricas.put("IOut",out);	
+			}
+        }
+	}
+
 
 	public Main(Instrucoes insts, Instrucoes orig) {
 		programa = insts;
