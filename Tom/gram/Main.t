@@ -29,7 +29,7 @@ public class Main {
 	private boolean callReturnNeeded;
 	private int memAdress;
 	StringBuilder functionsDeclarations;
-	static Metrica met = new Metrica();
+	HashMap<String, Instrucao> funcoesInst;
 
 	public static void menu(String file){
 
@@ -39,10 +39,10 @@ public class Main {
 				System.out.println("\nFicheiro executado:"+file+"\n");
 
 		System.out.println("1 ----------------- Ler ficheiros");
-		System.out.println("2 ----------------- Gerar Árvore GOM ");
+		System.out.println("2 ----------------- Árvore GOM ");
 		System.out.println("3 ----------------- Gerar código MSP");
 		System.out.println("4 ----------------- Gerar ficheiro .dot");
-		System.out.println("t ----------------- Teste de Strategy");
+		System.out.println("5 ----------------- Metricas");
 		System.out.println("0 ----------------- Sair do Sistema ");
 
 		System.out.println("\nDigite um número:");
@@ -58,7 +58,6 @@ public class Main {
  		String file = null;
  		String opcao = null;
  		Instrucao p = null;
- 		Tree b = null;
  		String aux = null;
  		Main main = new Main();
  		ArrayList<Integer> numInstrucao = new ArrayList<Integer>();
@@ -72,29 +71,27 @@ public class Main {
 			 switch(opcao){
 			 	case "1":
 			 		System.out.println("\nDigite o nome do ficheiro: ../exemplos/fi.i | ../exemplos/fatorial.i | ../exemplos/maiorDeDoisNumeros.i");
-			 		file = readFile();
-			 	break;
-
-			 	case "2":
-			 		try {
+			 		file = teclado.readLine();
+			 		main = new Main();
+			 		try{
 						iLexer lexer = new iLexer(new ANTLRFileStream(file));
 						CommonTokenStream tokens = new CommonTokenStream(lexer);
 						iParser parser = new iParser(tokens);
-						// Parse the input expression
-						b = (Tree) parser.prog().getTree();
+							// Parse the input expression
+						Tree b = (Tree) parser.prog().getTree();
 						p = (Instrucao) iAdaptor.getTerm(b);
-
-						System.out.println("Arvore gerada = " + p); // name of the Gom module + Adaptor
-
-						/*Export code generated to .txt file*/
 					} catch(Exception e) {
 						e.printStackTrace();
 					}
 			 	break;
 
+			 	case "2":
+			 		System.out.println("Arvore gerada = " + p); // name of the Gom module + Adaptor
+			 	break;
+
 			 	case "3":
-			 			try{
-			 				main = new Main();
+ 					System.out.println("Em construção !");
+			 	/*		try{
 			 				numInstrucao = new ArrayList<Integer>();
 							numInstrucao.add(1);
 							`TopDown(CollectFuncsSignature(main.functionSignatures)).visit(p);
@@ -111,7 +108,6 @@ public class Main {
 							aux = readFile();
 							
 							if(aux.equals("1")){
-								/* Injecção */
 								TreeSet<Integer> blocosMaisUsados = new TreeSet<Integer>();
 								Main.parseFile(file,blocosMaisUsados);
 								numInstrucao.clear();
@@ -120,7 +116,6 @@ public class Main {
 								instrucoes = main.compileAnnot(p3);
 							}
 							else if(aux.equals("2")){
-								/*Bad Smells*/
 								Instrucao p3 = `TopDown(stratBadSmells()).visit(p);
 								instrucoes = main.compileAnnot(p3);
 							}
@@ -132,51 +127,67 @@ public class Main {
 						} 
 						catch(VisitFailure e) {
 							System.out.println("the strategy failed");
-						}
+						}*/
 			 	break;
 
 			 	case "4":
 			 			/* Export this representation to .dot file*/
 						try{
 							System.out.println("Nome de Ficheiro: ");
-							aux = readFile();
+							aux = teclado.readLine();
 							FileWriter out=new FileWriter(aux);
 							Viewer.toDot(p,out);
-						}
+ 						}
 						catch (IOException e){
 							System.out.println("ERROR in dot file"); 
 						}
 			 	break;
 
 
-			 	case "t":
+			 	case "5":
 						try{
-							met = new Metrica();
-							`TopDown(nastedBlocks()).visit(p);
-							System.out.println("Linhas de codigo: "+met.getLinhas());
+							System.out.println("\n*********** Métricas ************ ");
+
+							Metrica met = new Metrica();
+							
+							/* Vai recolher as instruções por função */
+							`TopDown(visitFuncoes(main.funcoesInst)).visit(p);
+
+							System.out.println("\nNúmero de funcoes: "+main.funcoesInst.size());
+
+							for(String s : main.funcoesInst.keySet()){
+									System.out.println("\nFuncao: "+s);
+									
+									/* Numero de Linhas */
+									int a = linesOfCode(main.funcoesInst.get(s));
+								    met.setFuncoesLinhas(s,a);
+								    System.out.println("Numero de Linhas: "+a);
+
+								    /* Numero de Argumentos */
+								    a = foundDecl(main.funcoesInst.get(s));
+								    met.setFuncoesArgs(s,a);
+								    System.out.println("Numero de Args: "+a);
+
+								    /* Numero de Blocos aninhados */
+								    a = foundNested(main.funcoesInst.get(s));
+								    met.setFuncoesNested(s,a);
+								    System.out.println("Nested: "+a);
+							}
+
+							System.out.println("\nTotal de Linhas: "+met.getTotalLinhas());
+							System.out.println("Total de Argumentos: "+met.getTotalArgs());
 						}
 						catch(VisitFailure e) {
 								System.out.println("the strategy failed");
 						}
 			 	break;
 
-			 	case "0":
+			 	default:
 			 		 sair = true;
 			 	break;
 			 }
-
 		}		
-
 	}
-
-	private static String readFile() throws IOException{
-		  
-		  BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		  String s = br.readLine();
-		  
-		  return s;
-	  }
-
 
 	public Main() {
 		actualFunctionName = "";
@@ -184,615 +195,77 @@ public class Main {
 		callReturnNeeded = true;
 		functionsDeclarations = new StringBuilder();
 		memAdress = 0;
+		funcoesInst = new HashMap<String, Instrucao>();
 	}
 
-	public static Argumentos removeArgumentosNaoUtilizados(Argumentos args, TreeSet<String> idsUtilizados) {
-		%match(args) {
-			ListaArgumentos(arg1,tailArg*) -> {
-				%match(arg1) {
-					a@Argumento(_,idArg) -> {
-						if (idsUtilizados.contains(`idArg))
-							return `ListaArgumentos(a,removeArgumentosNaoUtilizados(tailArg*,idsUtilizados));
-						else
-							return removeArgumentosNaoUtilizados(`tailArg*,idsUtilizados);
-					}
-				}
-			}
-		}
-		return args;
+    /*strategy para gerar o gráfico .dot*/
+    %strategy toDot() extends Identity(){
+		visit Instrucao{
+ 			Atribuicao(id,opAtrib,exp) -> {return `Atribuicao(id,opAtrib,exp);}
+			Declaracao(tipo,decl) -> {return `Declaracao(tipo,decl);}
+			If(condicao,inst1,inst2) -> { return `If(condicao,inst1,inst2);}
+	        While(condicao,inst) -> { return `While(condicao,inst);}
+			For(decl,condicao,exp,inst) -> { return `For(decl,condicao,exp,inst);}
+	        Return(exp) -> { return `Return(exp);}
+ 			Funcao(tipo,nome,argumentos,inst) -> { return `Funcao(tipo,nome,argumentos,inst);}
+ 			Exp(exp) -> { return `Exp(exp);}
+ 			SeqInstrucao(inst1, inst*) -> { return `SeqInstrucao(inst1, inst*);}
+        }
 	}
 
-    %strategy stratBadSmells() extends Identity() {
-    	visit Instrucao {
-    		If(Nao(condicao),inst1,inst2) -> {
-    			return `If(condicao,inst2,inst1);
-    		}
-    		Funcao(tipo,nome,argumentos,inst) -> {
-    			TreeSet<String> idsUtilizados = new TreeSet<String>();
-				`TopDown(stratCollectIds(idsUtilizados)).visit(`inst);
-    			Argumentos args = removeArgumentosNaoUtilizados(`argumentos,idsUtilizados);
-    			return `Funcao(tipo,nome,args,inst);
-    		}
-    	}
-    }
-
-    %strategy stratCollectIds(Set idsUtilizados) extends Identity() {
-    	visit Instrucao {
-    		Atribuicao(id,opAtrib,exp) -> {
-    			idsUtilizados.add(`id);
-    		}
-    	}
-    	visit Expressao {
-    		Id(id) -> { 
-    			idsUtilizados.add(`id);
-    		}
-    		IncAntes(opInc,id) -> { 
-    			idsUtilizados.add(`id);
-    		}
-    		IncDepois(opInc,id) -> { 
-    			idsUtilizados.add(`id);
-    		}
-    	}
-    }
-
-    %strategy CollectFuncsSignature(signatures:HashMap) extends Identity() {
+    /*vai inserir numa hash as instruções de uma dada função*/
+    %strategy visitFuncoes(funcoes:HashMap) extends Identity() {
       visit Instrucao {
-		Funcao(tipo,nome,argumentos,inst) -> {
-			signatures.put(`nome, `argumentos);
+      	  Funcao(tipo,nome,argumentos,inst) -> {
+      	  		funcoes.put(`nome, `inst);
+      	  }
+      }
+	}
+
+    /*vai contar o numero de vezes que cada instruçao aparece*/
+    private static int linesOfCode(Instrucao i) {
+    	int aux = 0;
+		%match(i) {
+			Atribuicao(id,opAtrib,exp) -> { return ++aux;}
+	        Declaracao(tipo,decl) -> { return ++aux;}
+			If(condicao,inst1,inst2) -> { if(linesOfCode(`inst2)>0) aux=2; return (linesOfCode(`inst1)+2)+(linesOfCode(`inst2)+aux);}
+	        While(condicao,inst) -> { return linesOfCode(`inst)+2;}
+			For(decl,condicao,exp,inst) -> { return aux+linesOfCode(`inst)+2;}
+	        Return(exp) -> { return ++aux;}
+ 			Funcao(tipo,nome,argumentos,inst) -> { return linesOfCode(`inst);}
+ 			Exp(exp) -> { return ++aux;}
+ 			SeqInstrucao(inst1, inst*) -> { return linesOfCode(`inst1)+linesOfCode(`inst*);}
 		}
-      }
-    }
+		return aux;
+	}
 
-    %strategy stratPrintAnnotations(ArrayList numInstrucao) extends Identity() {
-      visit Instrucao {
-			i@Atribuicao(_,_,_) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				
-				numInstrucao.add(num+1);
-				if (num > 1)
-					return `SeqInstrucao(i,Exp(Print(Char(","))),Exp(Print(Int(num))));
-				else
-					return `SeqInstrucao(i,Exp(Print(Int(num))));
-			}
-			i@If(condicao,inst1,inst2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				
-				numInstrucao.add(num+1);
-				if (num > 1)
-					return `SeqInstrucao(i,Exp(Print(Char(","))),Exp(Print(Int(num))));
-				else
-					return `SeqInstrucao(i,Exp(Print(Int(num))));
-			}
-			i@While(condicao,inst) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				
-				numInstrucao.add(num+1);
-				if (num > 1)
-					return `SeqInstrucao(i,Exp(Print(Char(","))),Exp(Print(Int(num))));
-				else
-					return `SeqInstrucao(i,Exp(Print(Int(num))));
-			}
-			i@For(decl,condicao,exp,inst) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				
-				numInstrucao.add(num+1);
-				if (num > 1)
-					return `SeqInstrucao(i,Exp(Print(Char(","))),Exp(Print(Int(num))));
-				else
-					return `SeqInstrucao(i,Exp(Print(Int(num))));
-			}
-			i@Return(exp) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				
-				numInstrucao.add(num+1);
-				if (num > 1)
-					return `SeqInstrucao(i,Exp(Print(Char(","))),Exp(Print(Int(num))));
-				else
-					return `SeqInstrucao(i,Exp(Print(Int(num))));
-			}
-      }
-      visit Expressao {
-			e@ExpNum(exp1,op,exp2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				
-				numInstrucao.add(num+1);
-				if (num > 1)
-					return `Expressoes(e,Print(Char(",")),Print(Int(num)));
-				else
-					return `Expressoes(e,Print(Int(num)));
-			}
-			e@Ou(cond1,cond2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				
-				numInstrucao.add(num+1);
-				if (num > 1)
-					return `Expressoes(e,Print(Char(",")),Print(Int(num)));
-				else
-					return `Expressoes(e,Print(Int(num)));
-			}
-			e@E(cond1,cond2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				
-				numInstrucao.add(num+1);
-				if (num > 1)
-					return `Expressoes(e,Print(Char(",")),Print(Int(num)));
-				else
-					return `Expressoes(e,Print(Int(num)));
-			}
-			e@Comp(exp1,opComp,exp2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				
-				numInstrucao.add(num+1);
-				if (num > 1)
-					return `Expressoes(e,Print(Char(",")),Print(Int(num)));
-				else
-					return `Expressoes(e,Print(Int(num)));
-			}
-      }
-    }
-
-    %strategy stratFaultInjection() extends Identity() {
-      visit Instrucao {
-		If(condicao,inst1,inst2) -> {
-			return `If(condicao,inst2,inst1);
+	/*vai contar o numero de declarações*/
+	private static int foundDecl(Instrucao i) {
+		%match(i) {
+	        Declaracao(tipo,decl) -> { return 1; }
+	        SeqInstrucao(inst1, inst*) -> { return foundDecl(`inst1)+foundDecl(`inst*);}
 		}
-		While(condicao,inst) -> {
-			return `While(Nao(condicao),inst);
+		return 0;
+	}
+
+	/*vai encontrar o máximo de blocos aninhados de uma dada função*/
+	private static int foundNested(Instrucao i) {
+		%match(i) {
+	        If(condicao,inst1,inst2) -> { return 1+max(foundNested(`inst1),foundNested(`inst2));}
+	        While(condicao,inst) -> { return foundNested(`inst)+1;}
+			For(decl,condicao,exp,inst) -> { return foundNested(`inst)+1;}
+	        SeqInstrucao(inst1, inst*) -> { return max(foundNested(`inst1),foundNested(`inst*));}
 		}
-		For(decl,condicao,exp,inst) -> {
-			return `For(decl,Nao(condicao),exp,inst);
-		}
-      }
-    }
+		return 0;
+	}
 
-    %strategy stratFaultInjectionWithKnowledge(ArrayList numInstrucao,Set blocos) extends Identity() {
-      visit Instrucao {
-			i@Atribuicao(_,_,_) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				numInstrucao.add(num+1);
-				if (blocos.contains((Integer) num))
-					return `i;
-			}
-			If(condicao,inst1,inst2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				numInstrucao.add(num+1);
-				if (blocos.contains((Integer) num))
-					return `If(condicao,inst2,inst1);
-			}
-			While(condicao,inst) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				numInstrucao.add(num+1);
-				if (blocos.contains((Integer) num))
-					return `While(Nao(condicao),inst);
-			}
-			For(decl,condicao,exp,inst) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				numInstrucao.add(num+1);
-				if (blocos.contains((Integer) num))
-					return `For(decl,Nao(condicao),exp,inst);
-			}
-			i@Return(exp) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				numInstrucao.add(num+1);
-			}
-      }
-      visit Expressao {
-			e@ExpNum(exp1,op,exp2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				numInstrucao.add(num+1);
-			}
-			e@Ou(cond1,cond2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				numInstrucao.add(num+1);
-			}
-			e@E(cond1,cond2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				numInstrucao.add(num+1);
-			}
-			e@Comp(exp1,opComp,exp2) -> {
-				int num = (Integer) numInstrucao.remove((int) 0);
-				numInstrucao.add(num+1);
-			}
-      }
-    }
-
-    %strategy linesOfCode() extends Identity() {
-      visit Instrucao {
-      	  If(condicao,inst1,inst2) -> {
-			met.linhas++;
-		  }
-		  While(condicao,inst) -> {
-			met.linhas++;
-		  }
-		  For(decl,condicao,exp,inst) -> {
-			met.linhas++;
-		  }
-      }
-    }
-
-    %strategy nastedBlocks() extends Identity() {
-      visit Instrucao {
-      	  If(condicao,inst1,inst2) -> {
-			met.linhas++;
-			System.out.println(`inst1);
-			System.out.println(`inst2);
-		  }
-		  While(condicao,inst) -> {
-			met.linhas++;
-			System.out.println(`inst);
-		  }
-		  For(decl,condicao,exp,inst) -> {
-			met.linhas++;	
-			System.out.println(`inst);
-		  }
-      }
-    }
-
-	private String compileAnnot(Instrucao inst) {
-		NumToInt numInstrucao = new NumToInt(1);
-		String toReturn = compileAnnotInstrucao(inst, numInstrucao);
-		//return toReturn.concat("Halt");
-		return toReturn.substring(0,toReturn.length()-1);
+	private static int max(int a, int b){
+		if(a>b)
+			return a;
+		else
+			return b;
 	}
 	
-	private String compileAnnotInstrucao(Instrucao i, NumToInt numInstrucao) {
-		%match(i) {
-			Atribuicao(id,opAtrib,exp) -> {
-				String genExp = `compileAnnotExpressoes(exp, numInstrucao);
-				String prefix;
-				if (actualFunctionName.equals(""))
-					prefix = "";
-				else
-					prefix = actualFunctionName + "_";
-
-				%match(opAtrib) {
-					Atrib() -> { return "Pusha \"" + prefix + `id + "\"," + genExp + "Store,"; }
-					Mult() -> { return "Pusha \"" + prefix + `id + "\",Pusha \"" + prefix + `id + "\",Load," + genExp + "Mul,Store,"; }
-					Div() -> { return "Pusha \"" + prefix + `id + "\",Pusha \"" + prefix + `id + "\",Load," + genExp + "Div,Store,"; }
-					Soma() -> { return "Pusha \"" + prefix + `id + "\",Pusha \"" + prefix + `id + "\",Load," + genExp + "Add,Store,"; }
-					Sub() -> { return "Pusha \"" + prefix + `id + "\",Pusha \"" + prefix + `id + "\",Load," + genExp + "Sub,Store,"; }
-				}
-				return "";
-			}
-
-			Declaracao(tipo,decls) -> {
-				String genDecl = `compileAnnotDeclaracoes(decls, tipo, numInstrucao);
-				functionsDeclarations.append(genDecl);
-				return "";
-			}
-
-			If(condicao,inst1,inst2) -> {
-				String genCondicao = `compileAnnotExpressoes(condicao, numInstrucao);
-				String genInst1 = `compileAnnotInstrucao(inst1, numInstrucao);
-				String genInst2 = `compileAnnotInstrucao(inst2, numInstrucao);
-				int num = numInstrucao.inc();
-
-				return genCondicao + "Jumpf \"senao" + num + "\"," + genInst1 + "Jump \"fse" + num + "\",ALabel \"senao" + num + "\"," + genInst2 + "ALabel \"fse" + num + "\",";
-			}
-
-			While(condicao,inst) -> {
-				String genCondicao = `compileAnnotExpressoes(condicao, numInstrucao);
-				String genInst = `compileAnnotInstrucao(inst, numInstrucao);
-				int num = numInstrucao.inc();
-
-				return "ALabel \"enq" + num + "\"," + genCondicao + "Jumpf \"fenq" + num + "\"," + genInst + "Jump \"enq" + num +"\"," + "ALabel \"fenq" + num + "\",";
-			}
-
-			For(decl,condicao,exp,inst) -> {
-				String genDecl = `compileAnnotInstrucao(decl, numInstrucao);
-				String genCondicao = `compileAnnotExpressoes(condicao, numInstrucao);
-				String genExp = `compileAnnotExpressoes(exp, numInstrucao);
-				String genInst = `compileAnnotInstrucao(inst, numInstrucao);
-
-				int num = numInstrucao.inc();
-				String labelInit = "ALabel \"for" + num + "\",";
-				String jump = "Jumpf \"ffor"+ num + "\",";
-				String labelJump = "ALabel \"ffor" + num + "\",";
-				String labelEnd = "Jump \"for" + num + "\",";
-
-				functionsDeclarations.append(genDecl);
-
-				return labelInit.concat(genCondicao).concat(jump).concat(genInst).concat(genExp).concat(labelEnd).concat(labelJump);
-			}
-
-			Return(exp) -> {
-				String genExp = `compileAnnotExpressoes(exp, numInstrucao);
-				String prefix = "f:";
-				String ret = "Ret,";
-				String storeVarFunct = "Pusha \"" + prefix + actualFunctionName + "\"," + genExp + "Store,";
-
-				return storeVarFunct;
-			}
-
-			Funcao(tipo,nome,argumentos,inst) -> {
-
-				int actualMemAddress = memAdress;
-				memAdress++;
-				int sizeAddress = 1;
-
-				actualFunctionName = `nome;
-				String prefix = "f:";
-				String functionDeclaration = "Decl \"" + prefix + `nome + "\" " + actualMemAddress + " " +  sizeAddress + ",";
-				String functionRet = "";
-				%match(tipo) {
-					DVoid() -> { if (!actualFunctionName.equals("main")) functionRet = "Ret,"; }
-					_ -> { if(!actualFunctionName.equals("main")) functionRet = "Ret,"; }
-				}
-				String halt = actualFunctionName.equals("main") ? "Halt," : "";
-				String genArgs = `compileArguments(nome, argumentos);
-
-				functionsDeclarations.append(functionDeclaration);
-				functionsDeclarations.append(genArgs);
-
-				String genInst = `compileAnnotInstrucao(inst, numInstrucao);
-				String function = "ALabel \"f:" + `nome + "\"," + genInst + functionRet + halt;
-				
-				return function;
-			}
-
-			Exp(exp) -> {
-				callReturnNeeded = false;
-				String exp = `compileAnnotExpressoes(exp, numInstrucao);
-				callReturnNeeded = true;
-
-				return exp;
-			}
-
-			SeqInstrucao(inst1, inst*) -> {
-				String genInst = `compileAnnotInstrucao(inst1, numInstrucao);
-				String seqInst = genInst.concat(`compileAnnotInstrucao(inst*, numInstrucao));
-
-				return seqInst;
-			}
-		}
-		return "";
-	}
-
-	private String compileArguments(String functionName, Argumentos args) {
-		%match(args) {
-			ListaArgumentos(arg1,tailArg*) -> {
-				return compileArguments(functionName, `arg1) + compileArguments(functionName, `tailArg);
-			}
-			Argumento(_,idArg) -> {
-				int actualMemAddress = memAdress;
-				memAdress++;
-				int sizeAddress = 1;
-
-				String prefix = functionName + "_";
-				String declaration = "Decl \"" + prefix + `idArg + "\" " + actualMemAddress + " " +  sizeAddress + ",";
-				
-				return declaration;
-			}
-		}
-		return "";
-	}
-
-	public String compileAnnotDeclaracoes(Declaracoes decl, DefTipo tipo, NumToInt numInstrucao) {
-		%match(decl) {
-			ListaDecl(dec1,tail*) -> {
-				String gen = `compileAnnotDeclaracoes(dec1, tipo, numInstrucao);
-				String gen2 = `compileAnnotDeclaracoes(tail*, tipo, numInstrucao);
-
-				return gen + gen2;
-			}
-
-			Decl(id,exp) -> {
-				String genExp = `compileAnnotExpressoes(exp, numInstrucao);
-				String prefix;
-				if (actualFunctionName.equals(""))
-					prefix = "";
-				else
-					prefix = actualFunctionName + "_";
-					
-				String storeValue;
-				if (genExp.equals(""))
-					storeValue = "";
-				else
-					storeValue = "Pusha \"" + prefix + `id + "\"," + genExp + "Store,";
-					
-				int actualMemAddress = memAdress;
-				memAdress++;
-				int sizeAddress = 1;
-
-				%match(tipo) {
-					DInt() -> { return "Decl \"" + prefix + `id + "\" " + actualMemAddress + " " +  sizeAddress + "," + storeValue; }
-					DChar() -> { return "Decl \"" + prefix + `id + "\" " +  actualMemAddress + " " +  sizeAddress + "," + storeValue; }
-					DBoolean() -> { return "Decl \"" + prefix + `id + "\" " +  actualMemAddress + " " +  sizeAddress + "," + storeValue; }
-					DFloat() -> { return "Decl \"" + prefix + `id + "\" " +  actualMemAddress + " " +  sizeAddress + "," + storeValue; }
-					DVoid() -> { return "Decl \"" + prefix + `id + "\" " +  actualMemAddress + " " +  sizeAddress + "," + storeValue; }
-				}
-				return "";
-			}
-		}
-		return "";
-	}
-
-	private String compileAnnotExpressoes(Expressao e, NumToInt numInstrucao) {
-		%match(e) {
-			ExpNum(exp1,op,exp2) -> {
-				String genExp1 = `compileAnnotExpressoes(exp1, numInstrucao);
-				String genExp2 = `compileAnnotExpressoes(exp2, numInstrucao);
-
-				%match(op) {
-					Mais() -> { return genExp1 + genExp2 + "Add,"; }
-					Vezes() -> { return genExp1 + genExp2 + "Mul,"; }
-					Divide() -> { return genExp1 + genExp2 + "Div,"; }
-					Menos() -> { return genExp1 + genExp2 + "Sub,"; }
-					Mod() -> { return genExp1.concat(genExp2); }
-				}
-				return "";
-			}
-
-			Id(id) -> { 
-				String prefix;
-				if (actualFunctionName.equals(""))
-					prefix = "";
-				else
-					prefix = actualFunctionName + "_";
-					
-				return "Pusha \"" + prefix + `id + "\",Load,"; 
-			}
-
-			Pos(exp) -> { return `compileAnnotExpressoes(exp, numInstrucao); }
-
-			Neg(exp) -> { return `compileAnnotExpressoes(exp, numInstrucao); }
-
-			Nao(exp) -> { 
-				String genExp = `compileAnnotExpressoes(exp, numInstrucao);
-				return genExp + "Not,";
-			}
-
-			Call(id,parametros) -> { 
-					Argumentos argumentos = functionSignatures.get(`id);
-					String prefix = "f:";
-					String loadReturn = callReturnNeeded ? "Pusha \"" + prefix + `id + "\",Load," : "";
-					String genCallParameters = compileCallParameters(`id, argumentos, `parametros, numInstrucao);
-					String call = "Call \"" + prefix + `id + "\",";
-					return genCallParameters + call + loadReturn;
-			 }
-
-			IncAntes(opInc,id) -> { 
-				String prefix;
-				if (actualFunctionName.equals(""))
-					prefix = "";
-				else
-					prefix = actualFunctionName + "_";
-					
-				%match(opInc) {
-					Inc() -> { return "Pusha \"" + prefix + `id + "\",Inc"; } 
-					Dec() -> { return "Pusha \"" + prefix + `id + "\",Dec"; }
-				}
-				return `id;
-			}
-
-			IncDepois(opInc,id) -> { 
-				String prefix;
-				if (actualFunctionName.equals(""))
-					prefix = "";
-				else
-					prefix = actualFunctionName + "_";
-					
-				%match(opInc) {
-					Inc() -> { return "Pusha \"" + prefix + `id + "\",In"; } 
-					Dec() -> { return "Pusha \"" + prefix + `id + "\",De"; }
-				}
-				return `id;
-			}
-
-			Condicional(condicao,exp1,exp2) -> {
-				String genCondicao = `compileAnnotExpressoes(condicao, numInstrucao);
-				String genExp1 = `compileAnnotExpressoes(exp1, numInstrucao);
-				String genExp2 = `compileAnnotExpressoes(exp2, numInstrucao);
-
-				return genCondicao.concat(genExp1).concat(genExp2);
-			}
-
-			Int(i) -> { return "Pushi "+ `i + ","; }
-
-			Char(c) -> { return "Pushc '" + `c.charAt(0) + "',"; }
-
-			True() -> { return "Pushb true,"; }
-
-			False() -> { return "Pushb false,"; }
-
-			Float(f) -> { return "Pushf "+`f + ","; }
-
-			Ou(cond1,cond2) -> {
-				String genCond1 = `compileAnnotExpressoes(cond1, numInstrucao);
-				String genCond2 = `compileAnnotExpressoes(cond2, numInstrucao);
-
-				return genCond1 + genCond2 + "Or,";
-			}
-
-			E(cond1,cond2) -> {
-				String genCond1 = `compileAnnotExpressoes(cond1, numInstrucao);
-				String genCond2 = `compileAnnotExpressoes(cond2, numInstrucao);
-
-				return genCond1 + genCond2 + "And,";
-			}
-
-			Comp(exp1,opComp,exp2) -> {
-				String genExp1 = `compileAnnotExpressoes(exp1, numInstrucao);
-				String genExp2 = `compileAnnotExpressoes(exp2, numInstrucao);
-
-				%match(opComp) {
-					Maior() -> { return genExp1 + genExp2 + "Gt,"; }
-					Menor() -> { return genExp1 + genExp2 + "Lt,"; }
-					MaiorQ() -> { return genExp1 + genExp2 + "GoEq,"; }
-					MenorQ() -> { return genExp1 + genExp2 + "LoEq,"; }
-					Dif() -> { return genExp1 + genExp2 + "Neq,"; }
-					Igual() -> { return genExp1 + genExp2 + "Eq,"; }
-				}
-			}
-			
-			Input(tipo) -> {
-				%match(tipo) {
-					DInt() -> { return "IIn int,"; }
-					DChar() -> { return "IIn char,"; }
-					DBoolean() -> { return "IIn boolean,"; }
-					DFloat() -> { return "IIn float,"; }
-				}
-			}
-
-			Print(exp) -> {
-				String genExp = `compileAnnotExpressoes(exp, numInstrucao);
-
-				return genExp + "IOut,";
-			}
-
-			Expressoes(exp1, exp*) -> {
-				String genExp = `compileAnnotExpressoes(exp1, numInstrucao);
-				String exps = genExp.concat(`compileAnnotExpressoes(exp*, numInstrucao));
-
-				return exps;
-			}
-			Empty() -> { return ""; }
-		}
-		return "";
-	}
-
-	private String compileCallParameters(String functionName, Argumentos argumentos, Parametros parametros, NumToInt numInstrucao) {
-		%match (parametros, argumentos){
-			ListaParametros(param1,tailParam*), ListaArgumentos(arg1,tailArg*) -> {
-				return compileCallParameters(functionName, `arg1, `param1, numInstrucao) + compileCallParameters(functionName, `tailArg, `tailParam, numInstrucao);
-			}
-			Parametro(exp), Argumento(_,idArg) -> {
-				String genExp = `compileAnnotExpressoes(exp, numInstrucao);
-				String prefix = functionName + "_";
-				return "Pusha \"" + prefix + `idArg + "\"," + genExp + "Store,";
-			}
-		}
-		return "";
-	}
-
-	private String genAnnotation(int i) {
-		if (i == 1) {
-			return "Pushi "+i+",IOut,";
-		}
-		else {
-			return "Pushc ',',IOut,Pushi "+i+",IOut,";
-		}
-	}
-
-	private static boolean parseFile(String filename, TreeSet<Integer> blocos) { 
-		try { 
-			BufferedReader br = new BufferedReader( new FileReader(filename) ); 
-			String line = ""; 
-			StringTokenizer token = null; 
-
-			while((line = br.readLine()) != null) { 
-				token = new StringTokenizer(line, ","); 
-
-				while(token.hasMoreTokens()) { 
-					String tokenS = token.nextToken();
-					blocos.add(Integer.parseInt(tokenS));
-				} 
-			} 
-			return true; 
-		} catch(Exception e) { 
-			return false; 
-		}
-	}
 }
 
 class NumToInt{
@@ -816,13 +289,61 @@ class NumToInt{
 }
 
 class Metrica{
-	public int linhas;
+	private int funcoes;
+	private HashMap<String, Integer> funcoesArgs;
+	private HashMap<String, Integer> funcoesLinhas;
+	private HashMap<String,Integer> funcoesNested;
+
 
 	public Metrica() {
-		this.linhas = 0;
+		this.funcoes = 0;
+		this.funcoesLinhas = new HashMap<String, Integer>();
+		this.funcoesArgs = new HashMap<String, Integer>();
+		this.funcoesNested = new HashMap<String, Integer>();
 	}
 
-	public int getLinhas(){
-		return this.linhas;
+	public HashMap <String, Integer> getFuncoesLinhas(){
+		return this.funcoesLinhas;
+	}
+
+	public HashMap <String, Integer> getFuncoesArgs(){
+		return this.funcoesArgs;
+	}
+
+	public HashMap <String, Integer> getFuncoesNested(){
+		return this.funcoesNested;
+	}
+
+	public int getTotalLinhas(){
+		int aux = 0;
+		
+		for(String s : this.funcoesLinhas.keySet()){
+		  	aux+=this.funcoesLinhas.get(s);
+		  	aux+=2;
+		}
+
+		return aux;
+	}
+
+	public int getTotalArgs(){
+		int aux = 0;
+		
+		for(String s : this.funcoesArgs.keySet()){
+		  	aux+=this.funcoesArgs.get(s);
+		}
+
+		return aux;
+	}
+
+	public void setFuncoesLinhas(String s, Integer i){
+		this.funcoesLinhas.put(s,i);
+	}
+
+	public void setFuncoesArgs(String s, Integer i){
+		this.funcoesArgs.put(s,i);
+	}
+
+	public void setFuncoesNested(String s, Integer i){
+		this.funcoesNested.put(s,i);
 	}
 }
