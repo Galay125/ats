@@ -3,7 +3,7 @@ package maqv;
 import maqv.msp.mspAdaptor;
 import maqv.msp.types.*;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.tree.Tree;
 import tom.library.utils.Viewer;
 import tom.library.sl.*;
@@ -28,20 +28,23 @@ public class Main {
 	private int pc;
 	private int numProg;
 	private StringBuilder output;
-	private Map<String,Integer> metricas;
+	private HashMap<String,Integer> metricas;
 
 	public void initMetricas(){
+		//Chamada de funcoes e returns
 		metricas.put("ALabel",0);
 		metricas.put("Call",0);
 		metricas.put("Ret",0);
+		//Aritmeticas
 		metricas.put("Add",0);
 		metricas.put("Sub",0);
 		metricas.put("Div",0);
 		metricas.put("Mul",0);
 		metricas.put("Mod",0);
-		metricas.put("GoEq",0);
+		//Incrementos e decrementos
 		metricas.put("Inc",0);
 		metricas.put("Dec",0);
+		//Relacionais
 		metricas.put("Eq",0);
 		metricas.put("Neq",0);
 		metricas.put("Gt",0);
@@ -49,17 +52,22 @@ public class Main {
 		metricas.put("Lt",0);
 		metricas.put("LoEq",0);
 		metricas.put("Nott",0);
+		//Condicionais
 		metricas.put("Or",0);
 		metricas.put("And",0);
+
 		metricas.put("Halt",0);
+		//I/O
 		metricas.put("IIn",0);
 		metricas.put("IOut",0);
+
 		metricas.put("Jump",0);
 		metricas.put("Jumpf",0);
 		metricas.put("Push",0);
 		metricas.put("PushA",0);
 		metricas.put("Load",0);
 		metricas.put("Store",0);
+		//Declaracoes
 		metricas.put("Decl",0);
 	}
 
@@ -73,17 +81,64 @@ public class Main {
 		return str.toString();
 	}
 
+	public static void menu(){
+
+		System.out.println("\n*********** Menu ************");
+		System.out.println("1 ----------------- Árvore GOM ");
+		System.out.println("2 ----------------- Menu métricas");
+		System.out.println("3 ----------------- Correr Programa");
+		System.out.println("4 ----------------- Gerar ficheiro .dot");
+		System.out.println("0 ----------------- Sair do Sistema ");
+
+		System.out.println("\nDigite um número:");
+	}
+
+	public static void menuMetricas(){
+
+		System.out.println("\n********** Menu Métricas *********");
+
+		System.out.println("1 ----------------- Ler métricas todas");
+		System.out.println("2 ----------------- Métricas Declarações");
+		System.out.println("3 ----------------- Métricas Aritméticas");
+		System.out.println("4 ----------------- Métricas Condicionais");
+		System.out.println("5 ----------------- Métricas Relacionais");
+		System.out.println("6 ----------------- Métricas I/O");
+		System.out.println("0 ----------------- Voltar atrás");
+		System.out.println("\nDigite um número:");
+	}
+
+	public static void menuRun(){
+
+		System.out.println("\n********** Menu Run *********");
+
+		System.out.println("1 ----------------- Output no Terminal");
+		System.out.println("2 ----------------- Output em ficheiro .txt ");
+		System.out.println("\nDigite um número:");
+	}
+
 	public static void main(String[] args) {
-		try {
-			mspLexer lexer = new mspLexer(new ANTLRInputStream(new FileInputStream(args[0])));
+
+		Boolean sair = false;
+		Boolean metric = false;
+		Boolean run = false;
+		String file=null;
+		String opcao =null;
+		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
+		Main main;
+		Instrucoes p,original;
+
+		try{
+			mspLexer lexer = new mspLexer(new ANTLRFileStream("res.msp"));
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			mspParser parser = new mspParser(tokens);
 			// Parse the inputexpression
 			Tree b = (Tree) parser.programa().getTree();
-			//System.out.println("Result = " + mspAdaptor.getTerm(b)); // name of the Gom module + Adaptor
-			Instrucoes p = (Instrucoes) mspAdaptor.getTerm(b);
-			Instrucoes original = (Instrucoes) mspAdaptor.getTerm(b);
+			p = (Instrucoes) mspAdaptor.getTerm(b);
+			original = (Instrucoes) mspAdaptor.getTerm(b);
+			main = new Main(p, original);
+			main.initMetricas();
 
+<<<<<<< HEAD
 			Main main = new Main(p, original);
 			main.initMetricas();
 			main.run(p);
@@ -104,18 +159,223 @@ public class Main {
 					PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(args[1], true)));
         			pw.print(main.getOutput());
         			pw.flush(); pw.close();
+=======
+			while(!sair){
+				menu();
+				opcao = teclado.readLine();
+
+				switch(opcao){
+
+					case "1"://GOM
+						System.out.println("Árvore gerada = " + p);// name of the Gom module + Adaptor
+						break;
+
+					case "2"://Metricas
+						metric = true;
+						while(metric){
+							menuMetricas();
+							opcao = teclado.readLine();
+							switch(opcao){
+
+								case "1":
+									System.out.println(main.toString());
+									break;
+
+								case "2":								
+									`TopDown(visitDecl(main.metricas,0)).visit(p);
+									System.out.println("#Declarações = "+ main.metricas.get("Decl"));
+									break;
+
+								case "3":
+									`TopDown(visitAritm(main.metricas,0,0,0,0,0)).visit(p);
+									System.out.println("#Adições = "+ main.metricas.get("Add"));
+									System.out.println("#Subtrações = "+ main.metricas.get("Sub"));
+									System.out.println("#Multiplicações = "+ main.metricas.get("Mul"));
+									System.out.println("#Divisões = "+ main.metricas.get("Div"));
+									System.out.println("#Resto = "+ main.metricas.get("Mod"));
+									break;
+
+								case "4":
+									`TopDown(visitConditionals(main.metricas,0,0)).visit(p);
+									System.out.println("#And = "+ main.metricas.get("And"));
+									System.out.println("#Or = "+ main.metricas.get("Or"));
+									break;
+
+								case "5":
+									`TopDown(visitRelationals(main.metricas,0,0,0,0,0,0,0)).visit(p);
+									System.out.println("#Igualdades = "+ main.metricas.get("Eq"));
+									System.out.println("#Diferentes = "+ main.metricas.get("Neq"));
+									System.out.println("#Maior = "+ main.metricas.get("Gt"));
+									System.out.println("#Maior ou Igual = "+ main.metricas.get("GoEq"));
+									System.out.println("#Menor = "+ main.metricas.get("Lt"));
+									System.out.println("#Menor ou Igual = "+ main.metricas.get("LoEq"));
+									System.out.println("#Negação = "+ main.metricas.get("Nott"));
+									break;
+
+								case "6":
+									`TopDown(visitIO(main.metricas,0,0)).visit(p);
+									System.out.println("#Inputs = "+ main.metricas.get("IIn"));
+									System.out.println("#Outputs = "+ main.metricas.get("IOut"));
+									break;
+
+								case "0":
+									metric = false;
+									break;
+
+								default:
+				 					System.out.println("Opção Inválida. Tente de novo.");
+				 					break;
+							}
+						}
+						break;
+
+					case "3"://Run
+						main.initMetricas();
+						main.output.replace(0,main.output.length()," ");
+						main.output.trimToSize();
+						main.run(p);
+						run = true;
+							while(run){
+								menuRun();
+								opcao = teclado.readLine();
+								switch(opcao){
+									case "1":
+										System.out.println(main.getOutput());
+										run = false;
+										break;
+									case "2":
+										try {
+											PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("output.txt", true)));
+		        							pw.print(main.getOutput());
+		        							pw.flush(); pw.close();
+											run = false;
+										}catch (IOException e){
+											System.err.println("exception: " + e);
+											return;
+			    						} 
+										break;
+									default:
+										System.out.println("Opção inválida. Tente de novo.");				
+										break;
+								}
+							}
+							break;
+
+					case "4"://graphivz
+						try{
+							FileWriter out = new FileWriter("gram.dot");
+							Viewer.toDot(p,out);
+						}catch (IOException e){
+							System.out.println("ERROR in dot file"); 
+						}
+						break;
+					
+					case "0":
+				 		sair = true;
+				 		break;
+
+				 	default:
+				 		System.out.println("Opção Inválida. Tente de novo.");
+				 		break;
+>>>>>>> be88c60f99d6ab5b65cd405fcf3c5716c06a1ff0
 				}
-				catch (IOException e){
-					System.err.println("exception: " + e);
-					return;
-		    	} 
-			}
-			else {
-				System.out.println(main.getOutput());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	%strategy visitDecl(metricas:HashMap,n:int) extends Identity() {
+      	visit Instrucao {
+      	 	Decl(id,initMemAddress,size) -> {
+      	  		n++;
+      	  		metricas.put("Decl",n);
+      	 	}
+        }
+	}
+
+	%strategy visitAritm(metricas:HashMap,add:int,sub:int,mul:int,div:int,mod:int) extends Identity() {
+      	visit Instrucao {
+			Add() -> {
+				add++;
+      	  		metricas.put("Add",add);	
+			}
+			Sub() -> {
+				sub++;
+      	  		metricas.put("Sub",sub);	
+			}
+			Div() -> {
+				div++;
+      	  		metricas.put("Div",div);	
+			}
+			Mul() -> {
+				mul++;
+      	  		metricas.put("Mul",mul);	
+			}
+			Mod() -> {
+				mod++;
+      	  		metricas.put("Mod",mod);	
+			}
+        }
+	}
+
+	%strategy visitRelationals(metricas:HashMap,eq:int,neq:int,gt:int,goEq:int,lt:int,loEq:int,nott:int) extends Identity() {
+      	visit Instrucao {
+			Eq() -> {
+				eq++;
+      	  		metricas.put("Eq",eq);	
+			}
+			Neq() -> {
+				neq++;
+      	  		metricas.put("Neq",neq);	
+			}
+			Gt() -> {
+				gt++;
+      	  		metricas.put("Gt",gt);	
+			}
+			GoEq() -> {
+				goEq++;
+      	  		metricas.put("GoEq",goEq);	
+			}
+			Lt() -> {
+				lt++;
+      	  		metricas.put("Lt",lt);	
+			}
+			LoEq() -> {
+				loEq++;
+      	  		metricas.put("LoEq",loEq);	
+			}
+			Nott() -> {
+				nott++;
+      	  		metricas.put("Nott",nott);	
+			}
+        }
+	}
+
+	%strategy visitConditionals(metricas:HashMap,and:int,or:int) extends Identity() {
+      	visit Instrucao {
+			And() -> {
+				and++;
+      	  		metricas.put("And",and);	
+			}
+			Or() -> {
+				or++;
+      	  		metricas.put("Or",or);	
+			}
+        }
+	}
+
+	%strategy visitIO(metricas:HashMap,in:int,out:int) extends Identity() {
+      	visit Instrucao {
+			IIn(tipo) -> {
+				in++;
+      	  		metricas.put("IIn",in);	
+			}
+			IOut() -> {
+				out++;
+      	  		metricas.put("IOut",out);	
+			}
+        }
 	}
 
 	public Main(Instrucoes insts, Instrucoes orig) {
@@ -133,6 +393,7 @@ public class Main {
 	}
 	
 	public String getOutput(){
+		output.insert(0,"Output");
 		return output.toString();
 	}
 
