@@ -85,7 +85,6 @@ public class Main {
 			Instrucoes original = (Instrucoes) mspAdaptor.getTerm(b);
 
 			Main main = new Main(p, original);
-
 			main.initMetricas();
 			main.run(p);
 			System.out.println(main.toString());
