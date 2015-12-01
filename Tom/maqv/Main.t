@@ -138,28 +138,6 @@ public class Main {
 			main = new Main(p, original);
 			main.initMetricas();
 
-<<<<<<< HEAD
-			Main main = new Main(p, original);
-			main.initMetricas();
-			main.run(p);
-			System.out.println(main.toString());
-
-			/* Export this representation to .dot file*/
-			/*
-			try{
-				FileWriter out=new FileWriter("gram.dot");
-				Viewer.toDot(p,out);
-			}
-			catch (IOException e){
-				System.out.println("ERROR in dot file"); 
-			}
-			*/
-			if (args.length > 1) {
-				try {
-					PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(args[1], true)));
-        			pw.print(main.getOutput());
-        			pw.flush(); pw.close();
-=======
 			while(!sair){
 				menu();
 				opcao = teclado.readLine();
@@ -277,7 +255,6 @@ public class Main {
 				 	default:
 				 		System.out.println("Opção Inválida. Tente de novo.");
 				 		break;
->>>>>>> be88c60f99d6ab5b65cd405fcf3c5716c06a1ff0
 				}
 			}
 		} catch (Exception e) {
