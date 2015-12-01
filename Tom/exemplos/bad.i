@@ -7,7 +7,7 @@ void main() {
     res = max(a,b);
     print(';');
     print(res);
-    if (!a) {
+    if (!a && b) {
         if (!a) {
            res = a;
 	   for(int x=0; i<10; i++){
@@ -19,26 +19,24 @@ void main() {
     	}
     }
 }
-
 int max(int a, int b){
     int res;
-    if (!a) {
-        if (!a) {
+    if (!a || b) {
+        if (!a && c) {
            res = a;
-	   for(int x=0; i<10; i++){
+	   for(int x=0; i<10 && c; i++){
 	       a = b;
            }
 	}
 	else {
            res = b;
     	}
-	while (a>3) {
+	while (a>3 || b && c || a) {
 	   b=4;
 	   d=4;
 		while (b>c) {
        		b=4;
        		d=4;
-      		
 		if (!a) {
            		res = a;
 		}
@@ -59,6 +57,5 @@ int max(int a, int b){
        		d=4;
        }
     }
-
     return res; 
 }

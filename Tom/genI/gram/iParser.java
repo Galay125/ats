@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 gram/i.g 2015-11-27 02:00:03
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 gram/i.g 2015-12-01 15:07:14
  package gram; 
 
 import org.antlr.runtime.*;
@@ -1056,7 +1056,7 @@ public class iParser extends Parser {
 
 
             // AST REWRITE
-            // elements: dec_nodo, idTipo
+            // elements: idTipo, dec_nodo
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -1361,7 +1361,7 @@ public class iParser extends Parser {
 
 
             // AST REWRITE
-            // elements: argumentos, idTipo, blocoCodigo, ID
+            // elements: argumentos, idTipo, ID, blocoCodigo
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2013,7 +2013,7 @@ public class iParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: else_, condicao, blocoCodigo
+                    // elements: else_, blocoCodigo, condicao
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2325,7 +2325,7 @@ public class iParser extends Parser {
 
 
             // AST REWRITE
-            // elements: blocoCodigo, condicao, for_declaracao, expressao
+            // elements: blocoCodigo, expressao, for_declaracao, condicao
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3587,7 +3587,7 @@ public class iParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: condicao, expressao, condicao_ou
+                    // elements: condicao_ou, expressao, condicao
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4173,7 +4173,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: c, condicao_comparacao
+            	            // elements: condicao_comparacao, c
             	            // token labels: 
             	            // rule labels: retval, c
             	            // token list labels: 
@@ -4224,7 +4224,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: c, condicao_comparacao
+            	            // elements: condicao_comparacao, c
             	            // token labels: 
             	            // rule labels: retval, c
             	            // token list labels: 
@@ -4451,7 +4451,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: e, condicao_igualdade
+            	            // elements: condicao_igualdade, e
             	            // token labels: 
             	            // rule labels: retval, e
             	            // token list labels: 
@@ -4565,7 +4565,7 @@ public class iParser extends Parser {
 
 
             // AST REWRITE
-            // elements: opAtribuicao, condicao, ID
+            // elements: condicao, opAtribuicao, ID
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -5034,7 +5034,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: expressao, e
+            	            // elements: e, expressao
             	            // token labels: 
             	            // rule labels: retval, e
             	            // token list labels: 
@@ -5222,7 +5222,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: o, expressaoNum
+            	            // elements: expressaoNum, o
             	            // token labels: 
             	            // rule labels: retval, o
             	            // token list labels: 
@@ -5273,7 +5273,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: expressaoNum, o
+            	            // elements: o, expressaoNum
             	            // token labels: 
             	            // rule labels: retval, o
             	            // token list labels: 
@@ -5513,7 +5513,7 @@ public class iParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: tipo, opUnario
+                    // elements: opUnario, tipo
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5622,7 +5622,7 @@ public class iParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: incOp, ID
+                    // elements: ID, incOp
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -5665,7 +5665,7 @@ public class iParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: incOp, ID
+                    // elements: ID, incOp
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 

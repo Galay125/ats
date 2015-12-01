@@ -61,6 +61,7 @@ public class Main {
  		String aux = null;
  		Main main = new Main();
  		ArrayList<Integer> numInstrucao = new ArrayList<Integer>();
+ 		Metrica met = new Metrica();
 
 		while(sair == false){
  			 
@@ -70,7 +71,7 @@ public class Main {
 			 
 			 switch(opcao){
 			 	case "1":
-			 		System.out.println("\nDigite o nome do ficheiro: ../exemplos/fi.i | ../exemplos/fatorial.i | ../exemplos/maiorDeDoisNumeros.i");
+			 		System.out.println("\nDigite o nome do ficheiro: ");
 			 		file = teclado.readLine();
 			 		main = new Main();
 			 		try{
@@ -148,34 +149,85 @@ public class Main {
 						try{
 							System.out.println("\n*********** Métricas ************ ");
 
-							Metrica met = new Metrica();
-							
-							/* Vai recolher as instruções por função */
-							`TopDown(visitFuncoes(main.funcoesInst)).visit(p);
+							if(main.funcoesInst.size()==0){
+								/* Vai recolher as instruções por função */
+								`TopDown(visitFuncoes(main.funcoesInst)).visit(p);
+							}
 
 							System.out.println("\nNúmero de funcoes: "+main.funcoesInst.size());
 
-							for(String s : main.funcoesInst.keySet()){
-									System.out.println("\nFuncao: "+s);
-									
-									/* Numero de Linhas */
-									int a = linesOfCode(main.funcoesInst.get(s));
-								    met.setFuncoesLinhas(s,a);
-								    System.out.println("Numero de Linhas: "+a);
+							System.out.println("1 ----------------- Linhas");
+							System.out.println("2 ----------------- Argumentos ");
+							System.out.println("3 ----------------- Blocos Aninhados");
+							System.out.println("4 ----------------- Cyclomatic Complexity");
+							System.out.println("5 ----------------- Todas as Métricas");
+							System.out.println("0 ----------------- Voltar");
 
-								    /* Numero de Argumentos */
-								    a = foundDecl(main.funcoesInst.get(s));
-								    met.setFuncoesArgs(s,a);
-								    System.out.println("Numero de Args: "+a);
+ 							opcao = teclado.readLine();
+							int a;
 
-								    /* Numero de Blocos aninhados */
-								    a = foundNested(main.funcoesInst.get(s));
-								    met.setFuncoesNested(s,a);
-								    System.out.println("Nested: "+a);
+							switch(opcao){
+								case "1":
+									for(String s : main.funcoesInst.keySet()){
+										System.out.println("\nFuncao: "+s);
+										a = linesOfCode(main.funcoesInst.get(s));
+										met.setFuncoesLinhas(s,a);
+										System.out.println("Numero de Linhas: "+a);
+									}
+									System.out.println("\nTotal de Linhas: "+met.getTotalLinhas());
+								break;
+
+								case "2":
+									for(String s : main.funcoesInst.keySet()){
+										System.out.println("\nFuncao: "+s);
+										a = foundDecl(main.funcoesInst.get(s));
+										met.setFuncoesArgs(s,a);
+										System.out.println("Numero de Args: "+a);
+									}
+										System.out.println("\nTotal de Argumentos: "+met.getTotalArgs());
+								break;
+
+								case "3":
+									for(String s : main.funcoesInst.keySet()){
+										System.out.println("\nFuncao: "+s);
+										a = foundNested(main.funcoesInst.get(s));
+										met.setFuncoesNested(s,a);
+										System.out.println("Maior Bloco Aninhado: "+a);
+									}
+								break;
+
+								case "4":
+									for(String s : main.funcoesInst.keySet()){
+										System.out.println("\nFuncao: "+s);
+										a = foundCC(main.funcoesInst.get(s))+1;
+										met.setFuncoesCC(s,a);
+										System.out.println("Cyclomatic Complexity: "+a);
+									}
+								break;
+
+								case "5":
+									for(String s : main.funcoesInst.keySet()){
+										System.out.println("\nFuncao: "+s);
+										a = linesOfCode(main.funcoesInst.get(s));
+										met.setFuncoesLinhas(s,a);
+										System.out.println("Numero de Linhas: "+a);
+
+										a = foundDecl(main.funcoesInst.get(s));
+										met.setFuncoesArgs(s,a);
+										System.out.println("Numero de Args: "+a);
+
+										a = foundNested(main.funcoesInst.get(s));
+										met.setFuncoesNested(s,a);
+										System.out.println("Maior Bloco Aninhado: "+a);
+
+										a = foundCC(main.funcoesInst.get(s))+1;
+										met.setFuncoesCC(s,a);
+										System.out.println("Cyclomatic Complexity: "+a);
+									}
+									System.out.println("\nTotal de Linhas: "+met.getTotalLinhas());
+									System.out.println("Total de Argumentos: "+met.getTotalArgs());
+								break;
 							}
-
-							System.out.println("\nTotal de Linhas: "+met.getTotalLinhas());
-							System.out.println("Total de Argumentos: "+met.getTotalArgs());
 						}
 						catch(VisitFailure e) {
 								System.out.println("the strategy failed");
@@ -198,21 +250,6 @@ public class Main {
 		funcoesInst = new HashMap<String, Instrucao>();
 	}
 
-    /*strategy para gerar o gráfico .dot*/
-    %strategy toDot() extends Identity(){
-		visit Instrucao{
- 			Atribuicao(id,opAtrib,exp) -> {return `Atribuicao(id,opAtrib,exp);}
-			Declaracao(tipo,decl) -> {return `Declaracao(tipo,decl);}
-			If(condicao,inst1,inst2) -> { return `If(condicao,inst1,inst2);}
-	        While(condicao,inst) -> { return `While(condicao,inst);}
-			For(decl,condicao,exp,inst) -> { return `For(decl,condicao,exp,inst);}
-	        Return(exp) -> { return `Return(exp);}
- 			Funcao(tipo,nome,argumentos,inst) -> { return `Funcao(tipo,nome,argumentos,inst);}
- 			Exp(exp) -> { return `Exp(exp);}
- 			SeqInstrucao(inst1, inst*) -> { return `SeqInstrucao(inst1, inst*);}
-        }
-	}
-
     /*vai inserir numa hash as instruções de uma dada função*/
     %strategy visitFuncoes(funcoes:HashMap) extends Identity() {
       visit Instrucao {
@@ -226,14 +263,14 @@ public class Main {
     private static int linesOfCode(Instrucao i) {
     	int aux = 0;
 		%match(i) {
-			Atribuicao(id,opAtrib,exp) -> { return ++aux;}
-	        Declaracao(tipo,decl) -> { return ++aux;}
+			Atribuicao(id,opAtrib,exp) -> { return 1;}
+	        Declaracao(tipo,decl) -> { return 1;}
 			If(condicao,inst1,inst2) -> { if(linesOfCode(`inst2)>0) aux=2; return (linesOfCode(`inst1)+2)+(linesOfCode(`inst2)+aux);}
 	        While(condicao,inst) -> { return linesOfCode(`inst)+2;}
-			For(decl,condicao,exp,inst) -> { return aux+linesOfCode(`inst)+2;}
-	        Return(exp) -> { return ++aux;}
+			For(decl,condicao,exp,inst) -> { return linesOfCode(`inst)+2;}
+	        Return(exp) -> { return 1;}
  			Funcao(tipo,nome,argumentos,inst) -> { return linesOfCode(`inst);}
- 			Exp(exp) -> { return ++aux;}
+ 			Exp(exp) -> { return 1;}
  			SeqInstrucao(inst1, inst*) -> { return linesOfCode(`inst1)+linesOfCode(`inst*);}
 		}
 		return aux;
@@ -255,6 +292,26 @@ public class Main {
 	        While(condicao,inst) -> { return foundNested(`inst)+1;}
 			For(decl,condicao,exp,inst) -> { return foundNested(`inst)+1;}
 	        SeqInstrucao(inst1, inst*) -> { return max(foundNested(`inst1),foundNested(`inst*));}
+		}
+		return 0;
+	}
+
+	/*vai calcuar o cyclometic complexity com a formula D+1 (D = pontos de decisão)*/
+	private static int foundCC(Instrucao i) {
+		%match(i) {
+	        If(condicao,inst1,inst2) -> { return 1+foundCC(`inst1)+foundCC(`inst2)+foundBoolean(`condicao);}
+	        While(condicao,inst) -> { return 1+foundCC(`inst)+foundBoolean(`condicao);}
+			For(decl,condicao,exp,inst) -> { return 1+foundCC(`inst)+foundBoolean(`condicao);}
+	        SeqInstrucao(inst1, inst*) -> { return foundCC(`inst1)+foundCC(`inst*);}
+		}
+		return 0;
+	}
+
+	/* Numero de operações booleanas nas operaçoes de condição (auxiliar para o CC) */
+	private static int foundBoolean(Expressao e) {
+		%match(e) {
+	        E(cond1,cond2) -> { return 1+foundBoolean(`cond1)+foundBoolean(`cond2);}
+	        Ou(cond1,cond2) -> { return 1+foundBoolean(`cond1)+foundBoolean(`cond2);}
 		}
 		return 0;
 	}
@@ -292,7 +349,8 @@ class Metrica{
 	private int funcoes;
 	private HashMap<String, Integer> funcoesArgs;
 	private HashMap<String, Integer> funcoesLinhas;
-	private HashMap<String,Integer> funcoesNested;
+	private HashMap<String, Integer> funcoesNested;
+	private HashMap<String, Integer> funcoesCC;
 
 
 	public Metrica() {
@@ -300,6 +358,7 @@ class Metrica{
 		this.funcoesLinhas = new HashMap<String, Integer>();
 		this.funcoesArgs = new HashMap<String, Integer>();
 		this.funcoesNested = new HashMap<String, Integer>();
+		this.funcoesCC = new HashMap<String, Integer>();
 	}
 
 	public HashMap <String, Integer> getFuncoesLinhas(){
@@ -312,6 +371,10 @@ class Metrica{
 
 	public HashMap <String, Integer> getFuncoesNested(){
 		return this.funcoesNested;
+	}
+
+	public HashMap <String, Integer> getFuncoesCC(){
+		return this.funcoesCC;
 	}
 
 	public int getTotalLinhas(){
@@ -345,5 +408,9 @@ class Metrica{
 
 	public void setFuncoesNested(String s, Integer i){
 		this.funcoesNested.put(s,i);
+	}
+
+	public void setFuncoesCC(String s, Integer i){
+		this.funcoesCC.put(s,i);
 	}
 }
