@@ -1,4 +1,4 @@
-void main() {
+void main(int a) {
     int a;
     int b;
     int res;
@@ -19,7 +19,7 @@ void main() {
     	}
     }
 }
-int max(int a, int b){
+int max(int a, int b, int x){
     int res;
     if (!a || b) {
         if (!a && c) {

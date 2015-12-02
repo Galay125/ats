@@ -11,7 +11,7 @@ void main() {
 
 int max(int a, int b){
     int res;
-    if (a > b) {
+    if (!a) {
         res = a;
     }
     else {

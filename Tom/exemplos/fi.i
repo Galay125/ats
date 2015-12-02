@@ -7,7 +7,6 @@ void main() {
        d=4;
     }
 }
-
 int a(int a){
     int x;
     d = 4;
