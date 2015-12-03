@@ -3,7 +3,7 @@ package maqv;
 import maqv.msp.mspAdaptor;
 import maqv.msp.types.*;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.tree.Tree;
 import tom.library.utils.Viewer;
 import tom.library.sl.*;
@@ -28,50 +28,332 @@ public class Main {
 	private int pc;
 	private int numProg;
 	private StringBuilder output;
+	private HashMap<String,Integer> metricas;
+
+	public void initMetricas(){
+		//Chamada de funcoes e returns
+		metricas.put("ALabel",0);
+		metricas.put("Call",0);
+		metricas.put("Ret",0);
+		//Aritmeticas
+		metricas.put("Add",0);
+		metricas.put("Sub",0);
+		metricas.put("Div",0);
+		metricas.put("Mul",0);
+		metricas.put("Mod",0);
+		//Incrementos e decrementos
+		metricas.put("Inc",0);
+		metricas.put("Dec",0);
+		//Relacionais
+		metricas.put("Eq",0);
+		metricas.put("Neq",0);
+		metricas.put("Gt",0);
+		metricas.put("GoEq",0);
+		metricas.put("Lt",0);
+		metricas.put("LoEq",0);
+		metricas.put("Nott",0);
+		//Condicionais
+		metricas.put("Or",0);
+		metricas.put("And",0);
+
+		metricas.put("Halt",0);
+		//I/O
+		metricas.put("IIn",0);
+		metricas.put("IOut",0);
+
+		metricas.put("Jump",0);
+		metricas.put("Jumpf",0);
+		metricas.put("Push",0);
+		metricas.put("PushA",0);
+		metricas.put("Load",0);
+		metricas.put("Store",0);
+		//Declaracoes
+		metricas.put("Decl",0);
+	}
+
+
+	public String toString(){
+		StringBuilder str = new StringBuilder("Métricas\n");
+		str.append("Instrução\t| Número de vezes ocorridas\n");
+		for(String s : metricas.keySet()){
+			str.append(s +"\t\t| "+ metricas.get(s)+"\n");
+		}
+		return str.toString();
+	}
+
+	public static void menu(){
+
+		System.out.println("\n*********** Menu ************");
+		System.out.println("1 ----------------- Árvore GOM ");
+		System.out.println("2 ----------------- Menu métricas");
+		System.out.println("3 ----------------- Correr Programa");
+		System.out.println("4 ----------------- Gerar ficheiro .dot");
+		System.out.println("0 ----------------- Sair do Sistema ");
+
+		System.out.println("\nDigite um número:");
+	}
+
+	public static void menuMetricas(){
+
+		System.out.println("\n********** Menu Métricas *********");
+
+		System.out.println("1 ----------------- Ler métricas todas");
+		System.out.println("2 ----------------- Métricas Declarações");
+		System.out.println("3 ----------------- Métricas Aritméticas");
+		System.out.println("4 ----------------- Métricas Condicionais");
+		System.out.println("5 ----------------- Métricas Relacionais");
+		System.out.println("6 ----------------- Métricas I/O");
+		System.out.println("0 ----------------- Voltar atrás");
+		System.out.println("\nDigite um número:");
+	}
+
+	public static void menuRun(){
+
+		System.out.println("\n********** Menu Run *********");
+
+		System.out.println("1 ----------------- Output no Terminal");
+		System.out.println("2 ----------------- Output em ficheiro .txt ");
+		System.out.println("\nDigite um número:");
+	}
 
 	public static void main(String[] args) {
-		try {
-			mspLexer lexer = new mspLexer(new ANTLRInputStream(new FileInputStream(args[0])));
+
+		Boolean sair = false;
+		Boolean metric = false;
+		Boolean run = false;
+		String file=null;
+		String opcao =null;
+		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
+		Main main;
+		Instrucoes p,original;
+
+		try{
+			mspLexer lexer = new mspLexer(new ANTLRFileStream("res.msp"));
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			mspParser parser = new mspParser(tokens);
-			// Parse the input expression
+			// Parse the inputexpression
 			Tree b = (Tree) parser.programa().getTree();
-			//System.out.println("Result = " + mspAdaptor.getTerm(b)); // name of the Gom module + Adaptor
-			Instrucoes p = (Instrucoes) mspAdaptor.getTerm(b);
-			Instrucoes original = (Instrucoes) mspAdaptor.getTerm(b);
+			p = (Instrucoes) mspAdaptor.getTerm(b);
+			original = (Instrucoes) mspAdaptor.getTerm(b);
+			main = new Main(p, original);
+			main.initMetricas();
 
-			Main main = new Main(p, original);
+			while(!sair){
+				menu();
+				opcao = teclado.readLine();
 
-			main.run(p);
+				switch(opcao){
 
-			/* Export this representation to .dot file*/
-			/*
-			try{
-				FileWriter out=new FileWriter("gram.dot");
-				Viewer.toDot(p,out);
-			}
-			catch (IOException e){
-				System.out.println("ERROR in dot file"); 
-			}
-			*/
-			if (args.length > 1) {
-				try {
-					PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(args[1], true)));
-        			pw.print(main.getOutput());
-        			pw.flush(); pw.close();
+					case "1"://GOM
+						System.out.println("Árvore gerada = " + p);// name of the Gom module + Adaptor
+						break;
+
+					case "2"://Metricas
+						metric = true;
+						while(metric){
+							menuMetricas();
+							opcao = teclado.readLine();
+							switch(opcao){
+
+								case "1":
+									System.out.println(main.toString());
+									break;
+
+								case "2":								
+									tom_make_TopDown(tom_make_visitDecl(main.metricas,0)).visit(p);
+									System.out.println("#Declarações = "+ main.metricas.get("Decl"));
+									break;
+
+								case "3":
+									tom_make_TopDown(tom_make_visitAritm(main.metricas,0,0,0,0,0)).visit(p);
+									System.out.println("#Adições = "+ main.metricas.get("Add"));
+									System.out.println("#Subtrações = "+ main.metricas.get("Sub"));
+									System.out.println("#Multiplicações = "+ main.metricas.get("Mul"));
+									System.out.println("#Divisões = "+ main.metricas.get("Div"));
+									System.out.println("#Resto = "+ main.metricas.get("Mod"));
+									break;
+
+								case "4":
+									tom_make_TopDown(tom_make_visitConditionals(main.metricas,0,0)).visit(p);
+									System.out.println("#And = "+ main.metricas.get("And"));
+									System.out.println("#Or = "+ main.metricas.get("Or"));
+									break;
+
+								case "5":
+									tom_make_TopDown(tom_make_visitRelationals(main.metricas,0,0,0,0,0,0,0)).visit(p);
+									System.out.println("#Igualdades = "+ main.metricas.get("Eq"));
+									System.out.println("#Diferentes = "+ main.metricas.get("Neq"));
+									System.out.println("#Maior = "+ main.metricas.get("Gt"));
+									System.out.println("#Maior ou Igual = "+ main.metricas.get("GoEq"));
+									System.out.println("#Menor = "+ main.metricas.get("Lt"));
+									System.out.println("#Menor ou Igual = "+ main.metricas.get("LoEq"));
+									System.out.println("#Negação = "+ main.metricas.get("Nott"));
+									break;
+
+								case "6":
+									tom_make_TopDown(tom_make_visitIO(main.metricas,0,0)).visit(p);
+									System.out.println("#Inputs = "+ main.metricas.get("IIn"));
+									System.out.println("#Outputs = "+ main.metricas.get("IOut"));
+									break;
+
+								case "0":
+									metric = false;
+									break;
+
+								default:
+				 					System.out.println("Opção Inválida. Tente de novo.");
+				 					break;
+							}
+						}
+						break;
+
+					case "3"://Run
+						main.initMetricas();
+						main.output.replace(0,main.output.length()," ");
+						main.output.trimToSize();
+						main.run(p);
+						run = true;
+							while(run){
+								menuRun();
+								opcao = teclado.readLine();
+								switch(opcao){
+									case "1":
+										System.out.println(main.getOutput());
+										run = false;
+										break;
+									case "2":
+										try {
+											PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("output.txt", true)));
+		        							pw.print(main.getOutput());
+		        							pw.flush(); pw.close();
+											run = false;
+										}catch (IOException e){
+											System.err.println("exception: " + e);
+											return;
+			    						} 
+										break;
+									default:
+										System.out.println("Opção inválida. Tente de novo.");				
+										break;
+								}
+							}
+							break;
+
+					case "4"://graphivz
+						try{
+							FileWriter out = new FileWriter("gram.dot");
+							Viewer.toDot(p,out);
+						}catch (IOException e){
+							System.out.println("ERROR in dot file"); 
+						}
+						break;
+					
+					case "0":
+				 		sair = true;
+				 		break;
+
+				 	default:
+				 		System.out.println("Opção Inválida. Tente de novo.");
+				 		break;
 				}
-				catch (IOException e){
-					System.err.println("exception: " + e);
-					return;
-		    	} 
-			}
-			else {
-				System.out.println(main.getOutput());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	public static class visitDecl extends tom.library.sl.AbstractStrategyBasic {private  java.util.HashMap  metricas;private  int  n;public visitDecl( java.util.HashMap  metricas,  int  n) {super(tom_make_Identity());this.metricas=metricas;this.n=n;}public  java.util.HashMap  getmetricas() {return metricas;}public  int  getn() {return n;}public tom.library.sl.Visitable[] getChildren() {tom.library.sl.Visitable[] stratChilds = new tom.library.sl.Visitable[getChildCount()];stratChilds[0] = super.getChildAt(0);return stratChilds;}public tom.library.sl.Visitable setChildren(tom.library.sl.Visitable[] children) {super.setChildAt(0, children[0]);return this;}public int getChildCount() {return 1;}public tom.library.sl.Visitable getChildAt(int index) {switch (index) {case 0: return super.getChildAt(0);default: throw new IndexOutOfBoundsException();}}public tom.library.sl.Visitable setChildAt(int index, tom.library.sl.Visitable child) {switch (index) {case 0: return super.setChildAt(0, child);default: throw new IndexOutOfBoundsException();}}@SuppressWarnings("unchecked")public <T> T visitLight(T v, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (tom_is_sort_Instrucao(v)) {return ((T)visit_Instrucao((( maqv.msp.types.Instrucao )v),introspector));}if (!(( null  == environment))) {return ((T)any.visit(environment,introspector));} else {return any.visitLight(v,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  _visit_Instrucao( maqv.msp.types.Instrucao  arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (!(( null  == environment))) {return (( maqv.msp.types.Instrucao )any.visit(environment,introspector));} else {return any.visitLight(arg,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  visit_Instrucao( maqv.msp.types.Instrucao  tom__arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {{{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Decl((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+
+      	  		n++;
+      	  		metricas.put("Decl",n);
+      	 	}}}}}return _visit_Instrucao(tom__arg,introspector);}}private static  tom.library.sl.Strategy  tom_make_visitDecl( java.util.HashMap  t0,  int  t1) { return new visitDecl(t0,t1);}public static class visitAritm extends tom.library.sl.AbstractStrategyBasic {private  java.util.HashMap  metricas;private  int  add;private  int  sub;private  int  mul;private  int  div;private  int  mod;public visitAritm( java.util.HashMap  metricas,  int  add,  int  sub,  int  mul,  int  div,  int  mod) {super(tom_make_Identity());this.metricas=metricas;this.add=add;this.sub=sub;this.mul=mul;this.div=div;this.mod=mod;}public  java.util.HashMap  getmetricas() {return metricas;}public  int  getadd() {return add;}public  int  getsub() {return sub;}public  int  getmul() {return mul;}public  int  getdiv() {return div;}public  int  getmod() {return mod;}public tom.library.sl.Visitable[] getChildren() {tom.library.sl.Visitable[] stratChilds = new tom.library.sl.Visitable[getChildCount()];stratChilds[0] = super.getChildAt(0);return stratChilds;}public tom.library.sl.Visitable setChildren(tom.library.sl.Visitable[] children) {super.setChildAt(0, children[0]);return this;}public int getChildCount() {return 1;}public tom.library.sl.Visitable getChildAt(int index) {switch (index) {case 0: return super.getChildAt(0);default: throw new IndexOutOfBoundsException();}}public tom.library.sl.Visitable setChildAt(int index, tom.library.sl.Visitable child) {switch (index) {case 0: return super.setChildAt(0, child);default: throw new IndexOutOfBoundsException();}}@SuppressWarnings("unchecked")public <T> T visitLight(T v, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (tom_is_sort_Instrucao(v)) {return ((T)visit_Instrucao((( maqv.msp.types.Instrucao )v),introspector));}if (!(( null  == environment))) {return ((T)any.visit(environment,introspector));} else {return any.visitLight(v,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  _visit_Instrucao( maqv.msp.types.Instrucao  arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (!(( null  == environment))) {return (( maqv.msp.types.Instrucao )any.visit(environment,introspector));} else {return any.visitLight(arg,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  visit_Instrucao( maqv.msp.types.Instrucao  tom__arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {{{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Add((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+
+
+
+
+
+				add++;
+      	  		metricas.put("Add",add);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Sub((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				sub++;
+      	  		metricas.put("Sub",sub);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Div((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				div++;
+      	  		metricas.put("Div",div);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Mul((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				mul++;
+      	  		metricas.put("Mul",mul);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Mod((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				mod++;
+      	  		metricas.put("Mod",mod);	
+			}}}}}return _visit_Instrucao(tom__arg,introspector);}}private static  tom.library.sl.Strategy  tom_make_visitAritm( java.util.HashMap  t0,  int  t1,  int  t2,  int  t3,  int  t4,  int  t5) { return new visitAritm(t0,t1,t2,t3,t4,t5);}public static class visitRelationals extends tom.library.sl.AbstractStrategyBasic {private  java.util.HashMap  metricas;private  int  eq;private  int  neq;private  int  gt;private  int  goEq;private  int  lt;private  int  loEq;private  int  nott;public visitRelationals( java.util.HashMap  metricas,  int  eq,  int  neq,  int  gt,  int  goEq,  int  lt,  int  loEq,  int  nott) {super(tom_make_Identity());this.metricas=metricas;this.eq=eq;this.neq=neq;this.gt=gt;this.goEq=goEq;this.lt=lt;this.loEq=loEq;this.nott=nott;}public  java.util.HashMap  getmetricas() {return metricas;}public  int  geteq() {return eq;}public  int  getneq() {return neq;}public  int  getgt() {return gt;}public  int  getgoEq() {return goEq;}public  int  getlt() {return lt;}public  int  getloEq() {return loEq;}public  int  getnott() {return nott;}public tom.library.sl.Visitable[] getChildren() {tom.library.sl.Visitable[] stratChilds = new tom.library.sl.Visitable[getChildCount()];stratChilds[0] = super.getChildAt(0);return stratChilds;}public tom.library.sl.Visitable setChildren(tom.library.sl.Visitable[] children) {super.setChildAt(0, children[0]);return this;}public int getChildCount() {return 1;}public tom.library.sl.Visitable getChildAt(int index) {switch (index) {case 0: return super.getChildAt(0);default: throw new IndexOutOfBoundsException();}}public tom.library.sl.Visitable setChildAt(int index, tom.library.sl.Visitable child) {switch (index) {case 0: return super.setChildAt(0, child);default: throw new IndexOutOfBoundsException();}}@SuppressWarnings("unchecked")public <T> T visitLight(T v, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (tom_is_sort_Instrucao(v)) {return ((T)visit_Instrucao((( maqv.msp.types.Instrucao )v),introspector));}if (!(( null  == environment))) {return ((T)any.visit(environment,introspector));} else {return any.visitLight(v,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  _visit_Instrucao( maqv.msp.types.Instrucao  arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (!(( null  == environment))) {return (( maqv.msp.types.Instrucao )any.visit(environment,introspector));} else {return any.visitLight(arg,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  visit_Instrucao( maqv.msp.types.Instrucao  tom__arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {{{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Eq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+
+
+
+
+
+				eq++;
+      	  		metricas.put("Eq",eq);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Neq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				neq++;
+      	  		metricas.put("Neq",neq);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Gt((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				gt++;
+      	  		metricas.put("Gt",gt);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_GoEq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				goEq++;
+      	  		metricas.put("GoEq",goEq);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Lt((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				lt++;
+      	  		metricas.put("Lt",lt);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_LoEq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				loEq++;
+      	  		metricas.put("LoEq",loEq);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Nott((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				nott++;
+      	  		metricas.put("Nott",nott);	
+			}}}}}return _visit_Instrucao(tom__arg,introspector);}}private static  tom.library.sl.Strategy  tom_make_visitRelationals( java.util.HashMap  t0,  int  t1,  int  t2,  int  t3,  int  t4,  int  t5,  int  t6,  int  t7) { return new visitRelationals(t0,t1,t2,t3,t4,t5,t6,t7);}public static class visitConditionals extends tom.library.sl.AbstractStrategyBasic {private  java.util.HashMap  metricas;private  int  and;private  int  or;public visitConditionals( java.util.HashMap  metricas,  int  and,  int  or) {super(tom_make_Identity());this.metricas=metricas;this.and=and;this.or=or;}public  java.util.HashMap  getmetricas() {return metricas;}public  int  getand() {return and;}public  int  getor() {return or;}public tom.library.sl.Visitable[] getChildren() {tom.library.sl.Visitable[] stratChilds = new tom.library.sl.Visitable[getChildCount()];stratChilds[0] = super.getChildAt(0);return stratChilds;}public tom.library.sl.Visitable setChildren(tom.library.sl.Visitable[] children) {super.setChildAt(0, children[0]);return this;}public int getChildCount() {return 1;}public tom.library.sl.Visitable getChildAt(int index) {switch (index) {case 0: return super.getChildAt(0);default: throw new IndexOutOfBoundsException();}}public tom.library.sl.Visitable setChildAt(int index, tom.library.sl.Visitable child) {switch (index) {case 0: return super.setChildAt(0, child);default: throw new IndexOutOfBoundsException();}}@SuppressWarnings("unchecked")public <T> T visitLight(T v, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (tom_is_sort_Instrucao(v)) {return ((T)visit_Instrucao((( maqv.msp.types.Instrucao )v),introspector));}if (!(( null  == environment))) {return ((T)any.visit(environment,introspector));} else {return any.visitLight(v,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  _visit_Instrucao( maqv.msp.types.Instrucao  arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (!(( null  == environment))) {return (( maqv.msp.types.Instrucao )any.visit(environment,introspector));} else {return any.visitLight(arg,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  visit_Instrucao( maqv.msp.types.Instrucao  tom__arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {{{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_And((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+
+
+
+
+
+				and++;
+      	  		metricas.put("And",and);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_Or((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				or++;
+      	  		metricas.put("Or",or);	
+			}}}}}return _visit_Instrucao(tom__arg,introspector);}}private static  tom.library.sl.Strategy  tom_make_visitConditionals( java.util.HashMap  t0,  int  t1,  int  t2) { return new visitConditionals(t0,t1,t2);}public static class visitIO extends tom.library.sl.AbstractStrategyBasic {private  java.util.HashMap  metricas;private  int  in;private  int  out;public visitIO( java.util.HashMap  metricas,  int  in,  int  out) {super(tom_make_Identity());this.metricas=metricas;this.in=in;this.out=out;}public  java.util.HashMap  getmetricas() {return metricas;}public  int  getin() {return in;}public  int  getout() {return out;}public tom.library.sl.Visitable[] getChildren() {tom.library.sl.Visitable[] stratChilds = new tom.library.sl.Visitable[getChildCount()];stratChilds[0] = super.getChildAt(0);return stratChilds;}public tom.library.sl.Visitable setChildren(tom.library.sl.Visitable[] children) {super.setChildAt(0, children[0]);return this;}public int getChildCount() {return 1;}public tom.library.sl.Visitable getChildAt(int index) {switch (index) {case 0: return super.getChildAt(0);default: throw new IndexOutOfBoundsException();}}public tom.library.sl.Visitable setChildAt(int index, tom.library.sl.Visitable child) {switch (index) {case 0: return super.setChildAt(0, child);default: throw new IndexOutOfBoundsException();}}@SuppressWarnings("unchecked")public <T> T visitLight(T v, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (tom_is_sort_Instrucao(v)) {return ((T)visit_Instrucao((( maqv.msp.types.Instrucao )v),introspector));}if (!(( null  == environment))) {return ((T)any.visit(environment,introspector));} else {return any.visitLight(v,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  _visit_Instrucao( maqv.msp.types.Instrucao  arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {if (!(( null  == environment))) {return (( maqv.msp.types.Instrucao )any.visit(environment,introspector));} else {return any.visitLight(arg,introspector);}}@SuppressWarnings("unchecked")public  maqv.msp.types.Instrucao  visit_Instrucao( maqv.msp.types.Instrucao  tom__arg, tom.library.sl.Introspector introspector) throws tom.library.sl.VisitFailure {{{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_IIn((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+
+
+
+
+
+				in++;
+      	  		metricas.put("IIn",in);	
+			}}}}{if (tom_is_sort_Instrucao(((Object)tom__arg))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom__arg)))) {if (tom_is_fun_sym_IOut((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom__arg))))) {
+
+				out++;
+      	  		metricas.put("IOut",out);	
+			}}}}}return _visit_Instrucao(tom__arg,introspector);}}private static  tom.library.sl.Strategy  tom_make_visitIO( java.util.HashMap  t0,  int  t1,  int  t2) { return new visitIO(t0,t1,t2);}
+
+
 
 	public Main(Instrucoes insts, Instrucoes orig) {
 		programa = insts;
@@ -83,10 +365,12 @@ public class Main {
 		symbols = new HashMap<String, Integer>();
 		pc = 0;
 		numProg = 0;
-		output = new StringBuilder();
+		output= new StringBuilder();
+		metricas = new HashMap<String, Integer>();
 	}
 	
 	public String getOutput(){
+		output.insert(0,"Output");
 		return output.toString();
 	}
 
@@ -103,9 +387,9 @@ public class Main {
 	}
 
 	private Instrucoes getCalledFunction(Instrucoes prog, String called){
-		{{if (tom_is_sort_Instrucoes(((Object)prog))) {if (tom_is_fun_sym_Instrucoes((( maqv.msp.types.Instrucoes )(( maqv.msp.types.Instrucoes )((Object)prog))))) {if (!(tom_is_empty_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog))))) { maqv.msp.types.Instrucao  tomMatch2_5=tom_get_head_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));if (tom_is_sort_Instrucao(tomMatch2_5)) {if (tom_is_fun_sym_Call((( maqv.msp.types.Instrucao )tomMatch2_5))) { maqv.msp.types.Instrucoes  tom_insts=tom_get_tail_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));
+		{{if (tom_is_sort_Instrucoes(((Object)prog))) {if (tom_is_fun_sym_Instrucoes((( maqv.msp.types.Instrucoes )(( maqv.msp.types.Instrucoes )((Object)prog))))) {if (!(tom_is_empty_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog))))) { maqv.msp.types.Instrucao  tomMatch7_5=tom_get_head_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));if (tom_is_sort_Instrucao(tomMatch7_5)) {if (tom_is_fun_sym_Call((( maqv.msp.types.Instrucao )tomMatch7_5))) { maqv.msp.types.Instrucoes  tom_insts=tom_get_tail_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));
 
-				if(called.equals(tom_get_slot_Call_id(tomMatch2_5))){
+				if(called.equals(tom_get_slot_Call_id(tomMatch7_5))){
 					return tom_insts;
 				}else{
 					return getCalledFunction(tom_insts,called);
@@ -117,9 +401,9 @@ public class Main {
 	}
 
 	private Instrucoes getNInstr(Instrucoes prog, String callerF, String called){
-		{{if (tom_is_sort_Instrucoes(((Object)prog))) {if (tom_is_fun_sym_Instrucoes((( maqv.msp.types.Instrucoes )(( maqv.msp.types.Instrucoes )((Object)prog))))) {if (!(tom_is_empty_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog))))) { maqv.msp.types.Instrucao  tomMatch3_5=tom_get_head_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));if (tom_is_sort_Instrucao(tomMatch3_5)) {if (tom_is_fun_sym_ALabel((( maqv.msp.types.Instrucao )tomMatch3_5))) { maqv.msp.types.Instrucoes  tom_insts=tom_get_tail_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));
+		{{if (tom_is_sort_Instrucoes(((Object)prog))) {if (tom_is_fun_sym_Instrucoes((( maqv.msp.types.Instrucoes )(( maqv.msp.types.Instrucoes )((Object)prog))))) {if (!(tom_is_empty_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog))))) { maqv.msp.types.Instrucao  tomMatch8_5=tom_get_head_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));if (tom_is_sort_Instrucao(tomMatch8_5)) {if (tom_is_fun_sym_ALabel((( maqv.msp.types.Instrucao )tomMatch8_5))) { maqv.msp.types.Instrucoes  tom_insts=tom_get_tail_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));
 
-				if(callerF.equals(tom_get_slot_ALabel_id(tomMatch3_5))){
+				if(callerF.equals(tom_get_slot_ALabel_id(tomMatch8_5))){
 					return getCalledFunction(tom_insts, called);
 				}else{
 					return getNInstr(tom_insts,callerF,called);
@@ -131,7 +415,7 @@ public class Main {
 	}
 
 	private Instrucoes jmp(Instrucoes prog, String label){
-		{{if (tom_is_sort_Instrucoes(((Object)prog))) {if (tom_is_fun_sym_Instrucoes((( maqv.msp.types.Instrucoes )(( maqv.msp.types.Instrucoes )((Object)prog))))) {if (!(tom_is_empty_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog))))) { maqv.msp.types.Instrucao  tomMatch4_5=tom_get_head_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));if (tom_is_sort_Instrucao(tomMatch4_5)) {if (tom_is_fun_sym_ALabel((( maqv.msp.types.Instrucao )tomMatch4_5))) { String  tom_l=tom_get_slot_ALabel_id(tomMatch4_5); maqv.msp.types.Instrucoes  tom_insts=tom_get_tail_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));
+		{{if (tom_is_sort_Instrucoes(((Object)prog))) {if (tom_is_fun_sym_Instrucoes((( maqv.msp.types.Instrucoes )(( maqv.msp.types.Instrucoes )((Object)prog))))) {if (!(tom_is_empty_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog))))) { maqv.msp.types.Instrucao  tomMatch9_5=tom_get_head_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));if (tom_is_sort_Instrucao(tomMatch9_5)) {if (tom_is_fun_sym_ALabel((( maqv.msp.types.Instrucao )tomMatch9_5))) { String  tom_l=tom_get_slot_ALabel_id(tomMatch9_5); maqv.msp.types.Instrucoes  tom_insts=tom_get_tail_Instrucoes_Instrucoes((( maqv.msp.types.Instrucoes )((Object)prog)));
 
 				if (label.equals(tom_l)) {
 					if(tom_l.startsWith("f:")){
@@ -218,18 +502,24 @@ public class Main {
 
 
 
+						int n = metricas.get("ALabel");
+						metricas.put("ALabel",++n);
 						if(tom_id.startsWith("f:")){
 							actualFuncName=tom_id;
 						}
 						return run(tom_instrs);
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Call((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) { String  tom_id=tom_get_slot_Call_id((( maqv.msp.types.Instrucao )((Object)tom_inst)));pushFuncs(tom_make_S(actualFuncName))
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Call((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) { String  tom_id=tom_get_slot_Call_id((( maqv.msp.types.Instrucao )((Object)tom_inst)));
 
-;
+						int n = metricas.get("Call");
+						metricas.put("Call",++n);
+						pushFuncs(tom_make_S(actualFuncName));
 						pushFuncs(tom_make_S(tom_id));
 						prog = jmp(orig,tom_id);
 						return run(prog);
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Ret((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("Ret");
+						metricas.put("Ret",++n);
 						Termo calledLabel = topFuncs(); 
 						popFuncs();
 						Termo callerFLabel = topFuncs();
@@ -251,58 +541,70 @@ public class Main {
 
 						prog = getNInstr(orig,callerF,called);
 						return run(prog);
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Add((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch15_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch15_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch15_6))) { maqv.msp.types.Stackk  tomMatch15_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch15_2))) { maqv.msp.types.Termo  tomMatch15_9=tom_get_head_Stackk_Stackk(tomMatch15_2);if (tom_is_sort_Termo(tomMatch15_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch15_9))) {
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Add((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
-
+						int n = metricas.get("Add");
+						metricas.put("Add",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch20_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch20_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch20_6))) { maqv.msp.types.Stackk  tomMatch20_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch20_2))) { maqv.msp.types.Termo  tomMatch20_9=tom_get_head_Stackk_Stackk(tomMatch20_2);if (tom_is_sort_Termo(tomMatch20_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch20_9))) {
  
-								stack = tom_get_tail_Stackk_Stackk(tomMatch15_2);
-								int resultado = tom_get_slot_I_i(tomMatch15_9)+tom_get_slot_I_i(tomMatch15_6);
+								stack = tom_get_tail_Stackk_Stackk(tomMatch20_2);
+								int resultado = tom_get_slot_I_i(tomMatch20_9)+tom_get_slot_I_i(tomMatch20_6);
 								pushStack(tom_make_I(resultado));
 								return run(tom_instrs);
 							}}}}}}}}}}
 
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Sub((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch16_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch16_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch16_6))) { maqv.msp.types.Stackk  tomMatch16_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch16_2))) { maqv.msp.types.Termo  tomMatch16_9=tom_get_head_Stackk_Stackk(tomMatch16_2);if (tom_is_sort_Termo(tomMatch16_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch16_9))) {
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Sub((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
-
+						int n = metricas.get("Sub");
+						metricas.put("Sub",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch21_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch21_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch21_6))) { maqv.msp.types.Stackk  tomMatch21_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch21_2))) { maqv.msp.types.Termo  tomMatch21_9=tom_get_head_Stackk_Stackk(tomMatch21_2);if (tom_is_sort_Termo(tomMatch21_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch21_9))) {
  
-								stack = tom_get_tail_Stackk_Stackk(tomMatch16_2);
-								int resultado = tom_get_slot_I_i(tomMatch16_9)- tom_get_slot_I_i(tomMatch16_6);
+								stack = tom_get_tail_Stackk_Stackk(tomMatch21_2);
+								int resultado = tom_get_slot_I_i(tomMatch21_9)- tom_get_slot_I_i(tomMatch21_6);
 								pushStack(tom_make_I(resultado));
 								return run(tom_instrs);
 							}}}}}}}}}}
 
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Div((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch17_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch17_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch17_6))) { maqv.msp.types.Stackk  tomMatch17_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch17_2))) { maqv.msp.types.Termo  tomMatch17_9=tom_get_head_Stackk_Stackk(tomMatch17_2);if (tom_is_sort_Termo(tomMatch17_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch17_9))) {
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Div((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
-
+						int n = metricas.get("Div");
+						metricas.put("Div",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch22_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch22_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch22_6))) { maqv.msp.types.Stackk  tomMatch22_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch22_2))) { maqv.msp.types.Termo  tomMatch22_9=tom_get_head_Stackk_Stackk(tomMatch22_2);if (tom_is_sort_Termo(tomMatch22_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch22_9))) {
  
-								stack = tom_get_tail_Stackk_Stackk(tomMatch17_2);
-								int resultado = tom_get_slot_I_i(tomMatch17_9)/ tom_get_slot_I_i(tomMatch17_6);
+								stack = tom_get_tail_Stackk_Stackk(tomMatch22_2);
+								int resultado = tom_get_slot_I_i(tomMatch22_9)/ tom_get_slot_I_i(tomMatch22_6);
 								pushStack(tom_make_I(resultado));
 								return run(tom_instrs);
 							}}}}}}}}}}
 
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Mul((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch18_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch18_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch18_6))) { maqv.msp.types.Stackk  tomMatch18_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch18_2))) { maqv.msp.types.Termo  tomMatch18_9=tom_get_head_Stackk_Stackk(tomMatch18_2);if (tom_is_sort_Termo(tomMatch18_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch18_9))) {
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Mul((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
-
+						int n = metricas.get("Mul");
+						metricas.put("Mul",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch23_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch23_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch23_6))) { maqv.msp.types.Stackk  tomMatch23_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch23_2))) { maqv.msp.types.Termo  tomMatch23_9=tom_get_head_Stackk_Stackk(tomMatch23_2);if (tom_is_sort_Termo(tomMatch23_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch23_9))) {
  
-								stack = tom_get_tail_Stackk_Stackk(tomMatch18_2);
-								int resultado = tom_get_slot_I_i(tomMatch18_9)* tom_get_slot_I_i(tomMatch18_6);
+								stack = tom_get_tail_Stackk_Stackk(tomMatch23_2);
+								int resultado = tom_get_slot_I_i(tomMatch23_9)* tom_get_slot_I_i(tomMatch23_6);
 								pushStack(tom_make_I(resultado));
 								return run(tom_instrs);
 							}}}}}}}}}}
 
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Mod((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch19_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch19_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch19_6))) { maqv.msp.types.Stackk  tomMatch19_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch19_2))) { maqv.msp.types.Termo  tomMatch19_9=tom_get_head_Stackk_Stackk(tomMatch19_2);if (tom_is_sort_Termo(tomMatch19_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch19_9))) {
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Mod((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
-
+						int n = metricas.get("Mod");
+						metricas.put("Mod",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch24_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch24_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch24_6))) { maqv.msp.types.Stackk  tomMatch24_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch24_2))) { maqv.msp.types.Termo  tomMatch24_9=tom_get_head_Stackk_Stackk(tomMatch24_2);if (tom_is_sort_Termo(tomMatch24_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch24_9))) {
  
-								stack = tom_get_tail_Stackk_Stackk(tomMatch19_2);
-								int resultado = tom_get_slot_I_i(tomMatch19_9)% tom_get_slot_I_i(tomMatch19_6);
+								stack = tom_get_tail_Stackk_Stackk(tomMatch24_2);
+								int resultado = tom_get_slot_I_i(tomMatch24_9)% tom_get_slot_I_i(tomMatch24_6);
 								pushStack(tom_make_I(resultado));
 								return run(tom_instrs);
 							}}}}}}}}}}
 
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Inc((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("Inc");
+						metricas.put("Inc",++n);
 						Termo t = topStack();
 						popStack();
 						{{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { int  tom_memAddress=tom_get_slot_I_i((( maqv.msp.types.Termo )((Object)t)));
@@ -320,6 +622,8 @@ public class Main {
 						return run(tom_instrs);
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Dec((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("Dec");
+						metricas.put("Dec",++n);
 						Termo t = topStack();
 						popStack();
 						{{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { int  tom_memAddress=tom_get_slot_I_i((( maqv.msp.types.Termo )((Object)t)));
@@ -335,83 +639,99 @@ public class Main {
 							}}}}}
 
 						return run(tom_instrs);
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Eq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch24_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch24_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch24_6))) { maqv.msp.types.Stackk  tomMatch24_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch24_2))) { maqv.msp.types.Termo  tomMatch24_9=tom_get_head_Stackk_Stackk(tomMatch24_2);if (tom_is_sort_Termo(tomMatch24_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch24_9))) {
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Eq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
-
- 
-								stack = tom_get_tail_Stackk_Stackk(tomMatch24_2);
-								Boool resultado = (tom_get_slot_I_i(tomMatch24_9)== tom_get_slot_I_i(tomMatch24_6)) ? tom_make_True() : tom_make_False();
-								pushStack(tom_make_B(resultado));
-								return run(tom_instrs);
-							}}}}}}}}}}
-
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Neq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch25_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch25_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch25_6))) { maqv.msp.types.Stackk  tomMatch25_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch25_2))) { maqv.msp.types.Termo  tomMatch25_9=tom_get_head_Stackk_Stackk(tomMatch25_2);if (tom_is_sort_Termo(tomMatch25_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch25_9))) {
-
-
- 
-								stack = tom_get_tail_Stackk_Stackk(tomMatch25_2);
-								Boool resultado = (tom_get_slot_I_i(tomMatch25_9)== tom_get_slot_I_i(tomMatch25_6)) ? tom_make_False() : tom_make_True();
-								pushStack(tom_make_B(resultado));
-								return run(tom_instrs);
-							}}}}}}}}}}
-
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Gt((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch26_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch26_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch26_6))) { maqv.msp.types.Stackk  tomMatch26_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch26_2))) { maqv.msp.types.Termo  tomMatch26_9=tom_get_head_Stackk_Stackk(tomMatch26_2);if (tom_is_sort_Termo(tomMatch26_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch26_9))) {
-
-
- 
-								stack = tom_get_tail_Stackk_Stackk(tomMatch26_2);
-								Boool resultado = (tom_get_slot_I_i(tomMatch26_9)> tom_get_slot_I_i(tomMatch26_6)) ? tom_make_True() : tom_make_False();
-								pushStack(tom_make_B(resultado));
-								return run(tom_instrs);
-							}}}}}}}}}}
-
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_GoEq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch27_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch27_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch27_6))) { maqv.msp.types.Stackk  tomMatch27_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch27_2))) { maqv.msp.types.Termo  tomMatch27_9=tom_get_head_Stackk_Stackk(tomMatch27_2);if (tom_is_sort_Termo(tomMatch27_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch27_9))) {
-
-
- 
-								stack = tom_get_tail_Stackk_Stackk(tomMatch27_2);
-								Boool resultado = (tom_get_slot_I_i(tomMatch27_9)>= tom_get_slot_I_i(tomMatch27_6)) ? tom_make_True() : tom_make_False();
-								pushStack(tom_make_B(resultado));
-								return run(tom_instrs);
-							}}}}}}}}}}
-
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Lt((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch28_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch28_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch28_6))) { maqv.msp.types.Stackk  tomMatch28_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch28_2))) { maqv.msp.types.Termo  tomMatch28_9=tom_get_head_Stackk_Stackk(tomMatch28_2);if (tom_is_sort_Termo(tomMatch28_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch28_9))) {
-
-
- 
-								stack = tom_get_tail_Stackk_Stackk(tomMatch28_2);
-								Boool resultado = (tom_get_slot_I_i(tomMatch28_9)< tom_get_slot_I_i(tomMatch28_6)) ? tom_make_True() : tom_make_False();
-								pushStack(tom_make_B(resultado));
-								return run(tom_instrs);
-							}}}}}}}}}}
-
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_LoEq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch29_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch29_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch29_6))) { maqv.msp.types.Stackk  tomMatch29_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch29_2))) { maqv.msp.types.Termo  tomMatch29_9=tom_get_head_Stackk_Stackk(tomMatch29_2);if (tom_is_sort_Termo(tomMatch29_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch29_9))) {
-
-
+						int n = metricas.get("Eq");
+						metricas.put("Eq",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch29_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch29_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch29_6))) { maqv.msp.types.Stackk  tomMatch29_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch29_2))) { maqv.msp.types.Termo  tomMatch29_9=tom_get_head_Stackk_Stackk(tomMatch29_2);if (tom_is_sort_Termo(tomMatch29_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch29_9))) {
  
 								stack = tom_get_tail_Stackk_Stackk(tomMatch29_2);
-								Boool resultado = (tom_get_slot_I_i(tomMatch29_9)<=tom_get_slot_I_i(tomMatch29_6)) ? tom_make_True() : tom_make_False();
+								Boool resultado = (tom_get_slot_I_i(tomMatch29_9)== tom_get_slot_I_i(tomMatch29_6)) ? tom_make_True() : tom_make_False();
+								pushStack(tom_make_B(resultado));
+								return run(tom_instrs);
+							}}}}}}}}}}
+
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Neq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
+ 
+						int n = metricas.get("Neq");
+						metricas.put("Neq",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch30_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch30_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch30_6))) { maqv.msp.types.Stackk  tomMatch30_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch30_2))) { maqv.msp.types.Termo  tomMatch30_9=tom_get_head_Stackk_Stackk(tomMatch30_2);if (tom_is_sort_Termo(tomMatch30_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch30_9))) {
+ 
+								stack = tom_get_tail_Stackk_Stackk(tomMatch30_2);
+								Boool resultado = (tom_get_slot_I_i(tomMatch30_9)== tom_get_slot_I_i(tomMatch30_6)) ? tom_make_False() : tom_make_True();
+								pushStack(tom_make_B(resultado));
+								return run(tom_instrs);
+							}}}}}}}}}}
+
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Gt((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
+
+						int n = metricas.get("Gt");
+						metricas.put("Gt",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch31_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch31_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch31_6))) { maqv.msp.types.Stackk  tomMatch31_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch31_2))) { maqv.msp.types.Termo  tomMatch31_9=tom_get_head_Stackk_Stackk(tomMatch31_2);if (tom_is_sort_Termo(tomMatch31_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch31_9))) {
+ 
+								stack = tom_get_tail_Stackk_Stackk(tomMatch31_2);
+								Boool resultado = (tom_get_slot_I_i(tomMatch31_9)> tom_get_slot_I_i(tomMatch31_6)) ? tom_make_True() : tom_make_False();
+								pushStack(tom_make_B(resultado));
+								return run(tom_instrs);
+							}}}}}}}}}}
+
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_GoEq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
+
+						int n = metricas.get("GoEq");
+						metricas.put("GoEq",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch32_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch32_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch32_6))) { maqv.msp.types.Stackk  tomMatch32_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch32_2))) { maqv.msp.types.Termo  tomMatch32_9=tom_get_head_Stackk_Stackk(tomMatch32_2);if (tom_is_sort_Termo(tomMatch32_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch32_9))) {
+ 
+								stack = tom_get_tail_Stackk_Stackk(tomMatch32_2);
+								Boool resultado = (tom_get_slot_I_i(tomMatch32_9)>= tom_get_slot_I_i(tomMatch32_6)) ? tom_make_True() : tom_make_False();
+								pushStack(tom_make_B(resultado));
+								return run(tom_instrs);
+							}}}}}}}}}}
+
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Lt((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
+
+						int n = metricas.get("Lt");
+						metricas.put("Lt",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch33_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch33_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch33_6))) { maqv.msp.types.Stackk  tomMatch33_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch33_2))) { maqv.msp.types.Termo  tomMatch33_9=tom_get_head_Stackk_Stackk(tomMatch33_2);if (tom_is_sort_Termo(tomMatch33_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch33_9))) {
+ 
+								stack = tom_get_tail_Stackk_Stackk(tomMatch33_2);
+								Boool resultado = (tom_get_slot_I_i(tomMatch33_9)< tom_get_slot_I_i(tomMatch33_6)) ? tom_make_True() : tom_make_False();
+								pushStack(tom_make_B(resultado));
+								return run(tom_instrs);
+							}}}}}}}}}}
+
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_LoEq((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
+
+						int n = metricas.get("LoEq");
+						metricas.put("LoEq",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch34_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch34_6)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch34_6))) { maqv.msp.types.Stackk  tomMatch34_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch34_2))) { maqv.msp.types.Termo  tomMatch34_9=tom_get_head_Stackk_Stackk(tomMatch34_2);if (tom_is_sort_Termo(tomMatch34_9)) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )tomMatch34_9))) {
+ 
+								stack = tom_get_tail_Stackk_Stackk(tomMatch34_2);
+								Boool resultado = (tom_get_slot_I_i(tomMatch34_9)<=tom_get_slot_I_i(tomMatch34_6)) ? tom_make_True() : tom_make_False();
 								pushStack(tom_make_B(resultado));
 								return run(tom_instrs);
 							}}}}}}}}}}
 
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Nott((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("Nott");
+						metricas.put("Nott",++n);
 						Termo t = topStack();
 						popStack();
 						{{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) {pushStack((( maqv.msp.types.Termo )((Object)t)))
 ; }}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_S((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) {pushStack((( maqv.msp.types.Termo )((Object)t)))
 ; }}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_F((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) {pushStack((( maqv.msp.types.Termo )((Object)t)))
-; }}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch30_13=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch30_13)) {if (tom_is_fun_sym_True((( maqv.msp.types.Boool )tomMatch30_13))) {pushStack(tom_make_B(tom_make_False()))
-; }}}}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch30_19=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch30_19)) {if (tom_is_fun_sym_False((( maqv.msp.types.Boool )tomMatch30_19))) {pushStack(tom_make_B(tom_make_True()))
+; }}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch35_13=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch35_13)) {if (tom_is_fun_sym_True((( maqv.msp.types.Boool )tomMatch35_13))) {pushStack(tom_make_B(tom_make_False()))
+; }}}}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch35_19=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch35_19)) {if (tom_is_fun_sym_False((( maqv.msp.types.Boool )tomMatch35_19))) {pushStack(tom_make_B(tom_make_True()))
 ; }}}}}}}
 
 						return run(tom_instrs);
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Or((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch31_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch31_6)) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )tomMatch31_6))) { maqv.msp.types.Boool  tom_v2=tom_get_slot_B_b(tomMatch31_6); maqv.msp.types.Stackk  tomMatch31_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch31_2))) { maqv.msp.types.Termo  tomMatch31_9=tom_get_head_Stackk_Stackk(tomMatch31_2);if (tom_is_sort_Termo(tomMatch31_9)) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )tomMatch31_9))) { maqv.msp.types.Boool  tom_v1=tom_get_slot_B_b(tomMatch31_9);
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Or((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
-
+						int n = metricas.get("Or");
+						metricas.put("Or",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch36_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch36_6)) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )tomMatch36_6))) { maqv.msp.types.Boool  tom_v2=tom_get_slot_B_b(tomMatch36_6); maqv.msp.types.Stackk  tomMatch36_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch36_2))) { maqv.msp.types.Termo  tomMatch36_9=tom_get_head_Stackk_Stackk(tomMatch36_2);if (tom_is_sort_Termo(tomMatch36_9)) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )tomMatch36_9))) { maqv.msp.types.Boool  tom_v1=tom_get_slot_B_b(tomMatch36_9);
  
-								stack = tom_get_tail_Stackk_Stackk(tomMatch31_2);
+								stack = tom_get_tail_Stackk_Stackk(tomMatch36_2);
 								boolean valor1 = true, valor2 = true;
 								{{if (tom_is_sort_Boool(((Object)tom_v1))) {if (tom_is_sort_Boool((( maqv.msp.types.Boool )((Object)tom_v1)))) {if (tom_is_fun_sym_True((( maqv.msp.types.Boool )(( maqv.msp.types.Boool )((Object)tom_v1))))) {valor1
 = true; }}}}{if (tom_is_sort_Boool(((Object)tom_v1))) {if (tom_is_sort_Boool((( maqv.msp.types.Boool )((Object)tom_v1)))) {if (tom_is_fun_sym_False((( maqv.msp.types.Boool )(( maqv.msp.types.Boool )((Object)tom_v1))))) {valor1
@@ -426,11 +746,13 @@ public class Main {
 								return run(tom_instrs);
 							}}}}}}}}}}
 
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_And((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch34_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch34_6)) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )tomMatch34_6))) { maqv.msp.types.Boool  tom_v2=tom_get_slot_B_b(tomMatch34_6); maqv.msp.types.Stackk  tomMatch34_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch34_2))) { maqv.msp.types.Termo  tomMatch34_9=tom_get_head_Stackk_Stackk(tomMatch34_2);if (tom_is_sort_Termo(tomMatch34_9)) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )tomMatch34_9))) { maqv.msp.types.Boool  tom_v1=tom_get_slot_B_b(tomMatch34_9);
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_And((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
-
+						int n = metricas.get("And");
+						metricas.put("And",++n);
+						{{if (tom_is_sort_Stackk(((Object)stack))) {if (tom_is_fun_sym_Stackk((( maqv.msp.types.Stackk )(( maqv.msp.types.Stackk )((Object)stack))))) {if (!(tom_is_empty_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack))))) { maqv.msp.types.Termo  tomMatch39_6=tom_get_head_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (tom_is_sort_Termo(tomMatch39_6)) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )tomMatch39_6))) { maqv.msp.types.Boool  tom_v2=tom_get_slot_B_b(tomMatch39_6); maqv.msp.types.Stackk  tomMatch39_2=tom_get_tail_Stackk_Stackk((( maqv.msp.types.Stackk )((Object)stack)));if (!(tom_is_empty_Stackk_Stackk(tomMatch39_2))) { maqv.msp.types.Termo  tomMatch39_9=tom_get_head_Stackk_Stackk(tomMatch39_2);if (tom_is_sort_Termo(tomMatch39_9)) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )tomMatch39_9))) { maqv.msp.types.Boool  tom_v1=tom_get_slot_B_b(tomMatch39_9);
  
-								stack = tom_get_tail_Stackk_Stackk(tomMatch34_2);
+								stack = tom_get_tail_Stackk_Stackk(tomMatch39_2);
 								boolean valor1 = true, valor2 = true;
 								{{if (tom_is_sort_Boool(((Object)tom_v1))) {if (tom_is_sort_Boool((( maqv.msp.types.Boool )((Object)tom_v1)))) {if (tom_is_fun_sym_True((( maqv.msp.types.Boool )(( maqv.msp.types.Boool )((Object)tom_v1))))) {valor1
 = true; }}}}{if (tom_is_sort_Boool(((Object)tom_v1))) {if (tom_is_sort_Boool((( maqv.msp.types.Boool )((Object)tom_v1)))) {if (tom_is_fun_sym_False((( maqv.msp.types.Boool )(( maqv.msp.types.Boool )((Object)tom_v1))))) {valor1
@@ -446,8 +768,14 @@ public class Main {
 							}}}}}}}}}}
 
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Halt((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
- return ""; }}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_IIn((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) { maqv.msp.types.DefTipo  tom_tipo=tom_get_slot_IIn_tipo((( maqv.msp.types.Instrucao )((Object)tom_inst)));
+ 
+						int n = metricas.get("Halt");
+						metricas.put("Halt",++n);
+						return "";
+						 }}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_IIn((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) { maqv.msp.types.DefTipo  tom_tipo=tom_get_slot_IIn_tipo((( maqv.msp.types.Instrucao )((Object)tom_inst)));
 
+						int n = metricas.get("IIn");
+						metricas.put("IIn",++n);
 						BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 						try{
 							String iin = br.readLine();
@@ -485,39 +813,49 @@ public class Main {
 				       return run(tom_instrs);
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_IOut((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("IOut");
+						metricas.put("IOut",++n);
 						Termo t = topStack();
 						popStack();
 						{{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) {
  output.append(tom_get_slot_I_i((( maqv.msp.types.Termo )((Object)t)))+"\n"); }}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_S((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) {
  output.append(tom_get_slot_S_id((( maqv.msp.types.Termo )((Object)t)))+"\n"); }}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_F((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) {
- output.append(tom_get_slot_F_f((( maqv.msp.types.Termo )((Object)t)))+"\n"); }}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch38_13=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch38_13)) {if (tom_is_fun_sym_True((( maqv.msp.types.Boool )tomMatch38_13))) {
- output.append("True"+"\n"); }}}}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch38_19=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch38_19)) {if (tom_is_fun_sym_False((( maqv.msp.types.Boool )tomMatch38_19))) {
+ output.append(tom_get_slot_F_f((( maqv.msp.types.Termo )((Object)t)))+"\n"); }}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch43_13=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch43_13)) {if (tom_is_fun_sym_True((( maqv.msp.types.Boool )tomMatch43_13))) {
+ output.append("True"+"\n"); }}}}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch43_19=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch43_19)) {if (tom_is_fun_sym_False((( maqv.msp.types.Boool )tomMatch43_19))) {
  output.append("False"+"\n"); }}}}}}}
 
 						return run(tom_instrs);
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Jump((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("Jump");
+						metricas.put("Jump",++n);
 						prog = jmp(orig,tom_get_slot_Jump_id((( maqv.msp.types.Instrucao )((Object)tom_inst))));
 						return run(prog);
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Jumpf((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("Jumpf");
+						metricas.put("Jumpf",++n);
 						Termo t = topStack();
 						popStack();
-						{{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch39_1=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch39_1)) {if (tom_is_fun_sym_True((( maqv.msp.types.Boool )tomMatch39_1))) {
- return run(tom_instrs); }}}}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch39_7=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch39_7)) {if (tom_is_fun_sym_False((( maqv.msp.types.Boool )tomMatch39_7))) {
+						{{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch44_1=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch44_1)) {if (tom_is_fun_sym_True((( maqv.msp.types.Boool )tomMatch44_1))) {
+ return run(tom_instrs); }}}}}}{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_B((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) { maqv.msp.types.Boool  tomMatch44_7=tom_get_slot_B_b((( maqv.msp.types.Termo )((Object)t)));if (tom_is_sort_Boool(tomMatch44_7)) {if (tom_is_fun_sym_False((( maqv.msp.types.Boool )tomMatch44_7))) {
  
 								prog = jmp(orig,tom_get_slot_Jumpf_id((( maqv.msp.types.Instrucao )((Object)tom_inst))));
 								return run(prog);
 							}}}}}}}
 
 						return run(tom_instrs);
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Push((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {pushStack(tom_get_slot_Push_t((( maqv.msp.types.Instrucao )((Object)tom_inst))))
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Push((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
-;
+						int n = metricas.get("Push");
+						metricas.put("Push",++n);
+						pushStack(tom_get_slot_Push_t((( maqv.msp.types.Instrucao )((Object)tom_inst))));
 						return run(tom_instrs);
-					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Pusha((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) { maqv.msp.types.Termo  tom_t=tom_get_slot_Pusha_t((( maqv.msp.types.Instrucao )((Object)tom_inst)));{{if (tom_is_sort_Termo(((Object)tom_t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)tom_t)))) {if (tom_is_fun_sym_S((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)tom_t))))) {
+					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Pusha((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) { maqv.msp.types.Termo  tom_t=tom_get_slot_Pusha_t((( maqv.msp.types.Instrucao )((Object)tom_inst)));
 
-
+						int n = metricas.get("PushA");
+						metricas.put("PushA",++n);
+						{{if (tom_is_sort_Termo(((Object)tom_t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)tom_t)))) {if (tom_is_fun_sym_S((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)tom_t))))) {
  
 								int memAddress = getMemAddress(tom_get_slot_S_id((( maqv.msp.types.Termo )((Object)tom_t))));
 								pushStack(tom_make_I(memAddress));
@@ -528,19 +866,22 @@ public class Main {
 						return run(tom_instrs);
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Load((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("Load");
+						metricas.put("Load",++n);
 						Termo t = topStack();
 						popStack();
 						{{if (tom_is_sort_Termo(((Object)t))) {if (tom_is_sort_Termo((( maqv.msp.types.Termo )((Object)t)))) {if (tom_is_fun_sym_I((( maqv.msp.types.Termo )(( maqv.msp.types.Termo )((Object)t))))) {
  
 								Termo t2 = getMem(tom_get_slot_I_i((( maqv.msp.types.Termo )((Object)t))));
-								pushStack(t2);
-								
+								pushStack(t2);	
 								return run(tom_instrs);
 							}}}}}
 
 						return run(tom_instrs);
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Store((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("Store");
+						metricas.put("Store",++n);
 						Termo t = topStack();
 						popStack();
 						Termo t2 = topStack();
@@ -555,6 +896,8 @@ public class Main {
 						return run(tom_instrs);
 					}}}}{if (tom_is_sort_Instrucao(((Object)tom_inst))) {if (tom_is_sort_Instrucao((( maqv.msp.types.Instrucao )((Object)tom_inst)))) {if (tom_is_fun_sym_Decl((( maqv.msp.types.Instrucao )(( maqv.msp.types.Instrucao )((Object)tom_inst))))) {
 
+						int n = metricas.get("Decl");
+						metricas.put("Decl",++n);
 						memAlloc(tom_get_slot_Decl_id((( maqv.msp.types.Instrucao )((Object)tom_inst))),tom_get_slot_Decl_initMemAddress((( maqv.msp.types.Instrucao )((Object)tom_inst))),tom_get_slot_Decl_size((( maqv.msp.types.Instrucao )((Object)tom_inst))));
 						return run(tom_instrs);
 					}}}}}
