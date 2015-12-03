@@ -75,7 +75,7 @@ public class Main {
 			 		file = teclado.readLine();
 			 		main = new Main();
 			 		try{
-						iLexer lexer = new iLexer(new ANTLRFileStream(file));
+						iLexer lexer = new iLexer(new ANTLRFileStream("../exemplos/"+file));
 						CommonTokenStream tokens = new CommonTokenStream(lexer);
 						iParser parser = new iParser(tokens);
 							// Parse the input expression
@@ -157,10 +157,11 @@ public class Main {
 							System.out.println("\nNúmero de funcoes: "+main.funcoesInst.size());
 
 							System.out.println("1 ----------------- Linhas");
-							System.out.println("2 ----------------- Argumentos ");
-							System.out.println("3 ----------------- Blocos Aninhados");
-							System.out.println("4 ----------------- Cyclomatic Complexity");
-							System.out.println("5 ----------------- Todas as Métricas");
+							System.out.println("2 ----------------- Variaveis Declaradas ");
+							System.out.println("3 ----------------- Numero de Argumentos ");
+							System.out.println("4 ----------------- Blocos Aninhados");
+							System.out.println("5 ----------------- Cyclomatic Complexity");
+							System.out.println("6 ----------------- Todas as Métricas");
 							System.out.println("0 ----------------- Voltar");
 
  							opcao = teclado.readLine();
@@ -169,7 +170,7 @@ public class Main {
 							switch(opcao){
 								case "1":
 									for(String s : main.funcoesInst.keySet()){
-										System.out.println("\nFuncao: "+s);
+										System.out.println("\n----> Funcao: "+s);
 										a = linesOfCode(main.funcoesInst.get(s));
 										met.setFuncoesLinhas(s,a);
 										System.out.println("Numero de Linhas: "+a);
@@ -179,42 +180,56 @@ public class Main {
 
 								case "2":
 									for(String s : main.funcoesInst.keySet()){
-										System.out.println("\nFuncao: "+s);
+										System.out.println("\n----> Funcao: "+s);
 										a = foundDecl(main.funcoesInst.get(s));
-										met.setFuncoesArgs(s,a);
-										System.out.println("Numero de Args: "+a);
+										met.setFuncoesDecl(s,a);
+										System.out.println("Numero de Declaracoes: "+a);
 									}
-										System.out.println("\nTotal de Argumentos: "+met.getTotalArgs());
+										System.out.println("\nTotal de Declaracoes: "+met.getTotalDecl());
 								break;
 
 								case "3":
 									for(String s : main.funcoesInst.keySet()){
-										System.out.println("\nFuncao: "+s);
-										a = foundNested(main.funcoesInst.get(s));
-										met.setFuncoesNested(s,a);
-										System.out.println("Maior Bloco Aninhado: "+a);
+										System.out.println("\n----> Funcao: "+s);
+										a = foundArgs(s,p);
+										met.setFuncoesArgs(s,a);
+										System.out.println("Numero de Argumentos: "+a);
 									}
+										System.out.println("\nTotal de Argumentos: "+met.getTotalArgs());
 								break;
 
 								case "4":
 									for(String s : main.funcoesInst.keySet()){
-										System.out.println("\nFuncao: "+s);
-										a = foundCC(main.funcoesInst.get(s))+1;
-										met.setFuncoesCC(s,a);
-										System.out.println("Cyclomatic Complexity: "+a);
+										System.out.println("\n----> Funcao: "+s);
+										a = foundNested(main.funcoesInst.get(s));
+										met.setFuncoesNested(s,a);
+										System.out.println("Maior Bloco Aninhado: "+a);
 									}
 								break;
 
 								case "5":
 									for(String s : main.funcoesInst.keySet()){
-										System.out.println("\nFuncao: "+s);
+										System.out.println("\n----> Funcao: "+s);
+										a = foundCC(main.funcoesInst.get(s))+1;
+										met.setFuncoesCC(s,a);
+										System.out.println("Cyclomatic Complexity: "+a);
+									}
+								break;
+
+								case "6":
+									for(String s : main.funcoesInst.keySet()){
+										System.out.println("\n----> Funcao: "+s);
 										a = linesOfCode(main.funcoesInst.get(s));
 										met.setFuncoesLinhas(s,a);
 										System.out.println("Numero de Linhas: "+a);
 
 										a = foundDecl(main.funcoesInst.get(s));
+										met.setFuncoesDecl(s,a);
+										System.out.println("Numero de Declaracoes: "+a);
+
+										a = foundArgs(s,p);
 										met.setFuncoesArgs(s,a);
-										System.out.println("Numero de Args: "+a);
+										System.out.println("Numero de Argumentos: "+a);
 
 										a = foundNested(main.funcoesInst.get(s));
 										met.setFuncoesNested(s,a);
@@ -224,7 +239,8 @@ public class Main {
 										met.setFuncoesCC(s,a);
 										System.out.println("Cyclomatic Complexity: "+a);
 									}
-									System.out.println("\nTotal de Linhas: "+met.getTotalLinhas());
+									System.out.println("\n\nTotal de Linhas: "+met.getTotalLinhas());
+									System.out.println("Total de Declaracoes: "+met.getTotalDecl());
 									System.out.println("Total de Argumentos: "+met.getTotalArgs());
 								break;
 							}
@@ -281,6 +297,24 @@ public class Main {
 		%match(i) {
 	        Declaracao(tipo,decl) -> { return 1; }
 	        SeqInstrucao(inst1, inst*) -> { return foundDecl(`inst1)+foundDecl(`inst*);}
+		}
+		return 0;
+	}
+
+	/*vai contar o numero de argumentos por função*/
+	private static int foundArgs(String funcao, Instrucao i) {
+		%match(i) {
+	        Funcao(tipo,nome,argumentos,inst) -> { if(funcao.equals(`nome)) return foundListArgs(`argumentos); }
+	        SeqInstrucao(inst1, inst*) -> { return foundArgs(funcao, `inst1)+foundArgs(funcao, `inst*);}
+		}
+		return 0;
+	}
+
+	/*vai contar o numero de argumentos de uma dada lista de argumentos*/
+	private static int foundListArgs(Argumentos args) {
+		%match(args) {
+			ListaArgumentos(arg1,tailArg*) -> { return foundListArgs(`arg1)+foundListArgs(`tailArg*); }
+			Argumento(_,idArg) -> { return 1; }
 		}
 		return 0;
 	}
@@ -347,8 +381,9 @@ class NumToInt{
 
 class Metrica{
 	private int funcoes;
-	private HashMap<String, Integer> funcoesArgs;
 	private HashMap<String, Integer> funcoesLinhas;
+	private HashMap<String, Integer> funcoesDecl;
+	private HashMap<String, Integer> funcoesArgs;
 	private HashMap<String, Integer> funcoesNested;
 	private HashMap<String, Integer> funcoesCC;
 
@@ -356,6 +391,7 @@ class Metrica{
 	public Metrica() {
 		this.funcoes = 0;
 		this.funcoesLinhas = new HashMap<String, Integer>();
+		this.funcoesDecl = new HashMap<String, Integer>();
 		this.funcoesArgs = new HashMap<String, Integer>();
 		this.funcoesNested = new HashMap<String, Integer>();
 		this.funcoesCC = new HashMap<String, Integer>();
@@ -363,6 +399,10 @@ class Metrica{
 
 	public HashMap <String, Integer> getFuncoesLinhas(){
 		return this.funcoesLinhas;
+	}
+
+	public HashMap <String, Integer> getFuncoesDecl(){
+		return this.funcoesDecl;
 	}
 
 	public HashMap <String, Integer> getFuncoesArgs(){
@@ -398,8 +438,22 @@ class Metrica{
 		return aux;
 	}
 
+	public int getTotalDecl(){
+		int aux = 0;
+		
+		for(String s : this.funcoesDecl.keySet()){
+		  	aux+=this.funcoesDecl.get(s);
+		}
+
+		return aux;
+	}
+
 	public void setFuncoesLinhas(String s, Integer i){
 		this.funcoesLinhas.put(s,i);
+	}
+
+	public void setFuncoesDecl(String s, Integer i){
+		this.funcoesDecl.put(s,i);
 	}
 
 	public void setFuncoesArgs(String s, Integer i){
