@@ -13,7 +13,8 @@ import java.io.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
+import java.text.DecimalFormat;
+import java.math.RoundingMode;
 
 public class Main {
 	%include{sl.tom}
@@ -161,11 +162,12 @@ public class Main {
 							System.out.println("3 ----------------- Numero de Argumentos ");
 							System.out.println("4 ----------------- Blocos Aninhados");
 							System.out.println("5 ----------------- Cyclomatic Complexity");
-							System.out.println("6 ----------------- Todas as Métricas");
+							System.out.println("6 ----------------- Avaliar Todas as Métricas");
 							System.out.println("0 ----------------- Voltar");
 
  							opcao = teclado.readLine();
 							int a;
+							Double r;
 
 							switch(opcao){
 								case "1":
@@ -218,30 +220,42 @@ public class Main {
 
 								case "6":
 									for(String s : main.funcoesInst.keySet()){
+										met.funcoes++;
+										
 										System.out.println("\n----> Funcao: "+s);
 										a = linesOfCode(main.funcoesInst.get(s));
 										met.setFuncoesLinhas(s,a);
-										System.out.println("Numero de Linhas: "+a);
+										System.out.println("Numero de Linhas: "+a+ " | Max("+met.getMaxLinhas()+")");
 
 										a = foundDecl(main.funcoesInst.get(s));
 										met.setFuncoesDecl(s,a);
-										System.out.println("Numero de Declaracoes: "+a);
+										System.out.println("Numero de Declaracoes: "+a+" | Max("+met.getMaxDecl()+")");
 
 										a = foundArgs(s,p);
 										met.setFuncoesArgs(s,a);
-										System.out.println("Numero de Argumentos: "+a);
+										System.out.println("Numero de Argumentos: "+a+" | Max("+met.getMaxArgs()+")");
 
 										a = foundNested(main.funcoesInst.get(s));
 										met.setFuncoesNested(s,a);
-										System.out.println("Maior Bloco Aninhado: "+a);
+										System.out.println("Maior Bloco Aninhado: "+a+" | Max("+met.getMaxNested()+")");
 
 										a = foundCC(main.funcoesInst.get(s))+1;
 										met.setFuncoesCC(s,a);
-										System.out.println("Cyclomatic Complexity: "+a);
+										System.out.println("Cyclomatic Complexity: "+a+" | Max("+met.getMaxCC()+")");
+
+										DecimalFormat df = new DecimalFormat("#.#");
+										df.setRoundingMode(RoundingMode.FLOOR);
+
+										r = met.classificaFuncao(s);	
+										met.setRank(s,r);
+										System.out.println("-> Star Ranking: "+df.format(r)+" em 5");
 									}
 									System.out.println("\n\nTotal de Linhas: "+met.getTotalLinhas());
 									System.out.println("Total de Declaracoes: "+met.getTotalDecl());
 									System.out.println("Total de Argumentos: "+met.getTotalArgs());
+
+									System.out.println("\nStar Ranking do Programa: "+met.getRank()+" em 5");
+
 								break;
 							}
 						}
@@ -380,13 +394,20 @@ class NumToInt{
 }
 
 class Metrica{
-	private int funcoes;
+	public int funcoes;
 	private HashMap<String, Integer> funcoesLinhas;
 	private HashMap<String, Integer> funcoesDecl;
 	private HashMap<String, Integer> funcoesArgs;
 	private HashMap<String, Integer> funcoesNested;
 	private HashMap<String, Integer> funcoesCC;
+	private HashMap<String, Double> funcoesRank;
 
+	/*Classificar métricas*/
+	private Integer maxLinhas = 15;
+	private Integer maxDecl = 5;
+	private Integer maxArgs = 3;
+	private Integer maxNested = 3;
+	private Integer maxCC = 5;
 
 	public Metrica() {
 		this.funcoes = 0;
@@ -395,6 +416,7 @@ class Metrica{
 		this.funcoesArgs = new HashMap<String, Integer>();
 		this.funcoesNested = new HashMap<String, Integer>();
 		this.funcoesCC = new HashMap<String, Integer>();
+		this.funcoesRank = new HashMap<String, Double>();
 	}
 
 	public HashMap <String, Integer> getFuncoesLinhas(){
@@ -415,6 +437,26 @@ class Metrica{
 
 	public HashMap <String, Integer> getFuncoesCC(){
 		return this.funcoesCC;
+	}
+
+	public int getMaxLinhas(){
+		return this.maxLinhas;
+	}
+
+	public int getMaxDecl(){
+		return this.maxDecl;
+	}
+
+	public int getMaxArgs(){
+		return this.maxArgs;
+	}
+
+	public int getMaxNested(){
+		return this.maxNested;
+	}
+
+	public int getMaxCC(){
+		return this.maxCC;
 	}
 
 	public int getTotalLinhas(){
@@ -448,6 +490,19 @@ class Metrica{
 		return aux;
 	}
 
+	public String getRank(){
+		Double aux = 0.0;
+		
+		for(String s : this.funcoesRank.keySet()){
+		  	aux+=this.funcoesRank.get(s);
+		}
+
+		DecimalFormat df = new DecimalFormat("#.#");
+		df.setRoundingMode(RoundingMode.FLOOR);
+
+		return df.format(aux/(this.funcoes));
+	}
+
 	public void setFuncoesLinhas(String s, Integer i){
 		this.funcoesLinhas.put(s,i);
 	}
@@ -467,4 +522,41 @@ class Metrica{
 	public void setFuncoesCC(String s, Integer i){
 		this.funcoesCC.put(s,i);
 	}
+
+	public void setRank(String s, Double i){
+		this.funcoesRank.put(s, i);
+	}
+
+	public Double classificaFuncao(String s){
+		Double aux=0.0;
+		int a;
+
+		  	if((a = this.funcoesLinhas.get(s)) <= this.maxLinhas)
+		  		aux+=0.5;
+		  	else
+		  		aux+=((maxLinhas*0.5)/a);
+
+		  	if((a = this.funcoesDecl.get(s)) <= this.maxDecl)
+		  		aux+=0.5;
+		  	else
+		  		aux+=((maxDecl*0.5)/a);
+
+		  	if((a = this.funcoesArgs.get(s)) <= this.maxArgs)
+		  		aux+=1;
+		  	else
+		  		aux+=((maxArgs*1)/a);
+
+		  	if((a = this.funcoesNested.get(s)) <= this.maxNested)
+		  		aux+=1.5;
+		  	else
+		  		aux+=((maxNested*1)/a);
+
+		  	if((a = this.funcoesCC.get(s)) <= this.maxCC)
+		  		aux+=1.5;
+		  	else
+		  		aux+=((maxCC*1)/a);
+
+		  	return aux;
+	}
+
 }
