@@ -242,21 +242,46 @@ public class Main {
 										met.setFuncoesLinhas(s,a);
 										System.out.println("Numero de Linhas: "+a+ " | Max("+met.getMaxLinhas()+")");
 
+										if(met.classificaSmellLinhas(s) == 1){
+											System.out.println("** Smell Detectado: Metodo Extenso **\n");
+										}
+
+
 										a = foundDecl(main.funcoesInst.get(s));
 										met.setFuncoesDecl(s,a);
 										System.out.println("Numero de Declaracoes: "+a+" | Max("+met.getMaxDecl()+")");
+
+										if(met.classificaSmellDecl(s) == 1){
+											System.out.println("** Smell Detectado: Declaracoes a mais **\n");
+										}
+
 
 										a = foundArgs(s,p);
 										met.setFuncoesArgs(s,a);
 										System.out.println("Numero de Argumentos: "+a+" | Max("+met.getMaxArgs()+")");
 
+										if(met.classificaSmellArgs(s) == 1){
+											System.out.println("** Smell Detectado: Numero de argumentos excede o maximo **\n");
+										}
+
+
 										a = foundNested(main.funcoesInst.get(s));
 										met.setFuncoesNested(s,a);
 										System.out.println("Maior Bloco Aninhado: "+a+" | Max("+met.getMaxNested()+")");
 
+										if(met.classificaSmellNested(s) == 1){
+											System.out.println("** Smell Detectado: Bloco com demasiados aninhamentos **\n");
+										}
+
+
 										a = foundCC(main.funcoesInst.get(s))+1;
 										met.setFuncoesCC(s,a);
 										System.out.println("Cyclomatic Complexity: "+a+" | Max("+met.getMaxCC()+")");
+
+										if(met.classificaSmellCC(s) == 1){
+											System.out.println("** Smell Detectado: Complexidade ciclomática maior que o máximo **\n");
+										}
+
 
 										DecimalFormat df = new DecimalFormat("#.#");
 										df.setRoundingMode(RoundingMode.FLOOR);
@@ -270,6 +295,7 @@ public class Main {
 									System.out.println("Total de Argumentos: "+met.getTotalArgs());
 
 									System.out.println("\nStar Ranking do Programa: "+met.getRank()+" em 5");
+									System.out.println("\nNumero de Bad Smells detectados: "+met.getNSmells());
 
 								break;
 							}
@@ -284,40 +310,9 @@ public class Main {
 			 		try{
 			 			System.out.println("\n*********** Smells ************ ");
 
-			 			System.out.println("1 ----------------- Código Duplicado");
-						System.out.println("2 ----------------- Métodos Extensos");
-						System.out.println("6 ----------------- Avaliar Todos os Smells");
-						System.out.println("0 ----------------- Voltar");
-
-						opcao = teclado.readLine();
-						int a;
-
-						switch(opcao){
-								case "1":
-								break;
-
-								case "2":
-									for(String s : main.funcoesInst.keySet()){
-										System.out.println("\n----> Funcao: "+s);
-										a = linesOfCode(main.funcoesInst.get(s));
-										met.setFuncoesLinhas(s,a);
-										System.out.println("Numero de Linhas: "+a);
-										if(met.classificaSmell(s) == 1){
-											System.out.println("\nSmell Detectado: Método Extenso");
-										}
-										else
-											System.out.println("\nNão foram detectados smells.");
-										
-									}
-									
-								break;
-							}
-
 			 			Instrucao pBad = `TopDown(stratBadSmells()).visit(p);
 						instrucoes = main.compileAnnot(p);
 						p = pBad;
-
-						
 
 					}
 					catch(VisitFailure e) {
@@ -962,8 +957,12 @@ class Metrica{
 	private Integer maxNested = 3;
 	private Integer maxCC = 5;
 
+	/* Contar os smells */
+	private Integer nSmells = 0;
+
 	public Metrica() {
 		this.funcoes = 0;
+		this.nSmells = 0;
 		this.funcoesLinhas = new HashMap<String, Integer>();
 		this.funcoesDecl = new HashMap<String, Integer>();
 		this.funcoesArgs = new HashMap<String, Integer>();
@@ -1056,6 +1055,10 @@ class Metrica{
 		return df.format(aux/(this.funcoes));
 	}
 
+	public int getNSmells(){
+		return this.nSmells;
+	}
+
 	public void setFuncoesLinhas(String s, Integer i){
 		this.funcoesLinhas.put(s,i);
 	}
@@ -1112,14 +1115,49 @@ class Metrica{
 		  	return aux;
 	}
 
-	public int classificaSmell(String s) {
-		/* 0 -> nao e smell ; 1 -> smell */
-		int res = 0;
-		int a;
+	/* 0 -> nao e smell ; 1 -> smell */
+	public int classificaSmellLinhas(String s) {
+		int a, res = 0;
+		if((a = this.funcoesLinhas.get(s)) > this.maxLinhas){
+			res = 1;
+			this.nSmells++;
+		}
+		return res;
+	}
 
-		if((a = this.funcoesLinhas.get(s)) > this.maxLinhas)
+	public int classificaSmellDecl(String s) {
+		int a, res = 0;
+		if((a = this.funcoesDecl.get(s)) > this.maxDecl){
 		  	res = 1;
+		  	this.nSmells++;
+		}
+		return res;
+	}
 
+	public int classificaSmellArgs(String s) {
+		int a, res = 0;
+		if((a = this.funcoesArgs.get(s)) > this.maxArgs){
+		  	res = 1;
+		  	this.nSmells++;
+		}
+		return res;
+	}
+
+	public int classificaSmellNested(String s) {
+		int a, res = 0;
+		if((a = this.funcoesNested.get(s)) > this.maxNested){
+		  	res = 1;
+		  	this.nSmells++;
+		}
+		return res;
+	}
+
+	public int classificaSmellCC(String s) {
+		int a, res = 0;
+		if((a = this.funcoesCC.get(s)) > this.maxCC){
+		  	res = 1;
+		  	this.nSmells++;
+		}
 		return res;
 	}
 

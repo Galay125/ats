@@ -128,7 +128,7 @@ public class Main {
 		Instrucoes p,original;
 
 		try{
-			mspLexer lexer = new mspLexer(new ANTLRFileStream("res.msp"));
+			mspLexer lexer = new mspLexer(new ANTLRFileStream("../exemplos/res.msp"));
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			mspParser parser = new mspParser(tokens);
 			// Parse the inputexpression

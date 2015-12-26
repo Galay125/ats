@@ -2,22 +2,10 @@ void main(int a) {
     int a;
     int b;
     int res;
-    a = input(int);
-    b = input(int);
-    res = max(a,b);
-    print(';');
-    print(res);
-    if (!a && b) {
-        if (!a) {
-           res = a;
-	   for(int x=0; i<10; i++){
-	       a = b;
-           }
-	}
-	else {
-           res = b;
-    	}
-    }
+    int c;
+    int d;
+    int e;
+    
 }
 int max(int a, int b, int x){
     int res;

@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 gram/i.g 2015-12-02 00:28:08
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 gram/i.g 2015-12-26 17:54:54
  package gram; 
 
 import org.antlr.runtime.*;
@@ -2013,7 +2013,7 @@ public class iParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: blocoCodigo, condicao, else_
+                    // elements: condicao, blocoCodigo, else_
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2047,7 +2047,7 @@ public class iParser extends Parser {
                     {
 
                     // AST REWRITE
-                    // elements: condicao, blocoCodigo
+                    // elements: blocoCodigo, condicao
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -2325,7 +2325,7 @@ public class iParser extends Parser {
 
 
             // AST REWRITE
-            // elements: expressao, condicao, for_declaracao, blocoCodigo
+            // elements: blocoCodigo, for_declaracao, expressao, condicao
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2557,7 +2557,7 @@ public class iParser extends Parser {
 
 
             // AST REWRITE
-            // elements: blocoCodigo, condicao
+            // elements: condicao, blocoCodigo
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -3587,7 +3587,7 @@ public class iParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: condicao, condicao_ou, expressao
+                    // elements: condicao, expressao, condicao_ou
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -4071,7 +4071,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: c, condicao_comparacao
+            	            // elements: condicao_comparacao, c
             	            // token labels: 
             	            // rule labels: retval, c
             	            // token list labels: 
@@ -4122,7 +4122,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: c, condicao_comparacao
+            	            // elements: condicao_comparacao, c
             	            // token labels: 
             	            // rule labels: retval, c
             	            // token list labels: 
@@ -4173,7 +4173,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: c, condicao_comparacao
+            	            // elements: condicao_comparacao, c
             	            // token labels: 
             	            // rule labels: retval, c
             	            // token list labels: 
@@ -4224,7 +4224,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: condicao_comparacao, c
+            	            // elements: c, condicao_comparacao
             	            // token labels: 
             	            // rule labels: retval, c
             	            // token list labels: 
@@ -4400,7 +4400,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: condicao_igualdade, e
+            	            // elements: e, condicao_igualdade
             	            // token labels: 
             	            // rule labels: retval, e
             	            // token list labels: 
@@ -4565,7 +4565,7 @@ public class iParser extends Parser {
 
 
             // AST REWRITE
-            // elements: condicao, opAtribuicao, ID
+            // elements: condicao, ID, opAtribuicao
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -4983,7 +4983,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: expressao, e
+            	            // elements: e, expressao
             	            // token labels: 
             	            // rule labels: retval, e
             	            // token list labels: 
@@ -5034,7 +5034,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: e, expressao
+            	            // elements: expressao, e
             	            // token labels: 
             	            // rule labels: retval, e
             	            // token list labels: 
@@ -5222,7 +5222,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: expressaoNum, o
+            	            // elements: o, expressaoNum
             	            // token labels: 
             	            // rule labels: retval, o
             	            // token list labels: 
@@ -5273,7 +5273,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: o, expressaoNum
+            	            // elements: expressaoNum, o
             	            // token labels: 
             	            // rule labels: retval, o
             	            // token list labels: 
@@ -5324,7 +5324,7 @@ public class iParser extends Parser {
 
 
             	            // AST REWRITE
-            	            // elements: expressaoNum, o
+            	            // elements: o, expressaoNum
             	            // token labels: 
             	            // rule labels: retval, o
             	            // token list labels: 
@@ -5460,7 +5460,7 @@ public class iParser extends Parser {
 
 
                     // AST REWRITE
-                    // elements: ID, opUnario
+                    // elements: opUnario, ID
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
