@@ -159,17 +159,6 @@ public class Main {
 						}
 			 	break;
 
-			 	case "6":
-			 		try{
-			 			Instrucao pBad = `TopDown(stratBadSmells()).visit(p);
-						instrucoes = main.compileAnnot(p);
-						p = pBad;
-					}
-					catch(VisitFailure e) {
-							System.out.println("the strategy failed");
-						}
-			 	break;
-
 
 			 	case "5":
 						try{
@@ -287,6 +276,52 @@ public class Main {
 						}
 						catch(VisitFailure e) {
 								System.out.println("the strategy failed");
+						}
+			 	break;
+
+
+			 	case "6":
+			 		try{
+			 			System.out.println("\n*********** Smells ************ ");
+
+			 			System.out.println("1 ----------------- Código Duplicado");
+						System.out.println("2 ----------------- Métodos Extensos");
+						System.out.println("6 ----------------- Avaliar Todos os Smells");
+						System.out.println("0 ----------------- Voltar");
+
+						opcao = teclado.readLine();
+						int a;
+
+						switch(opcao){
+								case "1":
+								break;
+
+								case "2":
+									for(String s : main.funcoesInst.keySet()){
+										System.out.println("\n----> Funcao: "+s);
+										a = linesOfCode(main.funcoesInst.get(s));
+										met.setFuncoesLinhas(s,a);
+										System.out.println("Numero de Linhas: "+a);
+										if(met.classificaSmell(s) == 1){
+											System.out.println("\nSmell Detectado: Método Extenso");
+										}
+										else
+											System.out.println("\nNão foram detectados smells.");
+										
+									}
+									
+								break;
+							}
+
+			 			Instrucao pBad = `TopDown(stratBadSmells()).visit(p);
+						instrucoes = main.compileAnnot(p);
+						p = pBad;
+
+						
+
+					}
+					catch(VisitFailure e) {
+							System.out.println("the strategy failed");
 						}
 			 	break;
 			 
@@ -1075,6 +1110,17 @@ class Metrica{
 		  		aux+=((maxCC*1)/a);
 
 		  	return aux;
+	}
+
+	public int classificaSmell(String s) {
+		/* 0 -> nao e smell ; 1 -> smell */
+		int res = 0;
+		int a;
+
+		if((a = this.funcoesLinhas.get(s)) > this.maxLinhas)
+		  	res = 1;
+
+		return res;
 	}
 
 }
