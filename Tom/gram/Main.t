@@ -44,7 +44,7 @@ public class Main {
 		System.out.println("3 ----------------- Gerar código MSP");
 		System.out.println("4 ----------------- Gerar ficheiro .dot");
 		System.out.println("5 ----------------- Metricas");
-		System.out.println("6 ----------------- Tratar Bad Smells");
+		System.out.println("6 ----------------- Tratar Bad Smells | Refactoring");
 		System.out.println("0 ----------------- Sair do Sistema ");
 
 		System.out.println("\nDigite um número:");
@@ -107,43 +107,6 @@ public class Main {
 			 	case "3":
  					String functionDeclarationsAndArguments = main.functionsDeclarations.toString();
 					System.out.println(functionDeclarationsAndArguments + numInstString + instrucoes);
-			 	/*		try{
-			 				numInstrucao = new ArrayList<Integer>();
-							numInstrucao.add(1);
-							`TopDown(CollectFuncsSignature(main.functionSignatures)).visit(p);
-							Instrucao p2 = p;
-							int numInst = numInstrucao.get(0)-1;
-							Expressao numInstExps = `Expressoes(Print(Int(numInst)),Print(Char("#")));
-							NumToInt n = new NumToInt(1);
-							String numInstString = main.compileAnnotExpressoes(numInstExps, n);
-							String instrucoes = "";
-
-							System.out.println("\n1--- Injectar falhas");
-							System.out.println("2--- Tratar bad smells");
-							System.out.println("0--- Sair\n");
-							aux = readFile();
-							
-							if(aux.equals("1")){
-								TreeSet<Integer> blocosMaisUsados = new TreeSet<Integer>();
-								Main.parseFile(file,blocosMaisUsados);
-								numInstrucao.clear();
-								numInstrucao.add(1);
-								Instrucao p3 = `BottomUp(stratFaultInjectionWithKnowledge(numInstrucao, blocosMaisUsados)).visit(p2);
-								instrucoes = main.compileAnnot(p3);
-							}
-							else if(aux.equals("2")){
-								Instrucao p3 = `TopDown(stratBadSmells()).visit(p);
-								instrucoes = main.compileAnnot(p3);
-							}
-							else{
-								instrucoes = main.compileAnnot(p2);
-							}
-							String functionDeclarationsAndArguments = main.functionsDeclarations.toString();
-							System.out.println(functionDeclarationsAndArguments + numInstString + instrucoes);
-						} 
-						catch(VisitFailure e) {
-							System.out.println("the strategy failed");
-						}*/
 			 	break;
 
 			 	case "4":
@@ -164,10 +127,9 @@ public class Main {
 						try{
 							System.out.println("\n*********** Métricas ************ ");
 
-							if(main.funcoesInst.size()==0){
 								/* Vai recolher as instruções por função */
 								`TopDown(visitFuncoes(main.funcoesInst)).visit(p);
-							}
+							
 
 							System.out.println("\nNúmero de funcoes: "+main.funcoesInst.size());
 
@@ -234,6 +196,7 @@ public class Main {
 
 								case "6":
 										met.funcoes=0;
+										met.setSmells(0);
 									for(String s : main.funcoesInst.keySet()){
 										met.funcoes++;
 										
@@ -295,7 +258,7 @@ public class Main {
 									System.out.println("Total de Argumentos: "+met.getTotalArgs());
 
 									System.out.println("\nStar Ranking do Programa: "+met.getRank()+" em 5");
-									System.out.println("\nNumero de Bad Smells detectados: "+met.getNSmells());
+									System.out.println("Numero de Bad Smells detectados: "+met.getNSmells());
 
 								break;
 							}
@@ -309,9 +272,9 @@ public class Main {
 			 	case "6":
 			 		try{
 			 			System.out.println("\n*********** Smells ************ ");
-
-			 			Instrucao pBad = `TopDown(stratBadSmells()).visit(p);
-						instrucoes = main.compileAnnot(p);
+			 			Set<String> idsUtilizados = new TreeSet<String>();
+			 			Instrucao pBad = `TopDown(stratBadSmells(idsUtilizados)).visit(p);
+						instrucoes = main.compileAnnot(pBad);
 						p = pBad;
 
 					}
@@ -421,15 +384,19 @@ public class Main {
 		return 0;
 	}
 
-	public static Argumentos removeArgumentosNaoUtilizados(Argumentos args, TreeSet<String> idsUtilizados) {
+	public static Argumentos removeArgumentosNaoUtilizados(Argumentos args, Set<String> idsUtilizados) {
 		%match(args) {
 			ListaArgumentos(arg1,tailArg*) -> {
 				%match(arg1) {
 					a@Argumento(_,idArg) -> {
-						if (idsUtilizados.contains(`idArg))
+						if (idsUtilizados.contains(`idArg)){
+							System.out.println(`a +" Utilizado");
 							return `ListaArgumentos(a,removeArgumentosNaoUtilizados(tailArg*,idsUtilizados));
-						else
+						}
+						else{
+							System.out.println(`a + " Não Utilizado");
 							return removeArgumentosNaoUtilizados(`tailArg*,idsUtilizados);
+						}
 					}
 				}
 			}
@@ -437,16 +404,43 @@ public class Main {
 		return args;
 	}
 
-    %strategy stratBadSmells() extends Identity() {
+	public static Boolean verificaDeclaracoesNaoUtilizados(Declaracoes inst, Set<String> idsUtilizados) {
+		%match(inst) {
+			ListaDecl(dec1,tail*) -> {
+				%match(dec1) {
+					a@Decl(idArg,_) -> {
+						if (idsUtilizados.contains(`idArg)){
+							System.out.println(`a +" Utilizado");
+							return true;
+						}
+						else{
+							System.out.println(`a + " Não Utilizado");
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+    %strategy stratBadSmells(Set idsUtilizados) extends Identity() {
     	visit Instrucao {
     		If(Nao(condicao),inst1,inst2) -> {
     			return `If(condicao,inst2,inst1);
     		}
     		Funcao(tipo,nome,argumentos,inst) -> {
-    			TreeSet<String> idsUtilizados = new TreeSet<String>();
+    			idsUtilizados = new TreeSet<String>();
 				`TopDown(stratCollectIds(idsUtilizados)).visit(`inst);
-    			Argumentos args = removeArgumentosNaoUtilizados(`argumentos,idsUtilizados);
+    			Argumentos args = removeArgumentosNaoUtilizados(`argumentos, idsUtilizados);
     			return `Funcao(tipo,nome,args,inst);
+    		}
+    		Declaracao(tipo,decls) -> {
+    			Boolean decl = verificaDeclaracoesNaoUtilizados(`decls, idsUtilizados);
+    			if(decl)
+    				return `Declaracao(tipo, decls);
+    			else
+    				return `SeqInstrucao(Exp(Empty()));
     		}
     	}
     }
@@ -713,7 +707,7 @@ public class Main {
 				String gen2 = `compileAnnotDeclaracoes(tail*, tipo, numInstrucao);
 
 				return gen + gen2;
-			}
+			}	
 
 			Decl(id,exp) -> {
 				String genExp = `compileAnnotExpressoes(exp, numInstrucao);
@@ -1081,6 +1075,10 @@ class Metrica{
 
 	public void setRank(String s, Double i){
 		this.funcoesRank.put(s, i);
+	}
+
+	public void setSmells(Integer i){
+		this.nSmells = i;
 	}
 
 	public Double classificaFuncao(String s){
