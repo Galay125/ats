@@ -94,6 +94,7 @@ public class Main {
 						NumToInt n = new NumToInt(1);
 						numInstString = main.compileAnnotExpressoes(numInstExps, n);
 						instrucoes = "";
+						instrucoes = main.compileAnnot(p);
 					
 					} catch(Exception e) {
 						e.printStackTrace();
@@ -404,6 +405,38 @@ public class Main {
 		return args;
 	}
 
+	public static Parametros removeParametrosNaoUtilizados(Parametros pars, Set<String> idsUtilizados) {
+		%match(pars) {
+			ListaParametros(par1,tailpar*) -> {
+				%match(par1) {
+					Parametro(exp) -> {
+							if(verificaExp(`exp,idsUtilizados))
+								return `ListaParametros(par1,removeParametrosNaoUtilizados(tailpar*,idsUtilizados));
+							else
+								return removeParametrosNaoUtilizados(`tailpar*, idsUtilizados);
+					}
+				}
+			}
+		}
+		return pars;
+	}
+
+	public static Boolean verificaExp(Expressao exp, Set<String> idsUtilizados) {
+		%match(exp) {
+			a@Id(id) -> {
+				if (idsUtilizados.contains(`id)){
+					System.out.println(`a +" Utilizado");
+					return true;
+				}
+				else{
+					System.out.println(`a + " Não Utilizado");
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+
 	public static Boolean verificaDeclaracoesNaoUtilizados(Declaracoes inst, Set<String> idsUtilizados) {
 		%match(inst) {
 			ListaDecl(dec1,tail*) -> {
@@ -431,7 +464,7 @@ public class Main {
     		}
     		Funcao(tipo,nome,argumentos,inst) -> {
     			idsUtilizados = new TreeSet<String>();
-				`TopDown(stratCollectIds(idsUtilizados)).visit(`inst);
+				`TopDown(stratCollectIds(idsUtilizados, 0)).visit(`inst);
     			Argumentos args = removeArgumentosNaoUtilizados(`argumentos, idsUtilizados);
     			return `Funcao(tipo,nome,args,inst);
     		}
@@ -443,23 +476,37 @@ public class Main {
     				return `SeqInstrucao(Exp(Empty()));
     		}
     	}
+    	visit Expressao{
+    		Call(id,param)->{
+    			Parametros para = removeParametrosNaoUtilizados(`param, idsUtilizados);
+    			return `Call(id,para);
+    		}
+    	}
     }
 
-    %strategy stratCollectIds(Set idsUtilizados) extends Identity() {
+    %strategy stratCollectIds(Set idsUtilizados, int flag) extends Identity() {
     	visit Instrucao {
     		Atribuicao(id,opAtrib,exp) -> {
     			idsUtilizados.add(`id);
     		}
     	}
     	visit Expressao {
-    		Id(id) -> { 
-    			idsUtilizados.add(`id);
+    		Id(id) -> {
+    			if(flag == 0){
+	    			idsUtilizados.add(`id);
+	    		}
+	    		flag=0;
     		}
     		IncAntes(opInc,id) -> { 
     			idsUtilizados.add(`id);
     		}
     		IncDepois(opInc,id) -> { 
     			idsUtilizados.add(`id);
+    		}
+    	}
+    	visit Parametros{
+    		Parametro(exp)->{
+    			flag++;
     		}
     	}
     }
