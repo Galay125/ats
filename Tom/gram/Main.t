@@ -85,8 +85,19 @@ public class Main {
 							// Parse the input expression
 						Tree b = (Tree) parser.prog().getTree();
 						p = (Instrucao) iAdaptor.getTerm(b);
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
+				break;
 
-						numInstrucao = new ArrayList<Integer>();
+			 	case "2":
+			 		System.out.println("Arvore gerada = " + p); // name of the Gom module + Adaptor
+			 	break;
+
+			 	case "3":
+			 		try{
+			 			main = new Main();
+				 		numInstrucao = new ArrayList<Integer>();
 						numInstrucao.add(1);
 						`TopDown(CollectFuncsSignature(main.functionSignatures)).visit(p);
 						int numInst = numInstrucao.get(0)-1;
@@ -94,20 +105,12 @@ public class Main {
 						NumToInt n = new NumToInt(1);
 						numInstString = main.compileAnnotExpressoes(numInstExps, n);
 						instrucoes = "";
-						instrucoes = main.compileAnnot(p);
-					
+				 		instrucoes = main.compileAnnot(p);
+	 					String functionDeclarationsAndArguments = main.functionsDeclarations.toString();
+						System.out.println(functionDeclarationsAndArguments + numInstString + instrucoes);
 					} catch(Exception e) {
 						e.printStackTrace();
 					}
-			 	break;
-
-			 	case "2":
-			 		System.out.println("Arvore gerada = " + p); // name of the Gom module + Adaptor
-			 	break;
-
-			 	case "3":
- 					String functionDeclarationsAndArguments = main.functionsDeclarations.toString();
-					System.out.println(functionDeclarationsAndArguments + numInstString + instrucoes);
 			 	break;
 
 			 	case "4":
@@ -126,6 +129,7 @@ public class Main {
 
 			 	case "5":
 						try{
+							met = new Metrica();
 							System.out.println("\n*********** Métricas ************ ");
 
 								/* Vai recolher as instruções por função */
@@ -275,8 +279,7 @@ public class Main {
 			 			System.out.println("\n*********** Smells ************ ");
 			 			Set<String> idsUtilizados = new TreeSet<String>();
 			 			Instrucao pBad = `TopDown(stratBadSmells(idsUtilizados)).visit(p);
-						instrucoes = main.compileAnnot(pBad);
-						p = pBad;
+			 			p = pBad;
 
 					}
 					catch(VisitFailure e) {
@@ -433,8 +436,26 @@ public class Main {
 					return false;
 				}
 			}
+			a@ExpNum(exp1,op,exp2) -> {
+				Boolean aux1, aux2;
+					aux1 = verificaExp(`exp1,idsUtilizados);
+					aux2 = verificaExp(`exp2,idsUtilizados);
+				if(aux1 && aux2)
+					return true;
+				else
+					return false;
+			}
+			a@Int(i)->{
+				return true;
+			}
+			a@Float(f)->{
+				return true;
+			}
+			a@Char(c)->{
+				return true;
+			}
 		}
-		return false;
+		return true;
 	}
 
 	public static Boolean verificaDeclaracoesNaoUtilizados(Declaracoes inst, Set<String> idsUtilizados) {
@@ -853,8 +874,8 @@ public class Main {
 					prefix = actualFunctionName + "_";
 					
 				%match(opInc) {
-					Inc() -> { return "Pusha \"" + prefix + `id + "\",In"; } 
-					Dec() -> { return "Pusha \"" + prefix + `id + "\",De"; }
+					Inc() -> { return "Pusha \"" + prefix + `id + "\",Inc,"; } 
+					Dec() -> { return "Pusha \"" + prefix + `id + "\",Dec,"; }
 				}
 				return `id;
 			}
