@@ -14,6 +14,7 @@ import java.io.*;
 
 public class Main {
 	%include{sl.tom}
+	%include{util/ArrayList.tom}
 	%include{util/HashMap.tom}
 	%include{util/types/Collection.tom}
 	%include{../genMaqV/maqv/msp/msp.tom}
@@ -227,8 +228,15 @@ public class Main {
 
 								case "1":
 									ArrayList<Integer> ints = new ArrayList<Integer>(29);
+									for(int i=0;i<29;i++){
+										ints.add(0);
+									}
 							   		`TopDown(visitAll(main.metricas,ints)).visit(p);
-									`TopDown(visitAll(main.metricasBad,ints)).visit(bad);
+							   		ArrayList<Integer> intsBad = new ArrayList<Integer>(29);
+									for(int i=0;i<29;i++){
+										intsBad.add(0);
+									}
+									`TopDown(visitAll(main.metricasBad,intsBad)).visit(bad);
 									System.out.println(main.toString());
 									break;
 
@@ -357,152 +365,181 @@ public class Main {
 		}
 	}
 
-	%strategy visitAll(metricas:HashMap,ints:ArrayList) extends Identity() {
+	%strategy visitAll(metricas:HashMap , ints:ArrayList) extends Identity() {
       	visit Instrucao {
 			ALabel(id) -> {
-      	  		int n = ints.get(0);
-      	  		n++;
-      	  		metricas.put("ALabel",n);
+      	  		int n0 =(Integer) ints.get(0);
+      	  		n0++;
+      	  		ints.add(n0,0);
+      	  		metricas.put("ALabel",n0);
 			}
 			Call(id) -> {
-      	  		int n = ints.get(1);
-      	  		n++;
-      	  		metricas.put("Call",n);
+      	  		int n1 =(Integer) ints.get(1);
+      	  		n1++;
+      	  		ints.add(n1,1);
+      	  		metricas.put("Call",n1);
 			}
 			Ret() -> {
-      	  		int n = ints.get(2);
-      	  		n++;
-      	  		metricas.put("Ret",n);
+      	  		int n2 = (Integer)ints.get(2);
+      	  		n2++;
+      	  		ints.add(n2,2);
+      	  		metricas.put("Ret",n2);
 			}
 			Add() -> {
-      	  		int n = ints.get(3);
-      	  		n++;
-      	  		metricas.put("Add",n);
+      	  		int n3 = (Integer)ints.get(3);
+      	  		n3++;
+      	  		ints.add(n3,3);
+      	  		metricas.put("Add",n3);
 			}
 			Sub() -> {
-      	  		int n = ints.get(4);
-      	  		n++;
-      	  		metricas.put("Sub",n);
+      	  		int n4 = (Integer)ints.get(4);
+      	  		n4++;
+      	  		ints.add(n4,4);
+      	  		metricas.put("Sub",n4);
 			}
 			Div() -> {
-      	  		int n = ints.get(5);
-      	  		n++;
-      	  		metricas.put("Div",n);
+      	  		int n5 = (Integer)ints.get(5);
+      	  		n5++;
+      	  		ints.add(n5,5);
+      	  		metricas.put("Div",n5);
 			}
 			Mul() -> {
-      	  		int n = ints.get(6);
-      	  		n++;
-      	  		metricas.put("Mul",n);
+      	  		int n6 = (Integer)ints.get(6);
+      	  		n6++;
+      	  		ints.add(n6,6);
+      	  		metricas.put("Mul",n6);
 			}
 			Mod() -> {
-      	  		int n = ints.get(7);
-      	  		n++;
-      	  		metricas.put("Mod",n);
+      	  		int n7 = (Integer)ints.get(7);
+      	  		n7++;
+      	  		ints.add(n7,7);
+      	  		metricas.put("Mod",n7);
 			}
 			Inc() -> {
-      	  		int n = ints.get(8);
-      	  		n++;
-      	  		metricas.put("Inc",n);
+      	  		int n8 =(Integer) ints.get(8);
+      	  		n8++;
+      	  		ints.add(n8,8);
+      	  		metricas.put("Inc",n8);
 			}
 			Dec() -> {
-      	  		int n = ints.get(9);
-      	  		n++;
-      	  		metricas.put("Dec",n);
+      	  		int n9 =(Integer) ints.get(9);
+      	  		n9++;
+      	  		ints.add(n9,9);
+      	  		metricas.put("Dec",n9);
 			}
 			Eq() -> {
-      	  		int n = ints.get(10);
-      	  		n++;
-      	  		metricas.put("Eq",n);
+      	  		int n10 = (Integer)ints.get(10);
+      	  		n10++;
+      	  		ints.add(n10,10);
+      	  		metricas.put("Eq",n10);
 			}
 			Neq() -> { 
-      	  		int n = ints.get(11);
-      	  		n++;
-      	  		metricas.put("Neq",n);
+      	  		int n11 = (Integer)ints.get(11);
+      	  		n11++;
+      	  		ints.add(n11,11);
+      	  		metricas.put("Neq",n11);
 			}
 			Gt() -> {
-      	  		int n = ints.get(12);
-      	  		n++;
-      	  		metricas.put("Gt",n);
+      	  		int n12 = (Integer)ints.get(12);
+      	  		n12++;
+      	  		ints.add(n12,12);
+      	  		metricas.put("Gt",n12);
 			}
 			GoEq() -> {
-      	  		int n = ints.get(13);
-      	  		n++;
-      	  		metricas.put("GoEq",n);
+      	  		int n13 = (Integer)ints.get(13);
+      	  		n13++;
+      	  		ints.add(n13,13);
+      	  		metricas.put("GoEq",n13);
 			}
 			Lt() -> {
-      	  		int n = ints.get(14);
-      	  		n++;
-      	  		metricas.put("Lt",n);
+      	  		int n14 =(Integer) ints.get(14);
+      	  		n14++;
+      	  		ints.add(n14,14);
+      	  		metricas.put("Lt",n14);
 			}
 			LoEq() -> {
-      	  		int n = ints.get(15);
-      	  		n++;
-      	  		metricas.put("LoEq",n);
+      	  		int n15 = (Integer)ints.get(15);
+      	  		n15++;
+      	  		ints.add(n15,15);
+      	  		metricas.put("LoEq",n15);
 			}
 			Nott() -> {
-      	  		int n = ints.get(16);
-      	  		n++;
-      	  		metricas.put("Nott",n);
+      	  		int n16 =(Integer) ints.get(16);
+      	  		n16++;
+      	  		ints.add(n16,16);
+      	  		metricas.put("Nott",n16);
 			}
 			Or() -> {
-      	  		int n = ints.get(17);
-      	  		n++;
-      	  		metricas.put("Or",n);
+      	  		int n17 = (Integer)ints.get(17);
+      	  		n17++;
+      	  		ints.add(n17,17);
+      	  		metricas.put("Or",n17);
 			}
 			And() -> {
-      	  		int n = ints.get(18);
-      	  		n++;
-      	  		metricas.put("And",n);
+      	  		int n18 = (Integer)ints.get(18);
+      	  		n18++;
+      	  		ints.add(n18,18);
+      	  		metricas.put("And",n18);
 			}
 			Halt() -> { 
-      	  		int n = ints.get(19);
-      	  		n++;
-      	  		metricas.put("Halt",n);
+      	  		int n19 = (Integer)ints.get(19);
+      	  		n19++;
+      	  		ints.add(n19,19);
+      	  		metricas.put("Halt",n19);
 			}
 			IIn(tipo) -> {
-      	  		int n = ints.get(20);
-      	  		n++;
-      	  		metricas.put("IIn",n);
+      	  		int n20 = (Integer)ints.get(20);
+      	  		n20++;
+      	  		ints.add(n20,20);
+      	  		metricas.put("IIn",n20);
 			}
 			IOut() -> {
-      	  		int n = ints.get(21);
-      	  		n++;
-      	  		metricas.put("IOut",n);
+      	  		int n21 =(Integer) ints.get(21);
+      	  		n21++;
+      	  		ints.add(n21,21);
+      	  		metricas.put("IOut",n21);
 			}
 			Jump(id) -> {
-      	  		int n = ints.get(22);
-      	  		n++;
-      	  		metricas.put("Jump",n);
+      	  		int n22 = (Integer)ints.get(22);
+      	  		n22++;
+      	  		ints.add(n22,22);
+      	  		metricas.put("Jump",n22);
 			}
 			Jumpf(id) -> {
-      	  		int n = ints.get(23);
-      	  		n++;
-      	  		metricas.put("Jumpf",n);
+      	  		int n23 = (Integer)ints.get(23);
+      	  		n23++;
+      	  		ints.add(n23,23);
+      	  		metricas.put("Jumpf",n23);
 			}
 			Push(t) -> {
-      	  		int n = ints.get(24);
-      	  		n++;
-      	  		metricas.put("Push",n);
+      	  		int n24 = (Integer)ints.get(24);
+      	  		n24++;
+      	  		ints.add(n24,24);
+      	  		metricas.put("Push",n24);
 			}
 			Pusha(t) -> {
-      	  		int n = ints.get(25);
-      	  		n++;
-      	  		metricas.put("Pusha",n);
+      	  		int n25 =(Integer) ints.get(25);
+      	  		n25++;
+      	  		ints.add(n25,25);
+      	  		metricas.put("Pusha",n25);
 			}
 			Load() -> {
-      	  		int n = ints.get(26);
-      	  		n++;
-      	  		metricas.put("Load",n);
+      	  		int n26 =(Integer) ints.get(26);
+      	  		n26++;
+      	  		ints.add(n26,26);
+      	  		metricas.put("Load",n26);
 			}
 			Store() -> {
-      	  		int n = ints.get(27);
-      	  		n++;
-      	  		metricas.put("Store",n);
+      	  		int n27 =(Integer) ints.get(27);
+      	  		n27++;
+      	  		ints.add(n27,27);
+      	  		metricas.put("Store",n27);
 			}
 			Decl(id,initMemAddress,size) -> {
-      	  		int n = ints.get(28);
-      	  		n++;
-      	  		metricas.put("Decl",n);
+      	  		int n28 =(Integer) ints.get(28);
+      	  		n28++;
+      	  		ints.add(n28,28);
+      	  		metricas.put("Decl",n28);
 			}
         }
 	}
