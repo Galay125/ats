@@ -50,6 +50,15 @@ public class Main {
 		System.out.println("\nDigite um número:");
 	}
 
+	public static void menuRun(){
+
+		System.out.println("\n********** Menu Run *********");
+
+		System.out.println("1 ----------------- Output no Terminal");
+		System.out.println("2 ----------------- Output em ficheiro .txt ");
+		System.out.println("\nDigite um número:");
+	}
+
 	public static void main(String[] args) throws IOException {
 
 		System.out.println("*************************** Trabalho de ATS ****************************\n");
@@ -107,7 +116,36 @@ public class Main {
 						instrucoes = "";
 				 		instrucoes = main.compileAnnot(p);
 	 					String functionDeclarationsAndArguments = main.functionsDeclarations.toString();
-						System.out.println(functionDeclarationsAndArguments + numInstString + instrucoes);
+	 					Boolean run = true;
+							while(run){
+								menuRun();
+								opcao = teclado.readLine();
+								switch(opcao){
+									case "1":
+										System.out.println(functionDeclarationsAndArguments + numInstString + instrucoes);
+										run = false;
+										break;
+
+									case "2":
+										try {
+											System.out.println("Nome do ficheiro:");
+											String filename = teclado.readLine();
+											String msp = functionDeclarationsAndArguments + numInstString + instrucoes;
+											PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("../exemplos/"+filename+".msp", true)));
+		        							pw.print(msp);
+		        							pw.flush(); pw.close();
+											run = false;
+										}catch (IOException e){
+											System.err.println("exception: " + e);
+											return;
+			    						} 
+										break;
+
+									default:
+										System.out.println("Opção inválida. Tente de novo.");				
+										break;
+									}
+								}
 					} catch(Exception e) {
 						e.printStackTrace();
 					}
@@ -280,7 +318,6 @@ public class Main {
 			 			Set<String> idsUtilizados = new TreeSet<String>();
 			 			Instrucao pBad = `TopDown(stratBadSmells(idsUtilizados)).visit(p);
 			 			p = pBad;
-
 					}
 					catch(VisitFailure e) {
 							System.out.println("the strategy failed");
