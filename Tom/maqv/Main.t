@@ -240,7 +240,7 @@ public class Main {
 									System.out.println(main.toString());
 									break;
 
-								case "2":								
+								case "2":
 									`TopDown(visitDecl(main.metricas,0)).visit(p);
 									`TopDown(visitDecl(main.metricasBad,0)).visit(bad);
 									System.out.println("Instrução\t| Original\t| Refactored\n");
@@ -273,13 +273,13 @@ public class Main {
 									`TopDown(visitRelationals(main.metricasBad,0,0,0,0,0,0,0)).visit(bad);
 
 									System.out.println("Instrução\t| Original\t| Refactored\n");
-									System.out.println("#Igualdades"+"\t\t| " + main.metricas.get("Eq")+"\t\t| "+ main.metricasBad.get("Eq"));
-									System.out.println("#Diferentes"+"\t\t| " + main.metricas.get("Neq")+"\t\t| "+ main.metricasBad.get("Decl"));
+									System.out.println("#Igualdades"+"\t| " + main.metricas.get("Eq")+"\t\t| "+ main.metricasBad.get("Eq"));
+									System.out.println("#Diferentes"+"\t| " + main.metricas.get("Neq")+"\t\t| "+ main.metricasBad.get("Decl"));
 									System.out.println("#Maior"+"\t\t| " + main.metricas.get("Gt")+"\t\t| "+ main.metricasBad.get("Gt"));
-									System.out.println("#Maior ou Igual"+"\t\t| " + main.metricas.get("GoEq")+"\t\t| "+ main.metricasBad.get("GoEq"));
+									System.out.println("#Maior ou Igual"+"\t| " + main.metricas.get("GoEq")+"\t\t| "+ main.metricasBad.get("GoEq"));
 									System.out.println("#Menor"+"\t\t| " + main.metricas.get("Lt")+"\t\t| "+ main.metricasBad.get("Lt"));
-									System.out.println("#Menor ou Igual"+"\t\t| " + main.metricas.get("LoEq")+"\t\t| "+ main.metricasBad.get("LoEq"));
-									System.out.println("#Negação"+"\t\t| " + main.metricas.get("Nott")+"\t\t| "+ main.metricasBad.get("Nott"));
+									System.out.println("#Menor ou Igual"+"\t| " + main.metricas.get("LoEq")+"\t\t| "+ main.metricasBad.get("LoEq"));
+									System.out.println("#Negação"+"\t| " + main.metricas.get("Nott")+"\t\t| "+ main.metricasBad.get("Nott"));
 									break;
 
 								case "6":
@@ -288,7 +288,7 @@ public class Main {
 
 									System.out.println("Instrução\t| Original\t| Refactored\n");
 									System.out.println("#Inputs"+"\t\t| " + main.metricas.get("IIn")+"\t\t| "+ main.metricasBad.get("IIn"));
-									System.out.println("#Outputs"+"\t\t| " + main.metricas.get("IOut")+"\t\t| "+ main.metricasBad.get("IOut"));
+									System.out.println("#Outputs"+"\t| " + main.metricas.get("IOut")+"\t\t| "+ main.metricasBad.get("IOut"));
 									break;
 
 								case "0":
@@ -370,175 +370,175 @@ public class Main {
 			ALabel(id) -> {
       	  		int n0 =(Integer) ints.get(0);
       	  		n0++;
-      	  		ints.add(n0,0);
+      	  		ints.set(0,n0);
       	  		metricas.put("ALabel",n0);
 			}
 			Call(id) -> {
       	  		int n1 =(Integer) ints.get(1);
       	  		n1++;
-      	  		ints.add(n1,1);
+      	  		ints.set(1,n1);
       	  		metricas.put("Call",n1);
 			}
 			Ret() -> {
       	  		int n2 = (Integer)ints.get(2);
       	  		n2++;
-      	  		ints.add(n2,2);
+      	  		ints.set(2,n2);
       	  		metricas.put("Ret",n2);
 			}
 			Add() -> {
       	  		int n3 = (Integer)ints.get(3);
       	  		n3++;
-      	  		ints.add(n3,3);
+      	  		ints.set(3,n3);
       	  		metricas.put("Add",n3);
 			}
 			Sub() -> {
       	  		int n4 = (Integer)ints.get(4);
       	  		n4++;
-      	  		ints.add(n4,4);
+      	  		ints.set(4,n4);
       	  		metricas.put("Sub",n4);
 			}
 			Div() -> {
       	  		int n5 = (Integer)ints.get(5);
       	  		n5++;
-      	  		ints.add(n5,5);
+      	  		ints.set(5,n5);
       	  		metricas.put("Div",n5);
 			}
 			Mul() -> {
       	  		int n6 = (Integer)ints.get(6);
       	  		n6++;
-      	  		ints.add(n6,6);
+      	  		ints.set(6,n6);
       	  		metricas.put("Mul",n6);
 			}
 			Mod() -> {
       	  		int n7 = (Integer)ints.get(7);
       	  		n7++;
-      	  		ints.add(n7,7);
+      	  		ints.set(7,n7);
       	  		metricas.put("Mod",n7);
 			}
 			Inc() -> {
       	  		int n8 =(Integer) ints.get(8);
       	  		n8++;
-      	  		ints.add(n8,8);
+      	  		ints.set(8,n8);
       	  		metricas.put("Inc",n8);
 			}
 			Dec() -> {
       	  		int n9 =(Integer) ints.get(9);
       	  		n9++;
-      	  		ints.add(n9,9);
+      	  		ints.set(9,n9);
       	  		metricas.put("Dec",n9);
 			}
 			Eq() -> {
       	  		int n10 = (Integer)ints.get(10);
       	  		n10++;
-      	  		ints.add(n10,10);
+      	  		ints.set(10,n10);
       	  		metricas.put("Eq",n10);
 			}
 			Neq() -> { 
       	  		int n11 = (Integer)ints.get(11);
       	  		n11++;
-      	  		ints.add(n11,11);
+      	  		ints.set(11,n11);
       	  		metricas.put("Neq",n11);
 			}
 			Gt() -> {
       	  		int n12 = (Integer)ints.get(12);
       	  		n12++;
-      	  		ints.add(n12,12);
+      	  		ints.set(12,n12);
       	  		metricas.put("Gt",n12);
 			}
 			GoEq() -> {
       	  		int n13 = (Integer)ints.get(13);
       	  		n13++;
-      	  		ints.add(n13,13);
+      	  		ints.set(13,n13);
       	  		metricas.put("GoEq",n13);
 			}
 			Lt() -> {
       	  		int n14 =(Integer) ints.get(14);
       	  		n14++;
-      	  		ints.add(n14,14);
+      	  		ints.set(14,n14);
       	  		metricas.put("Lt",n14);
 			}
 			LoEq() -> {
       	  		int n15 = (Integer)ints.get(15);
       	  		n15++;
-      	  		ints.add(n15,15);
+      	  		ints.set(15,n15);
       	  		metricas.put("LoEq",n15);
 			}
 			Nott() -> {
       	  		int n16 =(Integer) ints.get(16);
       	  		n16++;
-      	  		ints.add(n16,16);
+      	  		ints.set(16,n16);
       	  		metricas.put("Nott",n16);
 			}
 			Or() -> {
       	  		int n17 = (Integer)ints.get(17);
       	  		n17++;
-      	  		ints.add(n17,17);
+      	  		ints.set(17,n17);
       	  		metricas.put("Or",n17);
 			}
 			And() -> {
       	  		int n18 = (Integer)ints.get(18);
       	  		n18++;
-      	  		ints.add(n18,18);
+      	  		ints.set(18,n18);
       	  		metricas.put("And",n18);
 			}
 			Halt() -> { 
       	  		int n19 = (Integer)ints.get(19);
       	  		n19++;
-      	  		ints.add(n19,19);
+      	  		ints.set(19,n19);
       	  		metricas.put("Halt",n19);
 			}
 			IIn(tipo) -> {
       	  		int n20 = (Integer)ints.get(20);
       	  		n20++;
-      	  		ints.add(n20,20);
+      	  		ints.set(20,n20);
       	  		metricas.put("IIn",n20);
 			}
 			IOut() -> {
       	  		int n21 =(Integer) ints.get(21);
       	  		n21++;
-      	  		ints.add(n21,21);
+      	  		ints.set(21,n21);
       	  		metricas.put("IOut",n21);
 			}
 			Jump(id) -> {
       	  		int n22 = (Integer)ints.get(22);
       	  		n22++;
-      	  		ints.add(n22,22);
+      	  		ints.set(22,n22);
       	  		metricas.put("Jump",n22);
 			}
 			Jumpf(id) -> {
       	  		int n23 = (Integer)ints.get(23);
       	  		n23++;
-      	  		ints.add(n23,23);
+      	  		ints.set(23,n23);
       	  		metricas.put("Jumpf",n23);
 			}
 			Push(t) -> {
       	  		int n24 = (Integer)ints.get(24);
       	  		n24++;
-      	  		ints.add(n24,24);
+      	  		ints.set(24,n24);
       	  		metricas.put("Push",n24);
 			}
 			Pusha(t) -> {
       	  		int n25 =(Integer) ints.get(25);
       	  		n25++;
-      	  		ints.add(n25,25);
+      	  		ints.set(25,n25);
       	  		metricas.put("Pusha",n25);
 			}
 			Load() -> {
       	  		int n26 =(Integer) ints.get(26);
       	  		n26++;
-      	  		ints.add(n26,26);
+      	  		ints.set(26,n26);
       	  		metricas.put("Load",n26);
 			}
 			Store() -> {
       	  		int n27 =(Integer) ints.get(27);
       	  		n27++;
-      	  		ints.add(n27,27);
+      	  		ints.set(27,n27);
       	  		metricas.put("Store",n27);
 			}
 			Decl(id,initMemAddress,size) -> {
       	  		int n28 =(Integer) ints.get(28);
       	  		n28++;
-      	  		ints.add(n28,28);
+      	  		ints.set(28,n28);
       	  		metricas.put("Decl",n28);
 			}
         }
