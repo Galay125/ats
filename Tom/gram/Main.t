@@ -515,10 +515,61 @@ public class Main {
 		return false;
 	}
 
+	public static Expressao verificaCondicao(Expressao exp) {
+		%match(exp) {
+			a@Ou(c1,c2) -> {
+				%match(c1){
+					e@Int(i) -> { if (`i == 1) return `e;
+								else if(`i == 0) return `a;
+					}
+					e@True()->{ return `e; }
+					e@Char(s)->{ return `e; }
+				}
+				%match(c2){
+					e@Int(i)->{ if (`i == 1) return `e;
+							  	else if(`i == 0)  return `a;
+					}
+					e@True()->{ return `e; }
+					e@Char(s)->{ return `e; }
+				}
+				return verificaCondicao(`a);
+			}
+			a@E(c1,c2) -> {
+				%match(c1){
+					e@Int(i)->{ if(`i == 0)  return `e;
+							  	else if(`i == 1) return `a;
+					}
+					e@False()->{ return `e; }
+					e@Char(s)->{ return `e; }
+				}
+				%match(c2){
+					e@Int(i)->{ if(`i == 0)  return `e;
+							  	else if(`i == 1) return `a;
+					}
+					e@False()->{ return `e; }
+					e@Char(s)->{ return `e; }
+				}
+				return verificaCondicao(`a);
+			}
+		}
+		return `exp;
+	}
+
     %strategy stratBadSmells(Set idsUtilizados) extends Identity() {
     	visit Instrucao {
     		If(Nao(condicao),inst1,inst2) -> {
     			return `If(condicao,inst2,inst1);
+    		}
+    		If(condicao,inst1,inst2) -> {
+    			Expressao cond = verificaCondicao(`condicao);
+    			System.out.println(`cond);
+
+    			if(`cond == `True() || `cond == `Int(1))	
+    				return `inst1;
+    			else if(`cond == `False() || `cond == `Int(0))
+    				return `inst2;
+    			else
+    				return `If(cond,inst1,inst2);
     		}
     		Funcao(tipo,nome,argumentos,inst) -> {
     			idsUtilizados = new TreeSet<String>();
