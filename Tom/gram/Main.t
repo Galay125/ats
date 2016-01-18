@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.math.RoundingMode;
+import java.io.FileWriter;
 
 public class Main {
 	%include{sl.tom}
@@ -23,6 +24,9 @@ public class Main {
 	%include{util/types/Collection.tom}
 	%include{util/types/Set.tom}
 	%include{../genI/gram/i/i.tom}
+
+	private static final String COMMA_DELIMITER = ",";
+    private static final String NEW_LINE_SEPARATOR = "\n";
 
 
 	private String actualFunctionName;
@@ -55,7 +59,16 @@ public class Main {
 		System.out.println("\n********** Menu Run *********");
 
 		System.out.println("1 ----------------- Output no Terminal");
-		System.out.println("2 ----------------- Output em ficheiro .txt ");
+		System.out.println("2 ----------------- Output em ficheiro .msp ");
+		System.out.println("\nDigite um número:");
+	}
+
+	public static void menuRunCSV(){
+
+		System.out.println("\n********** Menu Run *********");
+
+		System.out.println("1 ----------------- Output no Terminal");
+		System.out.println("2 ----------------- Output em ficheiro .scv ");
 		System.out.println("\nDigite um número:");
 	}
 
@@ -238,71 +251,210 @@ public class Main {
 								break;
 
 								case "6":
-										met.funcoes=0;
-										met.setSmells(0);
-									for(String s : main.funcoesInst.keySet()){
-										met.funcoes++;
-										
-										System.out.println("\n----> Funcao: "+s);
-										a = linesOfCode(main.funcoesInst.get(s));
-										met.setFuncoesLinhas(s,a);
-										System.out.println("Numero de Linhas: "+a+ " | Max("+met.getMaxLinhas()+")");
+									Boolean run = true;
+									while(run){
+										menuRunCSV();
+										opcao = teclado.readLine();
+										switch(opcao){
+											case "1":
+												met.funcoes=0;
+												met.setSmells(0);
+												for(String s : main.funcoesInst.keySet()){
+													met.funcoes++;
+													
+													System.out.println("\n----> Funcao: "+s);
+													a = linesOfCode(main.funcoesInst.get(s));
+													met.setFuncoesLinhas(s,a);
+													System.out.println("Numero de Linhas: "+a+ " | Max("+met.getMaxLinhas()+")");
 
-										if(met.classificaSmellLinhas(s) == 1){
-											System.out.println("** Smell Detectado: Metodo Extenso **\n");
-										}
-
-
-										a = foundDecl(main.funcoesInst.get(s));
-										met.setFuncoesDecl(s,a);
-										System.out.println("Numero de Declaracoes: "+a+" | Max("+met.getMaxDecl()+")");
-
-										if(met.classificaSmellDecl(s) == 1){
-											System.out.println("** Smell Detectado: Declaracoes a mais **\n");
-										}
+													if(met.classificaSmellLinhas(s) == 1){
+														System.out.println("** Smell Detectado: Metodo Extenso **\n");
+													}
 
 
-										a = foundArgs(s,p);
-										met.setFuncoesArgs(s,a);
-										System.out.println("Numero de Argumentos: "+a+" | Max("+met.getMaxArgs()+")");
+													a = foundDecl(main.funcoesInst.get(s));
+													met.setFuncoesDecl(s,a);
+													System.out.println("Numero de Declaracoes: "+a+" | Max("+met.getMaxDecl()+")");
 
-										if(met.classificaSmellArgs(s) == 1){
-											System.out.println("** Smell Detectado: Numero de argumentos excede o maximo **\n");
-										}
-
-
-										a = foundNested(main.funcoesInst.get(s));
-										met.setFuncoesNested(s,a);
-										System.out.println("Maior Bloco Aninhado: "+a+" | Max("+met.getMaxNested()+")");
-
-										if(met.classificaSmellNested(s) == 1){
-											System.out.println("** Smell Detectado: Bloco com demasiados aninhamentos **\n");
-										}
+													if(met.classificaSmellDecl(s) == 1){
+														System.out.println("** Smell Detectado: Declaracoes a mais **\n");
+													}
 
 
-										a = foundCC(main.funcoesInst.get(s))+1;
-										met.setFuncoesCC(s,a);
-										System.out.println("Cyclomatic Complexity: "+a+" | Max("+met.getMaxCC()+")");
+													a = foundArgs(s,p);
+													met.setFuncoesArgs(s,a);
+													System.out.println("Numero de Argumentos: "+a+" | Max("+met.getMaxArgs()+")");
 
-										if(met.classificaSmellCC(s) == 1){
-											System.out.println("** Smell Detectado: Complexidade ciclomática maior que o máximo **\n");
-										}
+													if(met.classificaSmellArgs(s) == 1){
+														System.out.println("** Smell Detectado: Numero de argumentos excede o maximo **\n");
+													}
 
 
-										DecimalFormat df = new DecimalFormat("#.#");
-										df.setRoundingMode(RoundingMode.FLOOR);
+													a = foundNested(main.funcoesInst.get(s));
+													met.setFuncoesNested(s,a);
+													System.out.println("Maior Bloco Aninhado: "+a+" | Max("+met.getMaxNested()+")");
 
-										r = met.classificaFuncao(s);	
-										met.setRank(s,r);
-										System.out.println("-> Star Ranking: "+df.format(r)+" em 5");
-									}
-									System.out.println("\n\nTotal de Linhas: "+met.getTotalLinhas());
-									System.out.println("Total de Declaracoes: "+met.getTotalDecl());
-									System.out.println("Total de Argumentos: "+met.getTotalArgs());
+													if(met.classificaSmellNested(s) == 1){
+														System.out.println("** Smell Detectado: Bloco com demasiados aninhamentos **\n");
+													}
 
-									System.out.println("\nStar Ranking do Programa: "+met.getRank()+" em 5");
-									System.out.println("Numero de Bad Smells detectados: "+met.getNSmells());
 
+													a = foundCC(main.funcoesInst.get(s))+1;
+													met.setFuncoesCC(s,a);
+													System.out.println("Cyclomatic Complexity: "+a+" | Max("+met.getMaxCC()+")");
+
+													if(met.classificaSmellCC(s) == 1){
+														System.out.println("** Smell Detectado: Complexidade ciclomática maior que o máximo **\n");
+													}
+
+
+													DecimalFormat df = new DecimalFormat("#.#");
+													df.setRoundingMode(RoundingMode.FLOOR);
+
+													r = met.classificaFuncao(s);	
+													met.setRank(s,r);
+													System.out.println("-> Star Ranking: "+df.format(r)+" em 5");
+												}
+												System.out.println("\n\nTotal de Linhas: "+met.getTotalLinhas());
+												System.out.println("Total de Declaracoes: "+met.getTotalDecl());
+												System.out.println("Total de Argumentos: "+met.getTotalArgs());
+
+												System.out.println("\nStar Ranking do Programa: "+met.getRank()+" em 5");
+												System.out.println("Numero de Bad Smells detectados: "+met.getNSmells());
+
+												run = false;
+												break;
+
+											case "2":
+												try {
+													System.out.println("Nome do ficheiro:");
+													String filename = teclado.readLine();
+													FileWriter fileWriter = new FileWriter("../exemplos/"+filename+".scv");
+				        							met.funcoes=0;
+													met.setSmells(0);
+													for(String s : main.funcoesInst.keySet()){
+														met.funcoes++;
+														
+														
+														fileWriter.append(s);
+														fileWriter.append(NEW_LINE_SEPARATOR);
+														fileWriter.append("Métricas,Quantidade,Máximo,Smell Detectado");
+														fileWriter.append(NEW_LINE_SEPARATOR);
+
+														a = linesOfCode(main.funcoesInst.get(s));
+														met.setFuncoesLinhas(s,a);
+
+														//LINHAS
+														fileWriter.append("Numero de Linhas,"+a+","+met.getMaxLinhas()+",");
+
+														if(met.classificaSmellLinhas(s) == 1){
+															fileWriter.append("Detectado");
+														}
+														else{
+															fileWriter.append("Não Detectado");
+														}
+
+														fileWriter.append(NEW_LINE_SEPARATOR);
+														
+
+														//DECLARACOES
+														a = foundDecl(main.funcoesInst.get(s));
+														met.setFuncoesDecl(s,a);
+														fileWriter.append("Numero de Declarações,"+a+","+met.getMaxDecl()+",");
+
+														if(met.classificaSmellDecl(s) == 1){
+															fileWriter.append("Detectado");
+														}
+														else{
+															fileWriter.append("Não Detectado");
+														}
+
+														fileWriter.append(NEW_LINE_SEPARATOR);
+
+														//ARGUMENTOS
+														a = foundArgs(s,p);
+														met.setFuncoesArgs(s,a);
+														fileWriter.append("Numero de Argumentos,"+a+","+met.getMaxArgs()+",");
+
+														if(met.classificaSmellArgs(s) == 1){
+															fileWriter.append("Detectado");
+														}
+														else{
+															fileWriter.append("Não Detectado");
+														}
+
+														fileWriter.append(NEW_LINE_SEPARATOR);
+
+														//BLOCOS
+														a = foundNested(main.funcoesInst.get(s));
+														met.setFuncoesNested(s,a);
+														fileWriter.append("Maior Bloco Aninhado,"+a+","+met.getMaxNested()+",");
+														
+
+														if(met.classificaSmellNested(s) == 1){
+															fileWriter.append("Detectado");
+														}
+														else{
+															fileWriter.append("Não Detectado");
+														}
+
+														fileWriter.append(NEW_LINE_SEPARATOR);
+
+														//CC McCABE
+														a = foundCC(main.funcoesInst.get(s))+1;
+														met.setFuncoesCC(s,a);
+														fileWriter.append("Cyclomatic Complexity,"+a+","+met.getMaxCC()+",");
+
+														if(met.classificaSmellCC(s) == 1){
+															fileWriter.append("Detectado");
+														}
+														else{
+															fileWriter.append("Não Detectado");
+														}
+
+														fileWriter.append(NEW_LINE_SEPARATOR);
+														fileWriter.append(NEW_LINE_SEPARATOR);
+
+
+														DecimalFormat df = new DecimalFormat("#.#");
+														df.setRoundingMode(RoundingMode.FLOOR);
+
+														r = met.classificaFuncao(s);	
+														met.setRank(s,r);
+														
+														fileWriter.append("Star Ranking,"+df.format(r)+" em 5");
+														fileWriter.append(NEW_LINE_SEPARATOR);
+														fileWriter.append(NEW_LINE_SEPARATOR);
+													}
+
+													fileWriter.append("Programa");
+													fileWriter.append(NEW_LINE_SEPARATOR);
+													fileWriter.append("Total de Linhas,"+met.getTotalLinhas());
+													fileWriter.append(NEW_LINE_SEPARATOR);
+													fileWriter.append("Total de Declaracoes,"+met.getTotalDecl());
+													fileWriter.append(NEW_LINE_SEPARATOR);
+													fileWriter.append("Total de Argumentos,"+met.getTotalArgs());
+													fileWriter.append(NEW_LINE_SEPARATOR);
+													fileWriter.append("Star Ranking do Programa,"+met.getRank()+" em 5");
+													fileWriter.append(NEW_LINE_SEPARATOR);
+													fileWriter.append("Numero de Bad Smells detectados,"+met.getNSmells());
+													fileWriter.append(NEW_LINE_SEPARATOR);
+     							
+				        							fileWriter.flush();
+				        						    fileWriter.close();
+													run = false;
+												}catch (IOException e){
+													System.err.println("exception: " + e);
+													return;
+					    						} 
+												break;
+
+											default:
+												System.out.println("Opção inválida. Tente de novo.");				
+												break;
+											}
+										}									
+									
 								break;
 							}
 						}
