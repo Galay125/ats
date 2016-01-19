@@ -68,7 +68,16 @@ public class Main {
 		System.out.println("\n********** Menu Run *********");
 
 		System.out.println("1 ----------------- Output no Terminal");
-		System.out.println("2 ----------------- Output em ficheiro .scv ");
+		System.out.println("2 ----------------- Output em ficheiro .csv ");
+		System.out.println("\nDigite um número:");
+	}
+
+	public static void menuFicheiros(){
+
+		System.out.println("\n********** Menu Run *********");
+
+		System.out.println("1 ----------------- Ler Ficheiro para obter métricas (.csv)");
+		System.out.println("2 ----------------- Ler Ficheiro C--");
 		System.out.println("\nDigite um número:");
 	}
 
@@ -88,6 +97,7 @@ public class Main {
  		Metrica met = new Metrica();
  		String instrucoes = "";
  		String numInstString = "";
+ 		String fileCsv = null;
 
 		while(sair == false){
  			 
@@ -97,19 +107,31 @@ public class Main {
 			 
 			 switch(opcao){
 			 	case "1":
-			 		System.out.println("\nDigite o nome do ficheiro: ");
-			 		file = teclado.readLine();
-			 		main = new Main();
-			 		try{
-						iLexer lexer = new iLexer(new ANTLRFileStream("../exemplos/"+file));
-						CommonTokenStream tokens = new CommonTokenStream(lexer);
-						iParser parser = new iParser(tokens);
-							// Parse the input expression
-						Tree b = (Tree) parser.prog().getTree();
-						p = (Instrucao) iAdaptor.getTerm(b);
-					} catch(Exception e) {
-						e.printStackTrace();
-					}
+			 		menuFicheiros();
+					opcao = teclado.readLine();
+						switch(opcao){
+							case "1":
+							 		System.out.println("\nDigite o nome do ficheiro csv: ");
+							 		fileCsv = teclado.readLine();
+							 		metricas(fileCsv, met);
+							break;
+
+							case "2":
+									System.out.println("\nDigite o nome do ficheiro: ");
+							 		file = teclado.readLine();
+							 		main = new Main();
+							 		try{
+										iLexer lexer = new iLexer(new ANTLRFileStream("../exemplos/"+file));
+										CommonTokenStream tokens = new CommonTokenStream(lexer);
+										iParser parser = new iParser(tokens);
+											// Parse the input expression
+										Tree b = (Tree) parser.prog().getTree();
+										p = (Instrucao) iAdaptor.getTerm(b);
+									} catch(Exception e) {
+										e.printStackTrace();
+									}
+							break;	
+						}
 				break;
 
 			 	case "2":
@@ -181,6 +203,7 @@ public class Main {
 			 	case "5":
 						try{
 							met = new Metrica();
+							metricas(fileCsv, met);
 							System.out.println("\n*********** Métricas ************ ");
 
 								/* Vai recolher as instruções por função */
@@ -329,7 +352,7 @@ public class Main {
 												try {
 													System.out.println("Nome do ficheiro:");
 													String filename = teclado.readLine();
-													FileWriter fileWriter = new FileWriter("../exemplos/"+filename+".scv");
+													FileWriter fileWriter = new FileWriter("../exemplos/"+filename+".csv");
 				        							met.funcoes=0;
 													met.setSmells(0);
 													for(String s : main.funcoesInst.keySet()){
@@ -1214,6 +1237,24 @@ public class Main {
 			return "Pushc ',',IOut,Pushi "+i+",IOut,";
 		}
 	}
+
+	public static void metricas(String fileCsv, Metrica met){
+		try{
+			BufferedReader fileReader = new BufferedReader(new FileReader("../limites/"+fileCsv+".csv"));
+			String line = "";
+			fileReader.readLine();
+			line = fileReader.readLine();
+			ArrayList<Integer> tokens = new ArrayList<Integer>();
+			for(String s : line.split(",")){
+				tokens.add(Integer.parseInt(s));	
+			}
+			if(tokens.size() == 5)
+				met.setMetricas(tokens.get(0), tokens.get(1), tokens.get(2), tokens.get(3), tokens.get(4));
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+	}
+
 	private static int max(int a, int b){
 		if(a>b)
 			return a;
@@ -1253,11 +1294,11 @@ class Metrica{
 	private HashMap<String, Double> funcoesRank;
 
 	/*Classificar métricas*/
-	private Integer maxLinhas = 15;
-	private Integer maxDecl = 5;
-	private Integer maxArgs = 3;
-	private Integer maxNested = 3;
-	private Integer maxCC = 5;
+	private Integer maxLinhas;
+	private Integer maxDecl;
+	private Integer maxArgs;
+	private Integer maxNested;
+	private Integer maxCC;
 
 	/* Contar os smells */
 	private Integer nSmells = 0;
@@ -1265,6 +1306,11 @@ class Metrica{
 	public Metrica() {
 		this.funcoes = 0;
 		this.nSmells = 0;
+		this.maxLinhas = 0;
+		this.maxDecl = 0;
+		this.maxArgs = 0;
+		this.maxNested = 0;
+		this.maxCC = 0;
 		this.funcoesLinhas = new HashMap<String, Integer>();
 		this.funcoesDecl = new HashMap<String, Integer>();
 		this.funcoesArgs = new HashMap<String, Integer>();
@@ -1359,6 +1405,14 @@ class Metrica{
 
 	public int getNSmells(){
 		return this.nSmells;
+	}
+
+	public void setMetricas(Integer l, Integer d, Integer a, Integer b, Integer c){
+		this.maxLinhas = l;
+		this.maxDecl = d;
+		this.maxArgs = a;
+		this.maxNested = b;
+		this.maxCC = c;	
 	}
 
 	public void setFuncoesLinhas(String s, Integer i){
