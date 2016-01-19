@@ -190,13 +190,13 @@ public class Main {
 			 			fileBad = teclado.readLine();
 
 			 			try{
-							mspLexer lexer = new mspLexer(new ANTLRFileStream("../exemplos/"+file));
+							mspLexer lexer = new mspLexer(new ANTLRFileStream("../exemplos/"+file+".msp"));
 							CommonTokenStream tokens = new CommonTokenStream(lexer);
 							mspParser parser = new mspParser(tokens);
 							// Parse the inputexpression
 							Tree b = (Tree) parser.programa().getTree();
 
-							mspLexer lexerBad = new mspLexer(new ANTLRFileStream("../exemplos/"+fileBad));
+							mspLexer lexerBad = new mspLexer(new ANTLRFileStream("../exemplos/"+fileBad+".msp"));
 							CommonTokenStream tokensBad = new CommonTokenStream(lexerBad);
 							mspParser parserBad = new mspParser(tokensBad);
 							// Parse the inputexpression
