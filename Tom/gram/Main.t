@@ -191,7 +191,7 @@ public class Main {
 						try{
 							System.out.println("Nome de Ficheiro: ");
 							aux = teclado.readLine();
-							FileWriter out=new FileWriter(aux);
+							FileWriter out=new FileWriter(aux+".dot");
 							Viewer.toDot(p,out);
  						}
 						catch (IOException e){
@@ -491,7 +491,8 @@ public class Main {
 			 		try{
 			 			System.out.println("\n*********** Smells ************ ");
 			 			Set<String> idsUtilizados = new TreeSet<String>();
-			 			Instrucao pBad = `TopDown(stratBadSmells(idsUtilizados)).visit(p);
+			 			Instrucao pBad = `TopDown(stratBadIfs()).visit(p);
+			 			pBad = `TopDown(stratBadSmells(idsUtilizados)).visit(pBad);
 			 			p = pBad;
 					}
 					catch(VisitFailure e) {
@@ -707,7 +708,6 @@ public class Main {
 					e@True()->{ return `e; }
 					e@Char(s)->{ return `e; }
 				}
-				return verificaCondicao(`a);
 			}
 			a@E(c1,c2) -> {
 				%match(c1){
@@ -724,15 +724,14 @@ public class Main {
 					e@False()->{ return `e; }
 					e@Char(s)->{ return `e; }
 				}
-				return verificaCondicao(`a);
 			}
 		}
 		return `exp;
 	}
 
-    %strategy stratBadSmells(Set idsUtilizados) extends Identity() {
-    	visit Instrucao {
-    		If(Nao(condicao),inst1,inst2) -> {
+	%strategy stratBadIfs() extends Identity() {
+		visit Instrucao {
+			If(Nao(condicao),inst1,inst2) -> {
     			return `If(condicao,inst2,inst1);
     		}
     		If(condicao,inst1,inst2) -> {
@@ -746,6 +745,11 @@ public class Main {
     			else
     				return `If(cond,inst1,inst2);
     		}
+    	}
+	}
+
+    %strategy stratBadSmells(Set idsUtilizados) extends Identity() {
+    	visit Instrucao {
     		Funcao(tipo,nome,argumentos,inst) -> {
     			idsUtilizados = new TreeSet<String>();
 				`TopDown(stratCollectIds(idsUtilizados, 0)).visit(`inst);
