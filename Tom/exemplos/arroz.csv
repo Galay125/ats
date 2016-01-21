@@ -1,0 +1,26 @@
+max
+Métricas,Quantidade,Máximo,Smell Detectado
+Numero de Linhas,8,15,Não Detectado
+Numero de Declarações,1,5,Não Detectado
+Numero de Argumentos,2,3,Não Detectado
+Maior Bloco Aninhado,1,3,Não Detectado
+Cyclomatic Complexity,2,5,Não Detectado
+
+Star Ranking,5 em 5
+
+main
+Métricas,Quantidade,Máximo,Smell Detectado
+Numero de Linhas,8,15,Não Detectado
+Numero de Declarações,3,5,Não Detectado
+Numero de Argumentos,0,3,Não Detectado
+Maior Bloco Aninhado,0,3,Não Detectado
+Cyclomatic Complexity,1,5,Não Detectado
+
+Star Ranking,5 em 5
+
+Programa
+Total de Linhas,20
+Total de Declaracoes,4
+Total de Argumentos,2
+Star Ranking do Programa,5 em 5
+Numero de Bad Smells detectados,0

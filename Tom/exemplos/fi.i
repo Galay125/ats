@@ -7,8 +7,8 @@ void main() {
        d=4;
     }
 }
-int a(int a){
-    int x;
+
+void a(int a){
     d = 4;
     c = 5;
 }

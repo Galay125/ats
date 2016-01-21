@@ -1,23 +1,20 @@
 void main() {
     int a;
-    int b;
     int res;
     int c;
     a = input(int);
-    b = input(int);
-    res = max(a,b,c);
+    res = refac(a,c);
     print(';');
     print(res);
 }
 
-int max(int a, int b, int c){
+int refac(int a, int c){
     int res;
-    if (a > b) {
+    if (1 || 0) {
         res = a;
     }
     else {
-        res = b;
+        res = c;
     }
     return res; 
 }
-
